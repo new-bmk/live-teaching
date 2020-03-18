@@ -10,6 +10,8 @@ interface Subject{
     moderators: String[]
 }
 ```
+Moderator, able to manipulate corresponding sessions, is identified with user reference such as email.
+
 ### Session
 */subject/HK0OFtBINF5EY5o2zrml/sessions/B6EWvvy59XjrPjBdzbyr*
 ```js
