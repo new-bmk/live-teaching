@@ -1,5 +1,6 @@
-#Firestore structure
+# Firestore structure
 
+### Subject
 */subject/HK0OFtBINF5EY5o2zrml*
 ```js
 interface Subject{
@@ -8,7 +9,7 @@ interface Subject{
     sessions: Session[]
 }
 ```
-
+### Session
 */subject/HK0OFtBINF5EY5o2zrml/sessions/B6EWvvy59XjrPjBdzbyr*
 ```js
 interface Question {
@@ -27,6 +28,7 @@ interface Session {
 }
 ```
 
+### Live Session
 */live_session/T0BFl855cvqa4hWHvbHl*
 ```js
 interface LiveSession {
@@ -37,6 +39,8 @@ interface LiveSession {
 ```
 Live session should be deleted when ended.
 
+### Recored Session
+This is created along with live session.
 */recorded_session/CIAcia7eVR378f9z1VtM*
 ```js
 interface QuizResult {
