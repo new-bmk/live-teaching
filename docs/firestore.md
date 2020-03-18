@@ -41,6 +41,7 @@ Live session should be deleted when ended.
 
 ### Recored Session
 This is created along with live session.
+
 */recorded_session/CIAcia7eVR378f9z1VtM*
 ```js
 interface QuizResult {
