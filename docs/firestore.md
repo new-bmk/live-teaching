@@ -3,8 +3,7 @@
 */subject/HK0OFtBINF5EY5o2zrml*
 ```js
 interface Subject{
-    id: string
-    private: boolean
+    id: string    
     publicity: "private" | "public"
     sessions: Session[]
 }
@@ -27,6 +26,7 @@ interface Session {
     questions: Question[]
 }
 ```
+
 */live_session/T0BFl855cvqa4hWHvbHl*
 ```js
 interface LiveSession {
@@ -35,6 +35,8 @@ interface LiveSession {
     end_stamp: Date
 }
 ```
+Live session should be deleted when ended.
+
 */recorded_session/CIAcia7eVR378f9z1VtM*
 ```js
 interface QuizResult {
@@ -52,6 +54,8 @@ interface Participant {
 interface RecordedSession {
     session_ref: string
     live_session_ref: string
+    start_stamp: Date
+    end_stamp: Date
     participants: Participant[]
 }
 ```
