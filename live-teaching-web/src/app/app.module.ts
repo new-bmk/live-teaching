@@ -1,27 +1,31 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
 
-import { AppRoutingModule } from './app-routing.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AppComponent } from './app.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AppComponent } from "./app.component";
+import { environment } from "../environments/environment";
 
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from "@angular/fire";
+import { AngularFirestoreModule } from "@angular/fire/firestore";
+import { AngularFireAuthModule } from "@angular/fire/auth";
 
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from "./login/login.component";
+import { TeacherComponent } from "./teacher/teacher.component";
+import { StudentComponent } from "./student/student.component";
+import { RegisterComponent } from "./register/register.component";
+import { NavbarComponent } from "./navbar/navbar.component";
 
-import { environment } from '../environments/environment';
-import { TeacherComponent } from './teacher/teacher.component';
-import { StudentComponent } from './student/student.component';
-import { RegisterComponent } from './register/register.component';
+import { ButtonModule } from "primeng/button";
+import { MenubarModule } from "primeng/menubar";
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     TeacherComponent,
     StudentComponent,
-    RegisterComponent
+    RegisterComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -31,8 +35,10 @@ import { RegisterComponent } from './register/register.component';
     AngularFireAuthModule,
     FormsModule,
     ReactiveFormsModule,
+    ButtonModule,
+    MenubarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

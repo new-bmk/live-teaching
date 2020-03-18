@@ -1,0 +1,4 @@
+<p-menubar>
+    <span style="padding: 10px;" *ngIf="user">{{user.displayName}}</span>
+    <button pButton label="Logout" icon="pi pi-power-off" (click)="logout()"></button>
+</p-menubar>
