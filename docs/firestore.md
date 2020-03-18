@@ -35,8 +35,7 @@ interface Session {
 ```js
 interface LiveSession {
     session_ref: string
-    start_stamp: Date
-    end_stamp: Date
+    start_stamp: Date    
 }
 ```
 Live session should be deleted when ended.
