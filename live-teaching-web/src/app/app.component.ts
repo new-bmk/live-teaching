@@ -28,10 +28,8 @@ export class AppComponent {
           if (_.isEmpty(endUser)) {
             this.user = null;
             this.router.navigate(["/register"], { replaceUrl: true });
-            // this.authService.signOut();
           } else {
-            this.user = userAuth;
-            console.log(this.user)
+            this.user = endUser[0];
             if (this.user.role === "teacher") {
               this.router.navigate(["/teacher"], { replaceUrl: true });
             } else {

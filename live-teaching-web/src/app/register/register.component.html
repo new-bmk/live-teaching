@@ -1,4 +1,22 @@
 <div *ngIf="!isSelectedRole">
-    <button (click)="chooseTeacher()">คุณครู</button>
-    <button (click)="chooseStudent()">นักเรียน</button>
+  <button (click)="signOut()">back</button>
+  คุณคือใคร ?
+  <button (click)="chooseTeacher()">คุณครู</button>
+  <button (click)="chooseStudent()">นักเรียน</button>
+</div>
+<div *ngIf="isSelectedRole">
+  <button (click)="unChoose()">back</button>
+  <form [formGroup]="profileForm" (ngSubmit)="register()">
+    <div *ngIf="isTeacher">
+      Name: <input type="text" formControlName="name" />
+      <button type="submit">ลงทะเบียน</button>
+    </div>
+    <div *ngIf="!isTeacher">
+      Name: <input type="text" formControlName="name" /> Student Id<input
+        type="text"
+        formControlName="studentId"
+      />
+      <button type="submit">ลงทะเบียน</button>
+    </div>
+  </form>
 </div>
