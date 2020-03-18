@@ -1,15 +1,16 @@
-#Firestore structure
+# Firestore structure
 
+### Subject
 */subject/HK0OFtBINF5EY5o2zrml*
 ```js
 interface Subject{
-    id: string
-    private: boolean
+    id: string    
     publicity: "private" | "public"
     sessions: Session[]
+    moderators: String[]
 }
 ```
-
+### Session
 */subject/HK0OFtBINF5EY5o2zrml/sessions/B6EWvvy59XjrPjBdzbyr*
 ```js
 interface Question {
@@ -22,11 +23,14 @@ interface Question {
     answer: string
     score: number
 }
+
 interface Session {
     id: string
     questions: Question[]
 }
 ```
+
+### Live Session
 */live_session/T0BFl855cvqa4hWHvbHl*
 ```js
 interface LiveSession {
@@ -35,6 +39,11 @@ interface LiveSession {
     end_stamp: Date
 }
 ```
+Live session should be deleted when ended.
+
+### Recored Session
+This is created along with live session.
+
 */recorded_session/CIAcia7eVR378f9z1VtM*
 ```js
 interface QuizResult {
@@ -52,6 +61,8 @@ interface Participant {
 interface RecordedSession {
     session_ref: string
     live_session_ref: string
+    start_stamp: Date
+    end_stamp: Date
     participants: Participant[]
 }
 ```
