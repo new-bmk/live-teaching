@@ -7,6 +7,7 @@ interface Subject{
     id: string    
     publicity: "private" | "public"
     sessions: Session[]
+    moderators: String[]
 }
 ```
 ### Session
@@ -22,6 +23,7 @@ interface Question {
     answer: string
     score: number
 }
+
 interface Session {
     id: string
     questions: Question[]
