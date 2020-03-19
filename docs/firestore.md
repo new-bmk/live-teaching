@@ -7,7 +7,7 @@ interface Subject{
     id: string    
     publicity: "private" | "public"
     sessions: Session[]
-    moderators: String[]
+    moderators: string[]
 }
 ```
 Moderator, able to manipulate corresponding sessions, is identified with user reference such as email.
@@ -18,6 +18,7 @@ Moderator, able to manipulate corresponding sessions, is identified with user re
 interface Question {
     type: "simple_choices"
     question_text: string
+    question_image_url?: string
     c1: string
     c2: string
     c3: string
@@ -66,7 +67,7 @@ interface RecordedSession {
     session_ref: string
     live_session_ref: string
     start_stamp: Date
-    end_stamp: Date
+    end_stamp?: Date
     participants: Participant[]
 }
 ```
