@@ -2,6 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { StudentService } from "../student.service";
 import { FormGroup } from "@angular/forms";
 import { filter } from "rxjs/operators";
+import { ActivatedRoute } from "@angular/router";
+import * as _ from "lodash";
 
 @Component({
   selector: "app-student-live",
@@ -12,20 +14,34 @@ export class StudentLiveComponent implements OnInit {
   quizList = [];
 
   quizForm = new FormGroup({});
-  constructor(private studentService: StudentService) {}
+
+  activeQuizIndex = -1;
+  constructor(
+    private studentService: StudentService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    const id = this.route.snapshot.params.id;
+    this.studentService.getLiveSession(id).subscribe((data: any) => {
+      console.log("data :", data);
+      if (_.isEmpty(this.quizList)) {
+        this.getQuiz(data.session_ref);
+      }
+    });
+  }
+
+  getQuiz(sessionId) {
     this.studentService
-      .listQuestion(
-        "subject/HK0OFtBINF5EY5o2zrml/sessions/B6EWvvy59XjrPjBdzbyr"
-      )
+      .listQuestion(sessionId)
       .pipe(
         filter((quiz: any) => {
           return true;
         })
       )
       .subscribe((data: any) => {
-        console.log("data :", data);
+        this.quizList = data.questions;
+        console.log("this.quizList :", this.quizList);
       });
   }
 }

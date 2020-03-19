@@ -1,0 +1,61 @@
+.student-card {
+  margin-bottom: 1em !important;
+}
+.student-profile-pic {
+  min-height: 70px;
+  min-width: 70px;
+  border-radius: 40px;
+  background: whitesmoke;
+}
+.profile-pic {
+  width: 70px;
+}
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background: #f9ca24;
+  color: #333;
+  font-weight: bold;
+}
+
+.badge.inactive {
+  background: lightgrey;
+  color: whitesmoke;
+}
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+.card-header {
+  background-color: aqua;
+  height: 50px;
+  font-weight: bolder;
+  font-size: large;
+  text-align: center;
+}
+
+.footer-container {
+  background: gold;
+  padding: 0.4em;
+  border-radius: 0.5em;
+}
+
+.footer-container.inactive {
+  background: #efefef;
+}
+.loading-container {
+  display: flex;
+  height: 80vh;
+  width: 100%;
+  justify-content: center;
+}

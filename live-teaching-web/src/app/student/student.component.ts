@@ -1,5 +1,10 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { StudentService } from "./student.service";
+import { FormGroup, FormControl } from "@angular/forms";
+import { debounce, map, mergeMap } from "rxjs/operators";
+import { interval, forkJoin } from "rxjs";
+import * as _ from "lodash";
+import { async } from "@angular/core/testing";
 
 @Component({
   selector: "app-student",
@@ -8,11 +13,16 @@ import { StudentService } from "./student.service";
 })
 export class StudentComponent implements OnInit, OnDestroy {
   sessionList;
+  originalSessionList;
   loading = true;
   totalRecords;
   row = 20;
   sessionSubscribe;
   cols;
+  searchForm = new FormGroup({
+    searchText: new FormControl("")
+  });
+  searchSubscribe;
   constructor(private studentService: StudentService) {}
 
   ngOnInit() {
@@ -22,26 +32,54 @@ export class StudentComponent implements OnInit, OnDestroy {
         header: "Id"
       }
     ];
-    this.sessionSubscribe = this.studentService
-      .listLiveSession()
-      .subscribe((data: any) => {
-        this.sessionList = data;
-        this.totalRecords = data.length;
-        this.loading = false;
+    this.listLiveSessionWithSubject();
+    const formControl = this.searchForm.controls["searchText"];
+
+    this.searchSubscribe = formControl.valueChanges
+      .pipe(debounce(() => interval(1000)))
+      .subscribe((value: string) => {
+        // TODO for search subject title
+        this.filterSubject(value);
       });
   }
   ngOnDestroy() {
-    this.sessionSubscribe();
+    this.sessionSubscribe.unsubscribe();
+    this.searchSubscribe.unsubscribe();
   }
 
-  loadCarsLazy(event: any) {
-    // this.loading = true;
-    //in a real application, make a remote request to load data using state metadata from event
-    //event.first = First row offset
-    //event.rows = Number of rows per page
-    //event.sortField = Field name to sort with
-    //event.sortOrder = Sort order as number, 1 for asc and -1 for dec
-    //filters: FilterMetadata object having field as key and filter value, filter matchMode as value
-    //imitate db connection over a network
+  filterSubject(value) {
+    const newSession = _.cloneDeep(this.originalSessionList);
+    this.sessionList = _.filter(newSession, (session: any) => {
+      return _.startsWith(
+        _.lowerCase(session.subject.title),
+        _.lowerCase(value)
+      );
+    });
+  }
+
+  listLiveSessionWithSubject() {
+    this.sessionSubscribe = this.studentService
+      .listLiveSession()
+      .subscribe(async (sessionLiveList: any) => {
+        this.originalSessionList = [];
+        for await (const sessionLive of sessionLiveList) {
+          await sessionLive.session_ref.parent.parent
+            .get()
+            .then((actionSubject: any) => {
+              this.originalSessionList.push({
+                subject: actionSubject.data(),
+                ...sessionLive
+              });
+            });
+        }
+        this.sessionList = _.cloneDeep(this.originalSessionList);
+        this.totalRecords = sessionLiveList.length;
+        this.loading = false;
+      });
+  }
+
+  onSearchChange($event) {
+    console.log("$event :", $event);
+    console.log("search change :");
   }
 }
