@@ -18,6 +18,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
 
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
+import { CardModule } from "primeng/card";
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +37,8 @@ import { MenubarModule } from "primeng/menubar";
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    MenubarModule
+    MenubarModule,
+    CardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
