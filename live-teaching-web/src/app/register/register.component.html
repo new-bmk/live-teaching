@@ -5,7 +5,7 @@
   <button (click)="chooseStudent()">นักเรียน</button>
 </div>
 <div *ngIf="isSelectedRole">
-  <button (click)="unChoose()">back</button>
+  <button (click)="signOut()">ลงชื่อออก</button>
   <form [formGroup]="profileForm" (ngSubmit)="register()">
     <div *ngIf="isTeacher">
       Name: <input type="text" formControlName="name" />
