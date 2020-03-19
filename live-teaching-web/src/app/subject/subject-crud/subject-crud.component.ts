@@ -8,6 +8,7 @@ import {
   FormArray
 } from "../../../../node_modules/@angular/forms";
 import { SubjectService } from "../subject.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-subject-crud",
@@ -29,9 +30,7 @@ export class SubjectCrudComponent implements OnInit {
 
   lang: any = {};
 
-  constructor(
-    private subjectService: SubjectService // private messageService: MessageService
-  ) {}
+  constructor(private subjectService: SubjectService, private router: Router) {}
 
   private refreshData() {
     this.subjectService
@@ -138,15 +137,17 @@ export class SubjectCrudComponent implements OnInit {
       return;
     }
     if (this.newSubject) {
-      this.subjectService.createSubject(this.subjectForm.value).subscribe(() => {
-        this.refreshData();
-        // this.messageService.add({
-        //   severity: "success",
-        //   summary: "Subject",
-        //   detail: `Subject has been create`
-        // });
-        // this.logger.debug(`Subject has been created.`);
-      });
+      this.subjectService
+        .createSubject(this.subjectForm.value)
+        .subscribe(() => {
+          this.refreshData();
+          // this.messageService.add({
+          //   severity: "success",
+          //   summary: "Subject",
+          //   detail: `Subject has been create`
+          // });
+          // this.logger.debug(`Subject has been created.`);
+        });
     } else {
       let id = this.subject._id;
       delete this.subject._id;
@@ -204,5 +205,10 @@ export class SubjectCrudComponent implements OnInit {
     if (event.order < 0) data = _.reverse(data);
 
     this.subjectList = data;
+  }
+
+  onClickSessionManageButton(subjectId) {
+    console.log('click manage session, subject', subjectId)
+    this.router.navigate([`/subject/manage/${subjectId}`]);
   }
 }

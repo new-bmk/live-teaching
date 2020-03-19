@@ -51,7 +51,7 @@ export class SubjectService {
       results: [
         { id: "00001", publicity: "public" },
         { id: "00002", publicity: "public" },
-        { id: "00002", publicity: "public" }
+        { id: "00003", publicity: "public" }
       ],
       totalCount: 3
     });
