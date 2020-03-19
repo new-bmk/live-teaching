@@ -37,7 +37,10 @@ interface Session {
 ```js
 interface LiveSession {
     session_ref: string
-    start_stamp: Date    
+    start_stamp: Date
+    stream_url: string
+    participant_count: number
+    active_question_idx: number  //-1 if not active
 }
 ```
 Live session should be deleted when ended.
