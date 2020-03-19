@@ -1,0 +1,150 @@
+<h2>Subject List</h2>
+<p-table
+  #dt
+  [loading]="loading"
+  [lazy]="true"
+  (onLazyLoad)="loadSubjectsLazy($event)"
+  [totalRecords]="totalRecords"
+  [columns]="cols"
+  [value]="subjectList"
+  selectionMode="single"
+  (onRowSelect)="onRowSelect($event)"
+  (sortFunction)="customSort($event)"
+  [customSort]="true"
+  sortField="rating"
+>
+  <ng-template pTemplate="caption">
+    <div class="caption-container">
+      <div>
+        <button
+          class="ui-button-success"
+          type="button"
+          pButton
+          icon="pi pi-plus"
+          (click)="showDialogToAdd()"
+          label="add"
+        ></button>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="rating">
+        ID <p-sortIcon field="rating"></p-sortIcon>
+      </th>
+
+      <th pSortableColumn="text">
+        Publicity <p-sortIcon field="text"></p-sortIcon>
+      </th>
+
+      <th></th>
+    </tr>
+
+    <tr>
+      <th>
+        <input
+          class="fullwidth"
+          pInputText
+          type="text"
+          (input)="dt.filter($event.target.value, 'id_ilike')"
+          placeholder="search by id"
+          [(ngModel)]="currentOption.id"
+        />
+      </th>
+
+      <th>
+        <input
+          class="fullwidth"
+          pInputText
+          type="text"
+          (input)="dt.filter($event.target.value, 'publicity_ilike')"
+          placeholder="search by publicity"
+          [(ngModel)]="currentOption.publicity"
+        />
+      </th>
+
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData>
+    <tr [pSelectableRow]="rowData">
+      <td>
+        {{ rowData.id }}
+      </td>
+
+      <td>
+        {{ rowData.publicity }}
+      </td>
+
+      <td></td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr id="row-empty">
+      <td [attr.colspan]="11">
+        Not Found
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  header="Subject"
+  [(visible)]="displayDialog"
+  [responsive]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
+  showEffect="fade"
+  [modal]="true"
+  [width]="300"
+  (onHide)="onDialogHide($event)"
+  [contentStyle]="{ overflow: 'visible' }"
+>
+  <div class="ui-g ui-fluid" *ngIf="subject" [formGroup]="subjectForm">
+    <div class="ui-g-12">
+      <p class="label">ID</p>
+      <input
+        class="fullwidth"
+        formControlName="id"
+        id="id"
+        placeholder="Fill ID"
+        type="text"
+        pInputText
+      />
+    </div>
+
+    <div class="ui-g-12">
+      <p class="label">Publicity</p>
+      <input
+        class="fullwidth"
+        formControlName="publicity"
+        id="publicity"
+        placeholder="Fill Publicity"
+        type="text"
+        pInputText
+      />
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button
+        type="button"
+        pButton
+        icon="fas fa-check"
+        (click)="save()"
+        label="Save"
+        class="ui-button-success"
+      ></button>
+      <button
+        *ngIf="subject.id"
+        type="button"
+        pButton
+        icon="fas fa-times"
+        (click)="delete()"
+        label="Delete"
+        class="ui-button-danger"
+      ></button>
+    </div>
+  </p-footer>
+</p-dialog>
