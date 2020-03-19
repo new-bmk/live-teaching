@@ -27,3 +27,13 @@
   font-size: xx-large;
 }
 
+.blink_me {
+  animation: blinker 1s linear infinite;
+  display: flex;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

@@ -2,11 +2,20 @@
   <p-card class="my-card">
     <div class="ui-g card">
       <div class="ui-g-6" style="background-color: #668FC4; height: 100%;">
-        <img src="../../assets/img/educationPic.png" style="width:100%;">
+        <img src="../../assets/img/educationPic.png" style="width:100%;" />
       </div>
       <div class="ui-g-6 flex">
-        <h1 class="my-text">LIVING TEACHING</h1>
-        <p-button icon="pi pi-google" iconPos="left" styleClass="ui-button-danger ui-button-rounded" (click)="loginGoogle()" label="Login with Google">
+        <h1 class="my-text" style="align-items: center; display: flex;">
+          <span class="blink_me"><i class="pi pi-video"></i></span>
+          &nbsp;LIVE TEACHING
+        </h1>
+        <p-button
+          icon="pi pi-google"
+          iconPos="left"
+          styleClass="ui-button-danger ui-button-rounded"
+          (click)="loginGoogle()"
+          label="Login with Google"
+        >
         </p-button>
       </div>
     </div>
