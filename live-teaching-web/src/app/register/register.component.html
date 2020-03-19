@@ -1,22 +1,48 @@
-<div *ngIf="!isSelectedRole">
-  <button (click)="signOut()">back</button>
-  คุณคือใคร ?
-  <button (click)="chooseTeacher()">คุณครู</button>
-  <button (click)="chooseStudent()">นักเรียน</button>
-</div>
-<div *ngIf="isSelectedRole">
-  <button (click)="signOut()">ลงชื่อออก</button>
-  <form [formGroup]="profileForm" (ngSubmit)="register()">
-    <div *ngIf="isTeacher">
-      Name: <input type="text" formControlName="name" />
-      <button type="submit">ลงทะเบียน</button>
+<div class="card-flex" style="height: 98vh">
+  <p-card class="my-card">
+    <div class="ui-g card">
+      <div class="ui-g-5 " style="background-color: #FEF8A2; height: 100%; padding: 0;">
+        <img src="../../assets/img/regisPage.jpg" style="width:100%;" />
+      </div>
+      <div class="ui-g-7 card-flex" style="padding-top: 3em;">
+        <h1>REGISTRATION INFO</h1>
+        <div *ngIf="!isSelectedRole" class="items-flex" style="width: 100%; height: 100%;">
+          <h1> คุณคือใคร ?</h1>
+          <div>
+            <p-button styleClass="ui-button-success" (click)="chooseTeacher()" label="คุณครู"></p-button>
+            <p-button (click)="chooseStudent()" label="นักเรียน"></p-button>
+          </div>
+        </div>
+
+
+
+        <div *ngIf="isSelectedRole" style="width: 80%;">
+          <form [formGroup]="profileForm" (ngSubmit)="register()" >
+            <div *ngIf="isTeacher" class="my-label items-flex">
+              <div>
+                Name: <input class="my-input" type="text" formControlName="name" />
+              </div>
+              <p-button type="submit" label="ลงทะเบียน"></p-button>
+            </div>
+            <div *ngIf="!isTeacher">
+              <div class="items-flex my-label">
+                <div style="margin-bottom: 20px;" >
+                  Name:
+                  <input class="my-input"  type="text" formControlName="name" />
+                </div>
+                <div>
+                  Student Id: <input class="my-input" type="text" formControlName="studentId" />
+                </div>
+                <p-button type="submit" label="ลงทะเบียน"></p-button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="back-button items-flex">
+          <p-button icon="pi pi-arrow-circle-left" iconPos="left" class="my-button " styleClass="ui-button-danger "
+            (click)="signOut()" label="back"></p-button>
+        </div>
+      </div>
     </div>
-    <div *ngIf="!isTeacher">
-      Name: <input type="text" formControlName="name" /> Student Id<input
-        type="text"
-        formControlName="studentId"
-      />
-      <button type="submit">ลงทะเบียน</button>
-    </div>
-  </form>
+  </p-card>
 </div>
