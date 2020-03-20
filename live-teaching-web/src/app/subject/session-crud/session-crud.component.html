@@ -43,7 +43,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr id="row-empty">
-          <td [attr.colspan]="3">
+          <td [attr.colspan]="1">
             Session Not Found
           </td>
         </tr>
@@ -88,12 +88,28 @@
           Coming Soon
         </div>
       </div>
+
+      <p-footer>
+        <div class="ui-g">
+          <div class="ui-g-12" *ngIf="hasSelectedSession">
+            <button
+              type="button"
+              pButton
+              icon="pi pi-trash"
+              (click)="delete(selectedSessionId)"
+              label="Delete Session"
+              class="ui-button-secondary"
+            ></button>
+          </div>
+        </div>
+      </p-footer>
     </p-panel>
 
-    <p-panel *ngIf="!hasSelectedSession"  header="Session Manage"> Please select sesstion on the left side</p-panel>
+    <p-panel *ngIf="!hasSelectedSession" header="Session Manage">
+      Please select sesstion on the left side</p-panel
+    >
   </div>
 </div>
-
 
 <p-dialog
   header="New Session"
@@ -107,7 +123,11 @@
   (onHide)="onDialogHide($event)"
   [contentStyle]="{ overflow: 'visible' }"
 >
-  <div class="ui-g ui-fluid" *ngIf="sessionTemplate" [formGroup]="sessionTemplate">
+  <div
+    class="ui-g ui-fluid"
+    *ngIf="sessionTemplate"
+    [formGroup]="sessionTemplate"
+  >
     <div class="ui-g-12">
       <p class="label">ID</p>
       <input

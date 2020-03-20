@@ -89,9 +89,9 @@ export class SessionCrudComponent implements OnInit {
       url: new FormControl("")
     });
     if (value) {
-      sessionForm.patchValue(value)
+      sessionForm.patchValue(value);
     }
-    return sessionForm
+    return sessionForm;
   }
 
   addSessionForm(value?: any) {
@@ -104,11 +104,18 @@ export class SessionCrudComponent implements OnInit {
     items.removeAt(index);
   }
 
-  save (data) {
-    console.log('save', data)
-    this.addSessionForm(data)
+  save(data) {
+    console.log("save", data);
+    this.addSessionForm(data);
+    this.sessionTemplate.patchValue({id: ''})
 
     this.displayDialog = false;
+  }
+
+  delete(sessionId) {
+    console.log('delete', this.getSelectedRowIndex(sessionId))
+    this.removeSessionForm(this.getSelectedRowIndex(sessionId))
+    this.selectedSessionId = null
   }
   // -------------------------------------------------------------------------------------
 
@@ -151,4 +158,6 @@ export class SessionCrudComponent implements OnInit {
   showDialogToAdd() {
     this.displayDialog = true;
   }
+
+  onDialogHide() {}
 }

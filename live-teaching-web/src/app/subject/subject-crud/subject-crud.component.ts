@@ -72,12 +72,17 @@ export class SubjectCrudComponent implements OnInit {
 
   formInitialValue: any = {
     id: "",
-    publicity: ""
+    name: "",
+    color: "#000000",
+    publicity: "",
+    sessions: []
   };
-  
+
   ngOnInit() {
     this.subjectForm = new FormGroup({
-      id: new FormControl(0),
+      id: new FormControl(""),
+      name: new FormControl(""),
+      color: new FormControl("#000000"),
       publicity: new FormControl(""),
       sessions: new FormArray([])
     });
