@@ -20,6 +20,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { MessageService } from 'primeng/components/common/messageservice';
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
+import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { ToastModule } from "primeng/toast";
 @NgModule({
@@ -42,6 +43,7 @@ import { ToastModule } from "primeng/toast";
     ReactiveFormsModule,
     ButtonModule,
     MenubarModule,
+    SubjectModule,
     CardModule,
     ToastModule
   ],
