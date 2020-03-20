@@ -1,4 +1,24 @@
-<div class="flex">
-  <h1>LIVING TEACHING</h1>
-  <button (click)="loginGoogle()" ฃ>Login with Goole+</button>
+<div class="flex" style="height: 98vh">
+  <p-card class="my-card">
+    <div class="ui-g card">
+      <div class="ui-g-6" style="background-color: #668FC4; height: 100%;">
+        <img src="../../assets/img/educationPic.png" style="width:100%;" />
+      </div>
+      <div class="ui-g-6 flex">
+        <img src="../../assets/img/logo.png" />
+        <h1 class="my-text" style="align-items: center; display: flex;">
+          <span class="blink_me"><i class="pi pi-video"></i></span>
+          &nbsp;LIVE TEACHING
+        </h1>
+        <p-button
+          icon="pi pi-google"
+          iconPos="left"
+          styleClass="ui-button-danger ui-button-rounded"
+          (click)="loginGoogle()"
+          label="Login with Google"
+        >
+        </p-button>
+      </div>
+    </div>
+  </p-card>
 </div>

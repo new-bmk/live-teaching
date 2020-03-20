@@ -1,14 +1,39 @@
-button{
-    padding: .5em;
-    margin: .3em;
-    font-size: 1.5em;
-    display: block;
-}
 .flex{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 100vw;
-    height: 100vh;
+}
+.card{
+  width: 100%;
+}
+ .ui-button-text{
+   font-size: x-large;
+ }
+
+ .my-card{
+  border-radius: 5px;
+  box-shadow: 10px 20px 30px 5px rgba(0, 0, 0, 0.2) ;
+}
+
+.ui-card-body{
+  padding: 0 !important;
+}
+.pi-google:before{
+  font-size: x-large;
+}
+
+.my-text{
+  font-size: xx-large;
+}
+
+.blink_me {
+  animation: blinker 2s linear infinite;
+  display: flex;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

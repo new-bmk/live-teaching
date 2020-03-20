@@ -1,4 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -16,9 +17,12 @@ import { StudentComponent } from "./student/student.component";
 import { RegisterComponent } from "./register/register.component";
 import { NavbarComponent } from "./navbar/navbar.component";
 
+import { MessageService } from 'primeng/components/common/messageservice';
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
 import { SubjectModule } from "./subject/subject.module";
+import { CardModule } from "primeng/card";
+import { ToastModule } from "primeng/toast";
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +34,7 @@ import { SubjectModule } from "./subject/subject.module";
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
@@ -38,9 +43,11 @@ import { SubjectModule } from "./subject/subject.module";
     ReactiveFormsModule,
     ButtonModule,
     MenubarModule,
-    SubjectModule
+    SubjectModule,
+    CardModule,
+    ToastModule
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
