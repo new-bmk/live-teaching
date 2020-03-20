@@ -19,9 +19,10 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { MessageService } from "primeng/components/common/messageservice";
 import { StudentModule } from "./student/student.module";
 import { ToastModule } from "primeng/toast";
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import {MenubarModule} from 'primeng/menubar';
+import { ButtonModule } from "primeng/button";
+import { CardModule } from "primeng/card";
+import { MenubarModule } from "primeng/menubar";
+import { OverlayPanelModule } from "primeng/overlaypanel";
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +44,8 @@ import {MenubarModule} from 'primeng/menubar';
     ToastModule,
     ButtonModule,
     CardModule,
-    MenubarModule
+    MenubarModule,
+    OverlayPanelModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

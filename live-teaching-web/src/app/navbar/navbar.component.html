@@ -1,4 +1,37 @@
-<p-menubar>
-    <span style="padding: 10px;" *ngIf="user">{{user.displayName}}</span>
-    <button pButton label="Logout" icon="pi pi-power-off" (click)="logout()"></button>
-</p-menubar>
+<div
+  style="
+    border: none;
+    background-color: #263238;
+    color: #FFAB00;
+    border-radius: 0;
+    padding: 1em;
+    height: 8vh;
+  "
+>
+  <div style="display: flex; justify-content: space-between;">
+    <div style="display: flex;">
+      <img src="../../assets/img/logo.png" class="img-circle" />
+      <span style="padding: 1em; display: flex; align-items: center;" *ngIf="user">
+        LIVE TEACHING
+      </span>
+    </div>
+    <div style="display: flex; align-items: center;">
+      <span style="padding: 1em;" *ngIf="user">{{ user.displayName }}</span>
+      <img
+        src="{{ user?.photoURL }}"
+        class="img-circle"
+        (click)="op.show($event, actualTarget)"
+      />
+    </div>
+  </div>
+</div>
+
+<p-overlayPanel
+  [style]="{
+    backgroundColor: '#263238',
+    border: 'none'
+  }"
+  #op
+>
+  <p-button label="Logout" icon="pi pi-power-off" (click)="logout()"></p-button>
+</p-overlayPanel>

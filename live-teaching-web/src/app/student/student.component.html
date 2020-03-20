@@ -1,69 +1,77 @@
-<div class="ui-g">
-  <h2>Live Session</h2>
-</div>
-
-<div [formGroup]="searchForm" class="ui-g">
-  <div class="ui-md-6">
-    <input
-      type="text"
-      pInputText
-      formControlName="searchText"
-      style="width:100%"
-      placeholder="Search by Subject"
-    />
+<div class="header">
+  <div class="ui-g title">
+    <h1>Live Session</h1>
+  </div>
+  <div [formGroup]="searchForm" class="ui-g search">
+    <div class="ui-md-5">
+      <input
+        type="text"
+        pInputText
+        formControlName="searchText"
+        style="width:100%"
+        placeholder="Search by Subject"
+      />
+    </div>
+    <div class="ui-md-1">
+      <i class="pi pi-search" style="font-size: 3em;"></i>
+    </div>
   </div>
 </div>
-<div class="ui-g" *ngIf="!loading">
-  <br />
-  <ng-container *ngFor="let liveSession of sessionList">
-    <div class="ui-lg-3 ui-md-6 ui-g-12">
-      <div class="student-card">
-        <a
-          style="cursor: pointer;"
-          routerLink="/student/live-session/{{ liveSession.id }}"
-        >
-          <p-card>
-            <p-header>
-              <div class="card-header">
-                {{ liveSession?.subject?.title }}
-              </div>
-            </p-header>
-            <div class="ui-g">
-              <div class="ui-g ui-g-12">
-                <div class="ui-g-4 centered paddingless">
-                  <!-- profile pic-->
-                  <div class="student-profile-pic">
-                    icon
+<div class="body">
+  <div class="ui-g" *ngIf="!loading">
+    <br />
+    <ng-container *ngFor="let liveSession of sessionList">
+      <div class="ui-lg-3 ui-md-6 ui-g-12">
+        <div class="student-card">
+          <a
+            style="cursor: pointer;"
+            routerLink="/student/live-session/{{ liveSession.id }}"
+          >
+            <div class="my-card">
+              <p-card>
+                <p-header>
+                  <div class="card-header">
+                    {{ liveSession?.subject?.title }}
+                  </div>
+                </p-header>
+                <div class="ui-g">
+                  <div class="ui-g ui-g-12">
+                    <div class="ui-g-4 centered paddingless">
+                      <!-- profile pic-->
+                      <div class="student-profile-pic">
+                        <i class="pi pi-user" style="font-size: 4em;"></i>
+                      </div>
+                    </div>
+                    <div class="ui-g-8">
+                      <div>
+                        <h3 class="marginless">
+                          Mr. Thor Asgard
+                        </h3>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="ui-g-8">
-                  <div>
-                    <h3 class="marginless">
-                      Mr. Thor Asgard
-                    </h3>
+                <!-- <p-footer>
+                  <div class="footer-container centered" [class.inactive]="true">
+                    <span class="label"> บิลค้างชำระ </span>
+                    <div class="badge" [class.inactive]="true">
+                      gg
+                    </div>
                   </div>
-                </div>
-              </div>
+                </p-footer> -->
+              </p-card>
             </div>
-            <!-- <p-footer>
-              <div class="footer-container centered" [class.inactive]="true">
-                <span class="label"> บิลค้างชำระ </span>
-                <div class="badge" [class.inactive]="true">
-                  gg
-                </div>
-              </div>
-            </p-footer> -->
-          </p-card>
-        </a>
+          </a>
+        </div>
       </div>
+    </ng-container>
+  </div>
+  <div *ngIf="loading" class="loading-container">
+    <div style="align-self: center;">
+      <p-progressSpinner></p-progressSpinner>
+      <p style="text-align:center;">
+        Loading...
+      </p>
     </div>
-  </ng-container>
-</div>
-<div *ngIf="loading" class="loading-container">
-  <div style="align-self: center;">
-    <p-progressSpinner></p-progressSpinner>
-    <p style="text-align:center;">
-      Loading...
-    </p>
   </div>
 </div>
