@@ -5,13 +5,7 @@
   [lazy]="true"
   (onLazyLoad)="loadSubjectsLazy($event)"
   [totalRecords]="totalRecords"
-  [columns]="cols"
   [value]="subjectList"
-  selectionMode="single"
-  (onRowSelect)="onRowSelect($event)"
-  (sortFunction)="customSort($event)"
-  [customSort]="true"
-  sortField="rating"
 >
   <ng-template pTemplate="caption">
     <div class="caption-container">
@@ -29,60 +23,35 @@
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th pSortableColumn="rating">
-        ID <p-sortIcon field="rating"></p-sortIcon>
-      </th>
-
-      <th pSortableColumn="text">
-        Publicity <p-sortIcon field="text"></p-sortIcon>
-      </th>
-
-      <th></th>
-    </tr>
-
-    <tr>
-      <th>
-        <input
-          class="fullwidth"
-          pInputText
-          type="text"
-          (input)="dt.filter($event.target.value, 'id_ilike')"
-          placeholder="search by id"
-          [(ngModel)]="currentOption.id"
-        />
-      </th>
-
-      <th>
-        <input
-          class="fullwidth"
-          pInputText
-          type="text"
-          (input)="dt.filter($event.target.value, 'publicity_ilike')"
-          placeholder="search by publicity"
-          [(ngModel)]="currentOption.publicity"
-        />
-      </th>
-
-      <th></th>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Publicity</th>
+      <th>Session Mange</th>
+      <th class="action-column">Edit</th>
     </tr>
   </ng-template>
+
   <ng-template pTemplate="body" let-rowData>
-    <tr [pSelectableRow]="rowData">
-      <td>
-        {{ rowData.id }}
-      </td>
-
-      <td>
-        {{ rowData.publicity }}
-      </td>
-
-      <td>
+    <tr>
+      <td>{{ rowData.id }}</td>
+      <td>{{ rowData.name }}</td>
+      <td>{{ rowData.publicity }}</td>
+      <td class="align-center">
         <button
           type="button"
           pButton
           (click)="onClickSessionManageButton(rowData.id)"
           label="Session Manage"
           class="ui-button-success"
+        ></button>
+      </td>
+      <td class="align-center">
+        <button
+          type="button"
+          pButton
+          (click)="onClickEditButton(rowData)"
+          icon="pi pi-pencil"
+          class="ui-button-secondary"
         ></button>
       </td>
     </tr>

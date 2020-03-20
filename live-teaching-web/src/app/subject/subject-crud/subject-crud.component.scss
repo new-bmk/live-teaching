@@ -1,20 +1,27 @@
 .label {
-    font-weight: bold;
-    margin-bottom: .5em;
-  }
-  
-  span.label {
-    margin-right: .5em;
-  }
-  
-  #row-empty {
-    text-align: center;
-    height: 5em;
-  }
-  
-  .caption-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+span.label {
+  margin-right: 0.5em;
+}
+
+#row-empty {
+  text-align: center;
+  height: 5em;
+}
+
+.caption-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.action-column {
+  width: 5em;
+}

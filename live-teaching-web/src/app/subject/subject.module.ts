@@ -18,7 +18,9 @@ import { BreadcrumbModule } from "primeng/breadcrumb";
 import { DialogModule } from "primeng/dialog";
 import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
 import { SubjectManageComponent } from "./subject-manage/subject-manage.component";
-import { SessionCrudComponent } from './session-crud/session-crud.component';
+import { SessionCrudComponent } from "./session-crud/session-crud.component";
+import { PanelModule } from "primeng/panel";
+import { SubjectRoutingModule } from './subject-routing.module';
 
 @NgModule({
   imports: [
@@ -38,9 +40,15 @@ import { SessionCrudComponent } from './session-crud/session-crud.component';
     TooltipModule,
     InputMaskModule,
     BreadcrumbModule,
-    DialogModule
+    DialogModule,
+    PanelModule,
+    SubjectRoutingModule
   ],
   exports: [SubjectCrudComponent, SubjectManageComponent, SessionCrudComponent],
-  declarations: [SubjectCrudComponent, SubjectManageComponent, SessionCrudComponent]
+  declarations: [
+    SubjectCrudComponent,
+    SubjectManageComponent,
+    SessionCrudComponent
+  ]
 })
 export class SubjectModule {}

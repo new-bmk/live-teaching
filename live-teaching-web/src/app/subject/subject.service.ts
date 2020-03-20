@@ -49,9 +49,9 @@ export class SubjectService {
   ) {
     return of({
       results: [
-        { id: "00001", publicity: "public" },
-        { id: "00002", publicity: "public" },
-        { id: "00003", publicity: "public" }
+        { id: "00001", name: 'Introduction to Programing', publicity: "public" },
+        { id: "00002", name: 'Discrete mathematics ',publicity: "public" },
+        { id: "00003", name: 'Software Lab', publicity: "public" }
       ],
       totalCount: 3
     });

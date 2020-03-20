@@ -8,7 +8,7 @@ import {
   FormArray
 } from "../../../../node_modules/@angular/forms";
 import { SubjectService } from "../subject.service";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-subject-crud",
@@ -24,7 +24,7 @@ export class SubjectCrudComponent implements OnInit {
   subjectForm: FormGroup;
   submitted: boolean = false;
 
-  loading: boolean = true;
+  loading: boolean;
   totalRecords: number;
   currentOption: any = {};
 
@@ -33,10 +33,13 @@ export class SubjectCrudComponent implements OnInit {
   constructor(private subjectService: SubjectService, private router: Router) {}
 
   private refreshData() {
+    this.loading = true;
     this.subjectService
       .listSubjects(0, 999, null, "title", 1)
       .subscribe(({ results, totalCount }) => {
         this.subjectList = results;
+        this.loading = false;
+        this.totalRecords = totalCount;
       });
   }
 
@@ -71,26 +74,8 @@ export class SubjectCrudComponent implements OnInit {
     id: "",
     publicity: ""
   };
+  
   ngOnInit() {
-    // this.translate
-    //   .stream([
-    //     'subject.label',
-    //     'action.edit.label',
-    //     'action.create.label',
-    //     'action.show.label',
-    //     'notification.hasBeenCreated.message',
-    //     'notification.canNotBeCreated.message',
-    //     'notification.hasBeenUpdated.message',
-    //     'notification.canNotBeUpdated.message',
-    //     'notification.hasBeenDeleted.message',
-    //     'notification.canNotBeDeleted.message',
-    //   ])
-    //   .subscribe(t => {
-    //     this.lang = t
-    //     this.lang['subject.label'] = this.lang['subject.label'] != 'subject.label'? this.lang['subject.label']: 'Subject'
-    //   })
-
-    // is required use :=> field:  new FormControl('', Validators.required),
     this.subjectForm = new FormGroup({
       id: new FormControl(0),
       publicity: new FormControl(""),
@@ -192,13 +177,7 @@ export class SubjectCrudComponent implements OnInit {
     this.submitted = false;
   }
 
-  onRowSelect(event) {
-    this.newSubject = false;
-    this.subject = _.clone(event.data);
-    this.subjectForm.patchValue(this.subject);
-    this.displayDialog = true;
-    this.submitted = true;
-  }
+  onRowSelect(event) {}
 
   customSort(event: SortEvent) {
     let data = _.sortBy(event.data, [event.field]);
@@ -208,7 +187,15 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   onClickSessionManageButton(subjectId) {
-    console.log('click manage session, subject', subjectId)
+    console.log("click manage session, subject", subjectId);
     this.router.navigate([`/subject/manage/${subjectId}`]);
+  }
+
+  onClickEditButton(data) {
+    this.newSubject = false;
+    this.subject = _.clone(data);
+    this.subjectForm.patchValue(this.subject);
+    this.displayDialog = true;
+    this.submitted = true;
   }
 }

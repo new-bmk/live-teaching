@@ -17,15 +17,21 @@ import { Router } from "@angular/router";
 })
 export class SessionCrudComponent implements OnInit {
   subject = {
-    id: 241 - 202,
+    id: "00001",
+    name: "Introduction to Programming",
     publicity: "public",
     sessions: [
-      { id: "001", url: "www.youtube.com/live001" },
-      { id: "002", url: "www.youtube.com/live001" }
+      { id: "001", url: "www.youtube.com/live001", questions: [{}] },
+      { id: "002", url: "www.youtube.com/live002", questions: [] }
     ]
   };
 
+  selectedSessionId = null;
+  displayDialog = false;
   sessionsFormGroup: FormGroup;
+
+  // use for add new session
+  sessionTemplate: FormGroup;
 
   constructor() {}
 
@@ -35,45 +41,62 @@ export class SessionCrudComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.sessionsFormGroup = new FormGroup({})
+    this.sessionsFormGroup = new FormGroup({});
+    this.sessionTemplate = new FormGroup({});
 
     _.each(
       // is required use :=> field:  new FormControl('', Validators.required),
       {
+        id: new FormControl(""),
+        name: new FormControl(""),
+        publicity: new FormControl(""),
         sessions: new FormArray([])
       },
       (v, k) => this.sessionsFormGroup.addControl(k, v)
     );
 
-    this.setData (this.subject)
+    _.each(
+      // is required use :=> field:  new FormControl('', Validators.required),
+      {
+        id: new FormControl("")
+      },
+      (v, k) => this.sessionTemplate.addControl(k, v)
+    );
+
+    //TODO set data with real fetch subject by subject id
+    this.setData(this.subject);
   }
 
-  setData (data: any) {
-    console.log('data', data)
+  setData(data: any) {
+    console.log("data", data);
     if (data) {
-      if(data.sessions) {
-        console.log('has session length ', data.sessions.length)
-        for(let i = 0 ; i < data.sessions.length ; i++) { 
-          this.addSessionForm()
+      if (data.sessions) {
+        console.log("has session length ", data.sessions.length);
+        for (let i = 0; i < data.sessions.length; i++) {
+          this.addSessionForm();
         }
-        this.sessionsFormGroup.patchValue({sessions: data.sessions})
-        console.log('form', this.sessionsFormGroup)
+        this.sessionsFormGroup.patchValue(data);
+        console.log("form", this.sessionsFormGroup);
       }
     }
   }
 
-  // Session
-  createSessionForm(): FormGroup {
-    console.log('create session form')
-    return new FormGroup({
+  // ------ Session ----------------------------------------------------------------------
+  createSessionForm(value?: any): FormGroup {
+    console.log("create session form");
+    const sessionForm = new FormGroup({
       id: new FormControl(""),
       url: new FormControl("")
     });
+    if (value) {
+      sessionForm.patchValue(value)
+    }
+    return sessionForm
   }
 
-  addSessionForm() {
+  addSessionForm(value?: any) {
     const items = this.sessionsFormGroup.get("sessions") as FormArray;
-    items.push(this.createSessionForm());
+    items.push(this.createSessionForm(value));
   }
 
   removeSessionForm(index: number) {
@@ -81,7 +104,51 @@ export class SessionCrudComponent implements OnInit {
     items.removeAt(index);
   }
 
-  onRowSelect () {
-    
+  save (data) {
+    console.log('save', data)
+    this.addSessionForm(data)
+
+    this.displayDialog = false;
+  }
+  // -------------------------------------------------------------------------------------
+
+  onRowSelect($event) {
+    console.log("select row", $event);
+    this.selectedSessionId = $event.data.id;
+  }
+
+  onClickAddButton() {
+    this.showDialogToAdd();
+  }
+
+  onClickLive(sessionId) {
+    console.log("Go live");
+    const sessions = this.sessionsFormGroup.get("sessions") as FormArray;
+    const session = _.find(sessions.value, it => {
+      return it.id === sessionId;
+    });
+    if (session) {
+      //TODO go live
+      console.log("live url: ", session.url);
+    }
+  }
+
+  get hasSelectedSession() {
+    return this.selectedSessionId !== null;
+  }
+
+  getSelectedRowIndex(sessionId) {
+    const sessions = this.sessionsFormGroup.get("sessions") as FormArray;
+    for (let i = 0; i < sessions.length; i++) {
+      if (sessions.controls[i].value.id === sessionId) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  // ------ dialog ------------------------------------------------------------------------
+  showDialogToAdd() {
+    this.displayDialog = true;
   }
 }

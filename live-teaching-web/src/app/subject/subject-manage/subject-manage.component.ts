@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./subject-manage.component.scss']
 })
 export class SubjectManageComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {
