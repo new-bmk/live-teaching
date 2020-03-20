@@ -1,0 +1,56 @@
+.items-flex{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.card-flex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.my-card{
+  border-radius: 5px;
+  box-shadow: 10px 20px 30px 5px rgba(0, 0, 0, 0.2) ;
+}
+
+.ui-card-body{
+  padding: 0 !important;
+}
+.card{
+  width: 100%;
+}
+
+body .ui-button{
+  margin: 1em;
+}
+.ui-button-text{
+  font-size: x-large;
+}
+
+.back-button{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.pi-arrow-circle-left::before{
+ font-size: x-large;
+}
+ .my-label{
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  font-size: large;
+ }
+
+ .my-input{
+  border: none !important;
+  padding: 5px !important;
+  font-size: large !important;
+  border-radius: 5px !important;
+ }
