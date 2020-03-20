@@ -17,7 +17,7 @@
     </div>
   </div>
 </div>
-<div class="body">
+<div class="body" id="style-1">
   <div class="ui-g" *ngIf="!loading">
     <br />
     <ng-container *ngFor="let liveSession of sessionList">
@@ -30,8 +30,14 @@
             <div class="my-card">
               <p-card>
                 <p-header>
-                  <div class="card-header">
-                    {{ liveSession?.subject?.title }}
+                  <div class="card-header" [ngStyle]="{'background-color': getRandomColor()}">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                      <span style="display: flex; margin-left: 1em;">{{ liveSession?.subject?.title }}</span>
+                      <span style="display: flex; align-items: center;">
+                        <span class="blink_me"><i class="pi pi-video"></i></span>
+                        <span style="display: flex; font-size: small; margin-right: 1em;">LIVE</span>
+                      </span>
+                    </div>
                   </div>
                 </p-header>
                 <div class="ui-g">
