@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { AngularFirestore } from "@angular/fire/firestore";
 import { Router } from "@angular/router";
@@ -9,7 +9,8 @@ import * as _ from "lodash";
 @Component({
   selector: "app-register",
   templateUrl: "./register.component.html",
-  styleUrls: ["./register.component.scss"]
+  styleUrls: ["./register.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class RegisterComponent implements OnInit {
   userAuth;
@@ -96,5 +97,5 @@ export class RegisterComponent implements OnInit {
 
   signOut() {
     this.authService.signOut();
-  }
+   }
 }
