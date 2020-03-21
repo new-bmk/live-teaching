@@ -16,7 +16,8 @@ export class AuthService {
   token
   constructor(
     private fireStore: AngularFirestore,
-    public afAuth: AngularFireAuth
+    public afAuth: AngularFireAuth,
+    private router: Router
   ) {
     this.endUserDataSubject = new BehaviorSubject({});
   }
@@ -69,6 +70,34 @@ export class AuthService {
     provider.addScope('profile');
     provider.addScope('https://www.googleapis.com/auth/plus.me')
     this.afAuth.auth.signInWithPopup(provider).then(() => {})
+  }
+
+  register(userAuth, setUser?){
+    let id = userAuth.providerData[0].email.split("@psu.ac.th")[0];
+    this.fireStore
+      .collection("user")
+      .add({
+        name: userAuth.providerData[0].email.split("@")[0],
+          studentId: isNaN(+id)
+            ? ""
+            : id,
+        email: userAuth.email,
+        role: isNaN(+id) ? "teacher" : "student"
+      })
+      .then(() => {
+        this.setUser(userAuth, endUser => {
+          if (_.isEmpty(endUser)) {
+            this.signOut();
+          } else {
+            setUser(endUser[0]);
+            if (endUser[0].role === "teacher") {
+              this.router.navigate(["/teacher"], { replaceUrl: true });
+            } else {
+              this.router.navigate(["/student"], { replaceUrl: true });
+            }
+          }
+        });
+      });
   }
 
   signOut() {
