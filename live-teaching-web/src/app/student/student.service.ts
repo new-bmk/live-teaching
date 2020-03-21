@@ -29,26 +29,28 @@ export class StudentService {
     );
   }
 
-  getLiveSession(id) {
-    return this.db
-      .collection("live_session")
-      .doc(id)
-      .valueChanges();
+  snapshotLiveSessionWithRef(ref) {
+    return this.db.doc(ref).valueChanges();
   }
 
-  listQuestion(sessionRef) {
+  getRecordedSession(id) {
+    return this.db
+      .collection("recorded_session")
+      .doc(id)
+      .get()
+      .pipe(
+        map(documentRef => {
+          const data = documentRef.data();
+          return { id: documentRef.id, ...data };
+        })
+      );
+  }
+
+  listQuestionWithRef(sessionRef) {
     return this.db.doc(sessionRef).valueChanges();
   }
 
-  joinLiveSession(sessionRef) {}
+  joinLiveSession(liveSessionId) {}
 
   sendResult() {}
-
-  getSubject(id) {
-    console.log("id :", id);
-    return this.db
-      .collection("subject")
-      .doc(id)
-      .get();
-  }
 }

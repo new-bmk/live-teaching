@@ -10,8 +10,16 @@ import { CardModule } from "primeng/card";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { InputTextModule } from "primeng/inputtext";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { DialogModule } from "primeng/dialog";
+import { QuizAnswerEntryInputComponent } from "./quiz-answer-entry-input/quiz-answer-entry-input.component";
+import { RadioButtonModule } from "primeng/radiobutton";
+import { SharedModule } from "../shared/shared.module";
 @NgModule({
-  declarations: [StudentComponent, StudentLiveComponent],
+  declarations: [
+    StudentComponent,
+    StudentLiveComponent,
+    QuizAnswerEntryInputComponent
+  ],
   imports: [
     ReactiveFormsModule,
     FormsModule,
@@ -21,7 +29,10 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
     ButtonModule,
     CardModule,
     ProgressSpinnerModule,
-    InputTextModule
+    InputTextModule,
+    DialogModule,
+    RadioButtonModule,
+    SharedModule
   ]
 })
 export class StudentModule {}
