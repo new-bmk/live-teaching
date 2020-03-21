@@ -21,7 +21,36 @@ export class SessionCrudComponent implements OnInit {
     name: "Introduction to Programming",
     publicity: "public",
     sessions: [
-      { id: "001", url: "www.youtube.com/live001", questions: [{}] },
+      {
+        id: "001",
+        url: "www.youtube.com/live001",
+        questions: [
+          {
+            type: "simple_choices",
+            question_text: "1+1 = ?",
+            question_image_url:
+              "https://mymoneyspoke.com/wp-content/uploads/2019/10/learning.jpg",
+            c1: "1",
+            c2: "2",
+            c3: "3",
+            c4: "4",
+            answer: "2",
+            score: 10
+          },
+          {
+            type: "simple_choices",
+            question_text: "4*2 = ?",
+            // question_image_url:
+            //   "https://mymoneyspoke.com/wp-content/uploads/2019/10/learning.jpg",
+            c1: "3",
+            c2: "5",
+            c3: "7",
+            c4: "8",
+            answer: "8",
+            score: 10
+          }
+        ]
+      },
       { id: "002", url: "www.youtube.com/live002", questions: [] }
     ]
   };
@@ -86,7 +115,8 @@ export class SessionCrudComponent implements OnInit {
     console.log("create session form");
     const sessionForm = new FormGroup({
       id: new FormControl(""),
-      url: new FormControl("")
+      url: new FormControl(""),
+      questions: new FormControl([])
     });
     if (value) {
       sessionForm.patchValue(value);
@@ -107,15 +137,15 @@ export class SessionCrudComponent implements OnInit {
   save(data) {
     console.log("save", data);
     this.addSessionForm(data);
-    this.sessionTemplate.patchValue({id: ''})
+    this.sessionTemplate.patchValue({ id: "" });
 
     this.displayDialog = false;
   }
 
   delete(sessionId) {
-    console.log('delete', this.getSelectedRowIndex(sessionId))
-    this.removeSessionForm(this.getSelectedRowIndex(sessionId))
-    this.selectedSessionId = null
+    console.log("delete", this.getSelectedRowIndex(sessionId));
+    this.removeSessionForm(this.getSelectedRowIndex(sessionId));
+    this.selectedSessionId = null;
   }
   // -------------------------------------------------------------------------------------
 

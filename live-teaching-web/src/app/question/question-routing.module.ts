@@ -1,13 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { MockSessionComponent } from "./mock-session/mock-session.component";
 
-const routes: Routes = [
-  {
-    path: "mock-session",
-    component: MockSessionComponent
-  }
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

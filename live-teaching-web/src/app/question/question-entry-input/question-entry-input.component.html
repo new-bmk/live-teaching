@@ -1,1 +1,80 @@
-<p>question-entry-input works!</p>
+<!-- <pre class="">questions form value: {{ formArray.value | json }}</pre> -->
+<p-panel
+  *ngFor="let group of formArray.controls; let i = index"
+  [formGroup]="group"
+  header="Question {{ i + 1 }}"
+  [style]="{ 'margin-bottom': '10px' }"
+>
+  <div class="p-grid ui-fluid">
+    <div *ngIf="group.get('question_image_url').value" class="p-col">
+      <p class="label">Image</p>
+      <img
+        [src]="group.get('question_image_url')?.value"
+        alt="x"
+        height="100"
+      />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Image Url</p>
+      <input type="text" pInputText formControlName="question_image_url" />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Question *</p>
+      <input type="text" pInputText formControlName="question_text" />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Choice 1 *</p>
+      <input type="text" pInputText formControlName="c1" />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Choice 2 *</p>
+      <input type="text" pInputText formControlName="c2" />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Choice 3 *</p>
+      <input type="text" pInputText formControlName="c3" />
+    </div>
+    <div class="p-col-12">
+      <p class="label">Choice 4 *</p>
+      <input type="text" pInputText formControlName="c4" />
+    </div>
+
+    <div class="p-col-12">
+      <p class="label">Answer *</p>
+      <div class="">{{ group.get("answer")?.value }}</div>
+    </div>
+    <div class="p-col-12">
+      <p class="label">Select Answer</p>
+      <p-dropdown
+        [options]="answerOptions[i]"
+        formControlName="answer"
+      ></p-dropdown>
+    </div>
+    <div class="p-col-12">
+      <p class="label">Score *</p>
+      <input type="number" min="0" pInputText formControlName="score" />
+    </div>
+    <br />
+    <div class="p-col-12">
+      <button
+        type="button"
+        icon="fas fa-trash"
+        class="ui-button-danger"
+        pButton
+        label="Remove"
+        (click)="removeQuestion(i)"
+      ></button>
+    </div>
+  </div>
+</p-panel>
+<br />
+<div class="p-grid p-justify-end button-end">
+  <button
+    pButton
+    type="button"
+    class="ui-button-success"
+    icon="fas fa-plus"
+    label="Add Question"
+    (click)="addQuestion(initialQuestionValue)"
+  ></button>
+</div>
