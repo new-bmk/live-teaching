@@ -33,6 +33,13 @@ export class StudentService {
     return this.db.doc(ref).valueChanges();
   }
 
+  snapshotLiveSession(id) {
+    return this.db
+      .collection("live_session")
+      .doc(id)
+      .valueChanges();
+  }
+
   getRecordedSession(id) {
     return this.db
       .collection("recorded_session")

@@ -1,6 +1,6 @@
-<p>student-live works!</p>
+<!-- <p>Live Section</p> -->
 
-<p>Live Section</p>
+<h1>{{ subject?.title }}</h1>
 
 <div *ngIf="loading"></div>
 
@@ -28,7 +28,7 @@
 </div>
 
 <p-dialog
-  *ngIf="activeQuizIndex >= 0"
+  *ngIf="activeQuizIndex >= 0 && quizList[activeQuizIndex]"
   header="Question"
   [(visible)]="displayBasic"
   [style]="{ width: '50vw' }"

@@ -27,26 +27,21 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   displayBasic = true;
   loading = true;
   srcUrl = "";
+  subject;
 
   ngOnInit() {
     const id = this.route.snapshot.params.id;
-    // this.studentService.snapshotLiveSession(id).subscribe((data: any) => {
-    //   console.log("data :", data);
-    //   if (_.isEmpty(this.quizList)) {
+    this.snapshotLiveSession(id);
+    // this.studentService
+    //   .getRecordedSession("CIAcia7eVR378f9z1VtM")
+    //   .subscribe((data: any) => {
+    //     console.log("data :", data);
+    //     this.snapshotLiveSession(data.live_session_ref);
     //     this.getQuiz(data.session_ref);
-    //   }
-    // });
-
-    this.studentService
-      .getRecordedSession("CIAcia7eVR378f9z1VtM")
-      .subscribe((data: any) => {
-        console.log("data :", data);
-        // this.snapshotLiveSession(data.live_session_ref);
-        this.getQuiz(data.session_ref);
-        // this.srcUrl = "https://www.youtube.com/live_chat?v=-7_ZuR7gFgc&embed_domain=localhost";
-        this.srcUrl = "https://www.youtube.com/embed/-7_ZuR7gFgc?autoplay=1";
-        this.loading = false;
-      });
+    //     // this.srcUrl = "https://www.youtube.com/live_chat?v=-7_ZuR7gFgc&embed_domain=localhost";
+    //     this.srcUrl = "https://www.youtube.com/embed/-7_ZuR7gFgc?autoplay=1";
+    //     this.loading = false;
+    //   });
   }
 
   ngOnDestroy() {
@@ -57,12 +52,21 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
     return this.srcUrl;
   }
 
-  snapshotLiveSession(liveSessionRef) {
+  async snapshotLiveSession(liveSessionId) {
     this.liveSessionSubscribe = this.studentService
-      .snapshotLiveSessionWithRef(liveSessionRef)
-      .subscribe((data: any) => {
-        console.log("data :", data);
+      .snapshotLiveSession(liveSessionId)
+      .subscribe(async (data: any) => {
         this.activeQuizIndex = data.active_question_idx;
+        if (_.isEmpty(this.quizList)) {
+          this.getQuiz(data.session_ref);
+        }
+        await data.session_ref.parent.parent
+          .get()
+          .then((actionSubject: any) => {
+            this.subject = actionSubject.data();
+          });
+        this.srcUrl = "https://www.youtube.com/embed/-7_ZuR7gFgc?autoplay=1";
+        this.loading = false;
       });
   }
 
@@ -76,8 +80,6 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
       )
       .subscribe((data: any) => {
         this.quizList = data.questions;
-        this.activeQuizIndex = 0;
-        console.log("this.quizList :", this.quizList);
       });
   }
 

@@ -20,11 +20,11 @@ import { MessageService } from "primeng/components/common/messageservice";
 import { StudentModule } from "./student/student.module";
 import { ToastModule } from "primeng/toast";
 import { ButtonModule } from "primeng/button";
-import { MenubarModule } from "primeng/menubar";
 import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { MenubarModule } from "primeng/menubar";
 import { OverlayPanelModule } from "primeng/overlaypanel";
+import { SharedModule } from "primeng/components/common/shared";
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,7 +49,8 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
     SubjectModule,
     CardModule,
     MenubarModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    SharedModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
