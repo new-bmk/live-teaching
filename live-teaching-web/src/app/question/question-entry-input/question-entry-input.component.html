@@ -1,16 +1,16 @@
-<!-- <pre class="">questions form value: {{ formArray.value | json }}</pre> -->
+<!-- <pre class="">questions form value: {{ questions.value | json }}</pre> -->
 <p-panel
-  *ngFor="let group of formArray.controls; let i = index"
-  [formGroup]="group"
+  *ngFor="let question of questions.controls; let i = index"
+  [formGroup]="question"
   header="Question {{ i + 1 }}"
   [style]="{ 'margin-bottom': '10px' }"
 >
   <div class="p-grid ui-fluid">
-    <div *ngIf="group.get('question_image_url').value" class="p-col">
+    <div *ngIf="question.get('question_image_url').value" class="p-col">
       <p class="label">Image</p>
       <img
-        [src]="group.get('question_image_url')?.value"
-        alt="x"
+        [src]="question.get('question_image_url')?.value"
+        alt=""
         height="100"
       />
     </div>
@@ -41,7 +41,7 @@
 
     <div class="p-col-12">
       <p class="label">Answer *</p>
-      <div class="">{{ group.get("answer")?.value }}</div>
+      <div class="">{{ question.get("answer")?.value }}</div>
     </div>
     <div class="p-col-12">
       <p class="label">Select Answer</p>

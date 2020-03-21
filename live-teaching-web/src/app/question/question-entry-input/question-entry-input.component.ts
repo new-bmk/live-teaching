@@ -1,14 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, forwardRef, OnInit } from "@angular/core";
 import {
   ControlValueAccessor,
   FormArray,
-  FormControl,
-  FormGroup,
+  FormBuilder,
   NG_VALUE_ACCESSOR,
   Validators
 } from "@angular/forms";
 import * as _ from "lodash";
-import { pairwise } from "rxjs/operators";
 import { Question } from "../models/question";
 
 @Component({
@@ -18,15 +16,15 @@ import { Question } from "../models/question";
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: QuestionEntryInputComponent,
+      useExisting: forwardRef(() => QuestionEntryInputComponent),
       multi: true
     }
   ]
 })
 export class QuestionEntryInputComponent
   implements OnInit, ControlValueAccessor {
-  formArray: FormArray = new FormArray([]);
-  _onChange: any;
+  questions: FormArray;
+  _onChange: any = () => {};
   initialQuestionValue: Question = {
     type: "simple_choices",
     question_text: null,
@@ -41,22 +39,19 @@ export class QuestionEntryInputComponent
 
   // answerOptions: { (index: number) : { label: string; value: string }[] } = {};
   answerOptions: any = {};
-  constructor() {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {}
 
   writeValue(obj: any): void {
-    this.clearFormArray(this.formArray);
-
+    this.questions = new FormArray([]);
     _.each(obj, (question: Question, index: number) => {
       this.addQuestion(question);
       this.answerOptions[index] = this.createAnswerOptions(question);
     });
 
-    this.formArray.valueChanges.subscribe(val => {
-      console.log(" val", val);
+    this.questions.valueChanges.pipe().subscribe(val => {
       this._onChange(val);
-
       _.each(val, (question: Question, index: number) => {
         this.answerOptions[index] = this.createAnswerOptions(question);
       });
@@ -64,27 +59,25 @@ export class QuestionEntryInputComponent
   }
 
   createQuestion(question: Question) {
-    return new FormGroup({
-      type: new FormControl(question.type, [Validators.required]),
-      question_text: new FormControl(question.question_text, [
-        Validators.required
-      ]),
-      question_image_url: new FormControl(question.question_image_url),
-      c1: new FormControl(question.c1, [Validators.required]),
-      c2: new FormControl(question.c2, [Validators.required]),
-      c3: new FormControl(question.c3, [Validators.required]),
-      c4: new FormControl(question.c4, [Validators.required]),
-      answer: new FormControl(question.answer, [Validators.required]),
-      score: new FormControl(question.score, [Validators.required])
+    return this.fb.group({
+      type: [question.type, [Validators.required]],
+      question_text: [question.question_text, [Validators.required]],
+      question_image_url: [question.question_image_url],
+      c1: [question.c1, [Validators.required]],
+      c2: [question.c2, [Validators.required]],
+      c3: [question.c3, [Validators.required]],
+      c4: [question.c4, [Validators.required]],
+      answer: [question.answer, [Validators.required]],
+      score: [question.score, [Validators.required]]
     });
   }
 
   addQuestion(question: Question) {
-    this.formArray.push(this.createQuestion(question));
+    this.questions.push(this.createQuestion(question));
   }
 
   removeQuestion(index: number) {
-    this.formArray.removeAt(index);
+    this.questions.removeAt(index);
   }
 
   registerOnChange(fn: any): void {
@@ -102,10 +95,4 @@ export class QuestionEntryInputComponent
       { label: c4, value: c4 }
     ];
   }
-
-  clearFormArray = (formArray: FormArray) => {
-    while (formArray.length !== 0) {
-      formArray.removeAt(0);
-    }
-  };
 }
