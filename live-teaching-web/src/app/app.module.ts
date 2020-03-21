@@ -20,6 +20,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { MessageService } from "primeng/components/common/messageservice";
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
+import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { ToastModule } from "primeng/toast";
 import { QuestionModule } from "./question/question.module";
@@ -43,6 +44,7 @@ import { QuestionModule } from "./question/question.module";
     ReactiveFormsModule,
     ButtonModule,
     MenubarModule,
+    SubjectModule,
     CardModule,
     ToastModule,
     QuestionModule
