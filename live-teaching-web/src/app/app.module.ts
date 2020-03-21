@@ -20,6 +20,8 @@ import { MessageService } from "primeng/components/common/messageservice";
 import { StudentModule } from "./student/student.module";
 import { ToastModule } from "primeng/toast";
 import { ButtonModule } from "primeng/button";
+import { MenubarModule } from "primeng/menubar";
+import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { MenubarModule } from "primeng/menubar";
 import { OverlayPanelModule } from "primeng/overlaypanel";
@@ -43,6 +45,8 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
     StudentModule,
     ToastModule,
     ButtonModule,
+    MenubarModule,
+    SubjectModule,
     CardModule,
     MenubarModule,
     OverlayPanelModule
