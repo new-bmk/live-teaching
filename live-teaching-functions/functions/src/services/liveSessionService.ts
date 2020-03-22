@@ -41,7 +41,14 @@ export const createLiveSession = async (
       end_stamp: null,
       participants: []
     })
-  return { liveSessionCreateResult, recordedSessionCreateResult }
+  return {
+    liveSessionCreateResult: {
+      id: liveSessionCreateResult.id
+    },
+    recordedSessionCreateResult: {
+      id: recordedSessionCreateResult.id
+    }
+  }
 }
 
 export const endLiveSession = async (liveSessionId: string) => {

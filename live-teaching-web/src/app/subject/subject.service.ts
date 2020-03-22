@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
 import { of } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 // import { PagedRestfulService } from '@app/core/paged-restful.service';
 
 @Injectable({
   providedIn: "root"
 })
 export class SubjectService {
-  constructor() // private pagedRestfulService: PagedRestfulService
+  constructor(
+    private http: HttpClient,
+  ) // private pagedRestfulService: PagedRestfulService
   {}
 
   loadSubject(id: string) {
@@ -55,5 +59,12 @@ export class SubjectService {
       ],
       totalCount: 3
     });
+  }
+
+  // ------- pre live-session
+  createLiveSession(data) {
+    return this.http
+      .post(`${environment.serverUrl}/createLiveSession`, { data })
+      .toPromise();
   }
 }

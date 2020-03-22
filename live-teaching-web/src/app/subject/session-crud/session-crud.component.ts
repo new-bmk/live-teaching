@@ -62,7 +62,11 @@ export class SessionCrudComponent implements OnInit {
   // use for add new session
   sessionTemplate: FormGroup;
 
-  constructor() {}
+  // ---------- live session ---------
+  liveSessionDisplayDialog = false;
+  liveSessionTemplate: FormGroup;
+
+  constructor(private subjectService: SubjectService, private router: Router) {}
 
   formInitialValue: any = {
     id: "",
@@ -94,6 +98,16 @@ export class SessionCrudComponent implements OnInit {
 
     //TODO set data with real fetch subject by subject id
     this.setData(this.subject);
+
+    // ------------ live session -----------------
+    this.liveSessionTemplate = new FormGroup({});
+    _.each(
+      // is required use :=> field:  new FormControl('', Validators.required),
+      {
+        url: new FormControl("")
+      },
+      (v, k) => this.liveSessionTemplate.addControl(k, v)
+    );
   }
 
   setData(data: any) {
@@ -168,6 +182,7 @@ export class SessionCrudComponent implements OnInit {
       //TODO go live
       console.log("live url: ", session.url);
     }
+    this.liveSessionDisplayDialog = true;
   }
 
   get hasSelectedSession() {
@@ -190,4 +205,41 @@ export class SessionCrudComponent implements OnInit {
   }
 
   onDialogHide() {}
+
+  //  ----- live session -----------------
+  showLiveSessionDialogToAdd() {
+    this.liveSessionDisplayDialog = true;
+  }
+
+  onLiveSessionDialogHide() {}
+
+  saveLiveSession(data) {
+    if (!_.isEmpty(data.url) && !_.isEmpty(this.selectedSessionId)) {
+      this.subjectService
+        .createLiveSession({
+          stream_url: data.url,
+          session_id: this.selectedSessionId
+        })
+        .then((result: any) => {
+          if (result.status === "ok") {
+            this.router.navigate(
+              [
+                `/teacher`,
+                `live-session`,
+                _.get(result, "data.liveSessionCreateResult.id")
+              ],
+              { replaceUrl: true }
+            );
+          } else {
+            throw new Error(_.get(result, "reason"));
+          }
+        })
+        .catch(error => {
+          // TODO: messenger error
+          console.error("error", error);
+        });
+    } else {
+      console.error("invalid data");
+    }
+  }
 }
