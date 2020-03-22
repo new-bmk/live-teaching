@@ -1,10 +1,17 @@
 import * as admin from 'firebase-admin'
-import { ILiveSessionInput } from '../types'
+import { ILiveSessionInput, IParticipant } from '../types'
 
 export const createLiveSessionRefById = (liveSessionId: string) => {
   return admin
     .firestore()
     .collection('live_session')
+    .doc(liveSessionId)
+}
+
+export const createRecordedSessionRefById = (liveSessionId: string) => {
+  return admin
+    .firestore()
+    .collection('recorded_session')
     .doc(liveSessionId)
 }
 
@@ -72,4 +79,44 @@ export const endLiveSession = async (liveSessionId: string) => {
     }
   }
   return { liveSessionResult, recordedSessionResults }
+}
+
+export const joinLiveSession = async (liveSessionId: string, code: string) => {
+  const liveSessionRef = createLiveSessionRefById(liveSessionId)
+  const recordedSessionDocumentData = await admin
+    .firestore()
+    .collection('recorded_session')
+    .where('live_session_ref', '==', liveSessionRef)
+    // .where('participants', 'array-contains', { code })
+    .get()
+  if (!recordedSessionDocumentData.empty) {
+    // should have one record
+    const recordedSessionDoc = recordedSessionDocumentData.docs[0]
+    const recordedParticipants = recordedSessionDoc?.data()?.participants
+    const participant = recordedParticipants?.find(
+      (participantData: IParticipant) => {
+        return participantData.code === code
+      }
+    )
+    if (!participant) {
+      // const time = admin.firestore.FieldValue.serverTimestamp();
+      const updateRecordesSession = {
+        participant_count: recordedParticipants.length + 1,
+        participants: admin.firestore.FieldValue.arrayUnion({
+          code,
+          // joined_stamp: time,
+          quiz_results: []
+        })
+      }
+
+      await admin
+        .firestore()
+        .collection('recorded_session')
+        .doc(recordedSessionDoc.id)
+        .update(updateRecordesSession)
+    }
+
+    return { log: 'success' }
+  }
+  return { log: 'cannot find recorded_session' }
 }

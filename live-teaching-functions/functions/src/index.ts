@@ -30,6 +30,18 @@ export const createLiveSession = functions.https.onRequest(async (req, res) => {
   }
 })
 
+export const joinLiveSession = functions.https.onRequest(async (req, res) => {
+  try {
+    const result = await liveSessionService.joinLiveSession(
+      req?.body?.data?.live_session_id,
+      req?.body?.data?.code
+    )
+    res.send({ status: 'ok', data: result })
+  } catch (error) {
+    res.send({ status: 'fail', reason: error.message })
+  }
+})
+
 /*
 body: {
   data: {
