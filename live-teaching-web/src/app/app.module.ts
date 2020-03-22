@@ -1,37 +1,40 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgModule } from "@angular/core";
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { AppComponent } from "./app.component";
-import { environment } from "../environments/environment";
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
 
-import { AngularFireModule } from "@angular/fire";
-import { AngularFirestoreModule } from "@angular/fire/firestore";
-import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { LoginComponent } from "./login/login.component";
-import { TeacherComponent } from "./teacher/teacher.component";
-import { RegisterComponent } from "./register/register.component";
-import { NavbarComponent } from "./navbar/navbar.component";
+import { LoginComponent } from './login/login.component';
+import { TeacherComponent } from './teacher/teacher.component';
+import { RegisterComponent } from './register/register.component';
+import { LiveSessionComponent } from './teacher/live-session/live-session.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
-import { MessageService } from "primeng/components/common/messageservice";
-import { StudentModule } from "./student/student.module";
-import { ToastModule } from "primeng/toast";
-import { ButtonModule } from "primeng/button";
-import { SubjectModule } from "./subject/subject.module";
-import { CardModule } from "primeng/card";
-import { MenubarModule } from "primeng/menubar";
-import { OverlayPanelModule } from "primeng/overlaypanel";
-import { SharedModule } from "primeng/components/common/shared";
+import { MessageService } from 'primeng/components/common/messageservice';
+import { StudentModule } from './student/student.module';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { SubjectModule } from './subject/subject.module';
+import { CardModule } from 'primeng/card';
+import { MenubarModule } from 'primeng/menubar';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SharedModule } from 'primeng/components/common/shared';
+import { TableModule } from 'primeng/table';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     TeacherComponent,
     RegisterComponent,
-    NavbarComponent
+    NavbarComponent,
+    LiveSessionComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ import { SharedModule } from "primeng/components/common/shared";
     CardModule,
     MenubarModule,
     OverlayPanelModule,
-    SharedModule
+    SharedModule,
+    TableModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
