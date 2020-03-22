@@ -15,6 +15,7 @@ import { LoginComponent } from "./login/login.component";
 import { TeacherComponent } from "./teacher/teacher.component";
 import { StudentComponent } from "./student/student.component";
 import { RegisterComponent } from "./register/register.component";
+import { LiveSessionComponent } from './teacher/live-session/live-session.component';
 import { NavbarComponent } from "./navbar/navbar.component";
 
 import { MessageService } from 'primeng/components/common/messageservice';
@@ -22,6 +23,7 @@ import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
 import { CardModule } from "primeng/card";
 import { ToastModule } from "primeng/toast";
+import { TableModule } from 'primeng/table'
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +31,8 @@ import { ToastModule } from "primeng/toast";
     TeacherComponent,
     StudentComponent,
     RegisterComponent,
-    NavbarComponent
+    NavbarComponent,
+    LiveSessionComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { ToastModule } from "primeng/toast";
     ButtonModule,
     MenubarModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    TableModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
