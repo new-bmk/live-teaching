@@ -1,11 +1,16 @@
 <!-- <p>Live Section</p> -->
 
-<h1>{{ subject?.title }}</h1>
+<div style="display: flex;">
+  <span class="backBtn" (click)="back()"
+    ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
+  >
+  <span class="title">{{ subject?.title }}</span>
+</div>
 
 <div *ngIf="loading"></div>
 
 <div *ngIf="!loading">
-  <div style="height: 60vh; display: flex">
+  <div style="height: 78vh; display: flex">
     <iframe
       [src]="stramURL | safeUrl"
       frameborder="0"
@@ -29,12 +34,17 @@
 
 <p-dialog
   *ngIf="activeQuizIndex >= 0 && quizList[activeQuizIndex]"
-  header="Question"
   [(visible)]="displayBasic"
   [style]="{ width: '50vw' }"
   [baseZIndex]="10000"
   [closable]="false"
 >
+  <p-header>
+    <div style="display: flex; justify-content: space-between;">
+      <span>&nbsp;</span>
+      <span>time remaining: <span style="font-size: 1.8em" [ngClass]="{'blink': 'isLessThanTen()'}">00:00</span></span>
+    </div>
+  </p-header>
   <ng-container [formGroup]="quizForm">
     <app-quiz-answer-entry-input
       [quetionObject]="quizList[activeQuizIndex]"
@@ -47,7 +57,8 @@
       pButton
       icon="pi pi-check"
       (click)="submitQuestion($event)"
-      label="Yes"
+      label="Submit Answer"
+      class="submitBtn"
     ></button>
   </p-footer>
 </p-dialog>

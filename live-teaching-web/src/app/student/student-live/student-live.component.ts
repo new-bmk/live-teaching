@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { filter } from "rxjs/operators";
 import { ActivatedRoute } from "@angular/router";
 import * as _ from "lodash";
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-student-live",
@@ -20,7 +21,8 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   activeQuizIndex = -1;
   constructor(
     private studentService: StudentService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location: Location
   ) {}
 
   liveSessionSubscribe;
@@ -46,6 +48,10 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
+  }
+
+  back(){
+    this.location.back()
   }
 
   get stramURL() {
@@ -93,5 +99,9 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
 
   clearQuizForm() {
     this.quizForm.reset();
+  }
+
+  isLessThanTen(){
+    return true
   }
 }
