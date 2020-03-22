@@ -28,27 +28,27 @@ export class RegisterComponent implements OnInit {
     private fireStore: AngularFirestore,
     private router: Router,
     private afAuth: AngularFireAuth,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.afAuth.user.subscribe(user => {
       if (user) {
         this.userAuth = user;
-        let id = this.userAuth.providerData[0].email.split("@psu.ac.th")[0];
-        if (isNaN(+id)) {
-          this.isSelectedRole = true;
-          this.isTeacher = true;
-        } else {
-          this.isSelectedRole = true;
-          this.isTeacher = false;
+        if (this.userAuth.providerData[0]) {
+          let id = this.userAuth.providerData[0].email.split("@psu.ac.th")[0];
+          if (isNaN(+id)) {
+            this.isSelectedRole = true;
+            this.isTeacher = true;
+          } else {
+            this.isSelectedRole = true;
+            this.isTeacher = false;
+          }
+          this.profileForm.patchValue({
+            name: this.userAuth.providerData[0].email.split("@")[0],
+            studentId: !isNaN(+id) ? id : ""
+          });
         }
-        this.profileForm.patchValue({
-          name: this.userAuth.providerData[0].email.split("@")[0],
-          studentId: !isNaN(+id)
-            ? id
-            : ""
-        });
       }
     });
   }
@@ -95,5 +95,5 @@ export class RegisterComponent implements OnInit {
 
   signOut() {
     this.authService.signOut();
-   }
+  }
 }
