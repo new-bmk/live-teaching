@@ -1,6 +1,6 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgModule } from "@angular/core";
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +27,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SharedModule } from 'primeng/components/common/shared';
 import { TableModule } from 'primeng/table';
-import { QuestionModule } from "./question/question.module";
+import { QuestionModule } from './question/question.module';
 @NgModule({
   declarations: [
     AppComponent,
