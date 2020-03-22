@@ -60,7 +60,8 @@
           getSelectedRowIndex(selectedSessionId)
         ]
       "
-      ><div class="ui-g">
+    >
+      <div class="ui-g">
         <div class="ui-g-12 button-go-live">
           <button
             type="button"
@@ -83,9 +84,11 @@
           />
         </div>
 
-        <div>
+        <div class="ui-g-12">
           <p class="label">Questions</p>
-          Coming Soon
+          <app-question-entry-input
+            formControlName="questions"
+          ></app-question-entry-input>
         </div>
       </div>
 

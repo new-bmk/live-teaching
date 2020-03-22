@@ -20,7 +20,8 @@ import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
 import { SubjectManageComponent } from "./subject-manage/subject-manage.component";
 import { SessionCrudComponent } from "./session-crud/session-crud.component";
 import { PanelModule } from "primeng/panel";
-import { SubjectRoutingModule } from './subject-routing.module';
+import { SubjectRoutingModule } from "./subject-routing.module";
+import { QuestionModule } from "../question/question.module";
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { SubjectRoutingModule } from './subject-routing.module';
     BreadcrumbModule,
     DialogModule,
     PanelModule,
-    SubjectRoutingModule
+    SubjectRoutingModule,
+    QuestionModule
   ],
   exports: [SubjectCrudComponent, SubjectManageComponent, SessionCrudComponent],
   declarations: [
