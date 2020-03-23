@@ -192,8 +192,7 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   onClickSessionManageButton(subjectId) {
-    console.log("click manage session, subject", subjectId);
-    this.router.navigate([`/subject/manage/${subjectId}`]);
+    this.router.navigate([`/subject`, subjectId, `session`]);
   }
 
   onClickEditButton(data) {

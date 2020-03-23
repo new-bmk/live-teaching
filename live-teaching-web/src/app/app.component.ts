@@ -29,8 +29,11 @@ export class AppComponent {
         this.authService.setUser(userAuth, endUser => {
           if (!_.isEmpty(endUser) || userAuth.email.includes("@psu.ac.th")) {
             if (_.isEmpty(endUser)) {
-              this.user = null;
-              this.router.navigate(["/register"], { replaceUrl: true });
+              this.user = null
+              this.authService.register(userAuth, user=>{
+                this.user = user
+              })
+              // this.router.navigate(["/register"], { replaceUrl: true });
             } else {
               this.user = endUser[0];
               if (this.user.role === "teacher") {

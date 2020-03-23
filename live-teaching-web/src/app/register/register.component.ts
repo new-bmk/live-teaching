@@ -28,29 +28,27 @@ export class RegisterComponent implements OnInit {
     private fireStore: AngularFirestore,
     private router: Router,
     private afAuth: AngularFireAuth,
-    private authService: AuthService,
-    private messageService: MessageService
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.afAuth.user.subscribe(user => {
       if (user) {
-        this.userAuth = user.providerData[0];
-        let id = this.userAuth.email.split("@psu.ac.th")[0];
-        if (isNaN(+id)) {
-          this.isSelectedRole = true;
-          this.isTeacher = true;
-        } else {
-          this.isSelectedRole = true;
-          this.isTeacher = false;
+        this.userAuth = user;
+        if (this.userAuth.providerData[0]) {
+          let id = this.userAuth.providerData[0].email.split("@psu.ac.th")[0];
+          if (isNaN(+id)) {
+            this.isSelectedRole = true;
+            this.isTeacher = true;
+          } else {
+            this.isSelectedRole = true;
+            this.isTeacher = false;
+          }
+          this.profileForm.patchValue({
+            name: this.userAuth.providerData[0].email.split("@")[0],
+            studentId: !isNaN(+id) ? id : ""
+          });
         }
-        this.profileForm.patchValue({
-          name: this.userAuth.email.split("@")[0],
-          studentId: this.userAuth.email.includes("@psu.ac.th")
-            ? this.userAuth.email.split("@psu.ac.th")[0]
-            : ""
-        });
-        this.register();
       }
     });
   }
@@ -97,5 +95,5 @@ export class RegisterComponent implements OnInit {
 
   signOut() {
     this.authService.signOut();
-   }
+  }
 }

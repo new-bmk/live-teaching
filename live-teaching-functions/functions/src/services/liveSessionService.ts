@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin'
-import { ILiveSessionInput } from '../types'
+import { ILiveSessionInput, IParticipant } from '../types'
 
 export const createLiveSessionRefById = (liveSessionId: string) => {
   return admin
@@ -8,9 +8,18 @@ export const createLiveSessionRefById = (liveSessionId: string) => {
     .doc(liveSessionId)
 }
 
-export const createSessionRefById = (sessionId: string) => {
+export const createRecordedSessionRefById = (liveSessionId: string) => {
   return admin
     .firestore()
+    .collection('recorded_session')
+    .doc(liveSessionId)
+}
+
+export const createSessionRefById = (subjectId: string, sessionId: string) => {
+  return admin
+    .firestore()
+    .collection('subject')
+    .doc(subjectId)
     .collection('session')
     .doc(sessionId)
 }
@@ -18,7 +27,10 @@ export const createSessionRefById = (sessionId: string) => {
 export const createLiveSession = async (
   liveSessionInput: ILiveSessionInput
 ) => {
-  const sessionRef = createSessionRefById(liveSessionInput.session_id)
+  const sessionRef = createSessionRefById(
+    liveSessionInput.subject_id,
+    liveSessionInput.session_id
+  )
 
   const liveSessionCreateResult = await admin
     .firestore()
@@ -41,7 +53,14 @@ export const createLiveSession = async (
       end_stamp: null,
       participants: []
     })
-  return { liveSessionCreateResult, recordedSessionCreateResult }
+  return {
+    liveSessionCreateResult: {
+      id: liveSessionCreateResult.id
+    },
+    recordedSessionCreateResult: {
+      id: recordedSessionCreateResult.id
+    }
+  }
 }
 
 export const endLiveSession = async (liveSessionId: string) => {
@@ -65,4 +84,108 @@ export const endLiveSession = async (liveSessionId: string) => {
     }
   }
   return { liveSessionResult, recordedSessionResults }
+}
+
+export const joinLiveSession = async (liveSessionId: string, code: string) => {
+  const liveSessionRef = createLiveSessionRefById(liveSessionId)
+  const recordedSessionDocumentData = await admin
+    .firestore()
+    .collection('recorded_session')
+    .where('live_session_ref', '==', liveSessionRef)
+    .get()
+  if (!recordedSessionDocumentData.empty) {
+    // should have one record
+    for (const recordedSessionDoc of recordedSessionDocumentData.docs) {
+      const recordedParticipants = recordedSessionDoc?.data()?.participants
+      const participant = recordedParticipants?.find(
+        (participantData: IParticipant) => {
+          return participantData.code === code
+        }
+      )
+      if (!participant) {
+        const time = new Date()
+        const updateRecordesSession = {
+          participant_count: recordedParticipants.length + 1,
+          participants: admin.firestore.FieldValue.arrayUnion({
+            code,
+            joined_stamp: time,
+            quiz_results: []
+          })
+        }
+
+        await admin
+          .firestore()
+          .collection('recorded_session')
+          .doc(recordedSessionDoc.id)
+          .update(updateRecordesSession)
+      }
+    }
+
+    return { log: 'success' }
+  }
+  throw new Error('cannot find recorded_session')
+}
+
+export const submitResult = async (
+  liveSessionId: string,
+  code: string,
+  quesionAnswer: string,
+  questionIdx: number
+) => {
+  const liveSessionRef = createLiveSessionRefById(liveSessionId)
+
+  const recordedSessionRefs = await admin
+    .firestore()
+    .collection('recorded_session')
+    .where('live_session_ref', '==', liveSessionRef)
+
+  await admin
+    .firestore()
+    .runTransaction(t => {
+      return t
+        .get(recordedSessionRefs)
+        .then(async (doc: FirebaseFirestore.QuerySnapshot) => {
+          // should have one record
+          const recordedSessionDoc = doc.docs[0]
+          const recordedSessionData = doc.docs[0].data()
+          const recordedParticipants = recordedSessionData?.participants
+          const participantIdx = recordedParticipants?.findIndex(
+            (participantData: IParticipant) => {
+              return participantData.code === code
+            }
+          )
+          if (participantIdx < 0) {
+            throw new Error('Cannot find Participant')
+          }
+          const question = await recordedSessionData.session_ref.get()?.data()
+            ?.questions[questionIdx]
+          const updateParticipant = {
+            ...recordedParticipants[participantIdx],
+            quiz_results: [
+              ...recordedParticipants[participantIdx].quiz_results,
+              {
+                answer: quesionAnswer,
+                question_idx: questionIdx,
+                score: question.score
+              }
+            ]
+          }
+          recordedParticipants[participantIdx] = updateParticipant
+          const recordedSessionRef = createRecordedSessionRefById(
+            recordedSessionDoc.id
+          )
+
+          return t.update(recordedSessionRef, {
+            participants: recordedParticipants
+          })
+        })
+    })
+    .then(result => {
+      return { log: 'success' }
+    })
+    .catch(err => {
+      throw err
+    })
+
+  return { log: 'Transaction success' }
 }

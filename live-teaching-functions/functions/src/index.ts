@@ -16,6 +16,7 @@ export const ping = functions.https.onRequest((request, response) => {
 /*
 body: {
   data: {
+    subject_id: string
     session_id: string
     stream_url: string
   }
@@ -24,6 +25,32 @@ body: {
 export const createLiveSession = functions.https.onRequest(async (req, res) => {
   try {
     const result = await liveSessionService.createLiveSession(req?.body?.data)
+    res.send({ status: 'ok', data: result })
+  } catch (error) {
+    res.send({ status: 'fail', reason: error.message })
+  }
+})
+
+export const joinLiveSession = functions.https.onRequest(async (req, res) => {
+  try {
+    const result = await liveSessionService.joinLiveSession(
+      req?.body?.data?.live_session_id,
+      req?.body?.data?.code
+    )
+    res.send({ status: 'ok', data: result })
+  } catch (error) {
+    res.send({ status: 'fail', reason: error.message })
+  }
+})
+
+export const submitQuestion = functions.https.onRequest(async (req, res) => {
+  try {
+    const result = await liveSessionService.submitResult(
+      req?.body?.data?.live_session_id,
+      req?.body?.data?.code,
+      req?.body?.data?.quesionAnswer,
+      req?.body?.data?.questionIdx,
+    )
     res.send({ status: 'ok', data: result })
   } catch (error) {
     res.send({ status: 'fail', reason: error.message })

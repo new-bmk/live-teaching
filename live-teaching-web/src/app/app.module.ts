@@ -27,9 +27,10 @@ import { MenubarModule } from 'primeng/menubar';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SharedModule } from 'primeng/components/common/shared';
 import { TableModule } from 'primeng/table';
+import { AngularFireFunctionsModule, ORIGIN } from '@angular/fire/functions';
 import { QuestionModule } from './question/question.module';
 import { HttpClientModule } from '@angular/common/http';
-import { AngularFireFunctionsModule, ORIGIN } from '@angular/fire/functions';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,9 +46,9 @@ import { AngularFireFunctionsModule, ORIGIN } from '@angular/fire/functions';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireFunctionsModule,
-    HttpClientModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     StudentModule,
