@@ -73,10 +73,11 @@ export class AuthService {
   }
 
   register(userAuth, setUser?){
-    let id = userAuth.providerData[0].email.split("@psu.ac.th")[0];
+    let id = userAuth.providerData[0].email.split("@psu.ac.th")[0]
     this.fireStore
       .collection("user")
-      .add({
+      .doc(userAuth.uid)
+      .set({
         name: userAuth.providerData[0].email.split("@")[0],
           studentId: isNaN(+id)
             ? ""
