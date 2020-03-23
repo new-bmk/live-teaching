@@ -42,6 +42,20 @@ export const joinLiveSession = functions.https.onRequest(async (req, res) => {
   }
 })
 
+export const submitQuestion = functions.https.onRequest(async (req, res) => {
+  try {
+    const result = await liveSessionService.submitResult(
+      req?.body?.data?.live_session_id,
+      req?.body?.data?.code,
+      req?.body?.data?.quesionAnswer,
+      req?.body?.data?.questionIdx,
+    )
+    res.send({ status: 'ok', data: result })
+  } catch (error) {
+    res.send({ status: 'fail', reason: error.message })
+  }
+})
+
 /*
 body: {
   data: {
