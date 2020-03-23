@@ -17,7 +17,6 @@ import { BreadcrumbModule } from "primeng/breadcrumb";
 
 import { DialogModule } from "primeng/dialog";
 import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
-import { SubjectManageComponent } from "./subject-manage/subject-manage.component";
 import { SessionCrudComponent } from "./session-crud/session-crud.component";
 import { PanelModule } from "primeng/panel";
 import { SubjectRoutingModule } from "./subject-routing.module";
@@ -46,10 +45,9 @@ import { QuestionModule } from "../question/question.module";
     SubjectRoutingModule,
     QuestionModule
   ],
-  exports: [SubjectCrudComponent, SubjectManageComponent, SessionCrudComponent],
+  exports: [SubjectCrudComponent, SessionCrudComponent],
   declarations: [
     SubjectCrudComponent,
-    SubjectManageComponent,
     SessionCrudComponent
   ]
 })
