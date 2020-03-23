@@ -72,17 +72,13 @@ export class StudentService {
   joinLiveSession(liveSessionId, code) {
     const callable = this.fns.httpsCallable('joinLiveSession');
     return callable({
-      data: {
-        live_session_id: liveSessionId,
-        code
-      }
+      live_session_id: liveSessionId,
+      code
     });
   }
 
   submitAnswer(data) {
-    const callable = this.fns.httpsCallable('submitQuestion');
-    return callable({
-      data
-    });
+    const callable = this.fns.httpsCallable('submitAnswer');
+    return callable(data);
   }
 }

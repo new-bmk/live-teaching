@@ -6,12 +6,13 @@ import { interval, forkJoin, Subject } from 'rxjs';
 import * as _ from 'lodash';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-student',
   templateUrl: './student.component.html',
-  styleUrls: ['./student.component.scss'],
-  providers: [MessageService]
+  styleUrls: ['./student.component.scss']
+  // providers: [MessageService]
 })
 export class StudentComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject();
@@ -30,7 +31,8 @@ export class StudentComponent implements OnInit, OnDestroy {
   constructor(
     private studentService: StudentService,
     private messageService: MessageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -91,18 +93,27 @@ export class StudentComponent implements OnInit, OnDestroy {
   }
 
   getRandomColor() {
-    var color = Math.floor(0x1000000 * Math.random()).toString(16);
+    const color = Math.floor(0x1000000 * Math.random()).toString(16);
     return '#' + ('000000' + color).slice(-6);
   }
 
   joinLiveSession(liveSessionId) {
+    this.loading = true;
     this.studentService
       .joinLiveSession(liveSessionId, this.studentId)
       .subscribe((data: any) => {
-        if (data.status === 'ok') {
+        if (data.valid) {
           this.messageService.add({
             severity: 'success',
             summary: 'เข้าใช้งานสำเร็จ'
+          });
+          this.router.navigate(['/student/live-session', liveSessionId]);
+          this.loading = false;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'เข้าใช้งานไม่สำเร็จ',
+            detail: `เนื่องจาก ${data.reason}`
           });
         }
       });

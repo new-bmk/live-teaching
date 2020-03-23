@@ -7,6 +7,7 @@ import * as _ from 'lodash';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subject } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-student-live',
@@ -22,11 +23,13 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   });
 
   activeQuizIndex = -1;
+  loadingQuestion = false;
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
     private location: Location,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {}
 
   liveSessionSubscribe;
@@ -91,6 +94,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   }
 
   submitQuestion() {
+    this.loadingQuestion = true
     if (this.quizForm.invalid) {
       return;
     }
@@ -102,8 +106,20 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
         questionIdx: this.activeQuizIndex
       })
       .subscribe((result: any) => {
-        if (result.status === 'ok') {
+        if (result.valid) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'ส่งคำตอบสำเร็จ'
+          });
+          this.loading = false;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'ส่งคำตอบไม่สำเร็จ',
+            detail: `เนื่องจาก ${result.reason}`
+          });
         }
+        this.loadingQuestion = false
         this.displayBasic = false;
         this.clearQuizForm();
       });

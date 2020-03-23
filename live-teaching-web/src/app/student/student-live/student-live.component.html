@@ -44,6 +44,7 @@
     <app-quiz-answer-entry-input
       [quetionObject]="quizList[activeQuizIndex]"
       inputFormGroupName="anwser"
+      [loadingQuestion]="loadingQuestion"
     ></app-quiz-answer-entry-input>
   </ng-container>
   <p-footer>
@@ -57,3 +58,4 @@
     ></button>
   </p-footer>
 </p-dialog>
+<p-toast class="ui-toast-bottom-right"></p-toast>

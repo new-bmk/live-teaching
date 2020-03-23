@@ -18,6 +18,7 @@ export class QuizAnswerEntryInputComponent implements OnInit {
       this.question = data;
     }
   }
+  @Input() loadingQuestion = false;
   formControlName;
   @Input()
   set inputFormGroupName(value: string) {
