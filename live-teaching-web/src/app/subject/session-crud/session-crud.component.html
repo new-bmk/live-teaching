@@ -1,4 +1,4 @@
-<h2>{{ sessionsFormGroup.get("name").value }}</h2>
+<!-- <h2>{{ sessionsFormGroup.get("name").value }}</h2> -->
 <h3>Session List</h3>
 <div ui-g>
   <div class="ui-g-2">
@@ -29,14 +29,18 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th>ID</th>
+          <!-- <th>ID</th> -->
+          <th>Title</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
         <tr [pSelectableRow]="rowData">
-          <td>
+          <!-- <td>
             {{ rowData.id }}
+          </td> -->
+          <td>
+            {{ rowData.title }}
           </td>
         </tr>
       </ng-template>
@@ -73,12 +77,12 @@
         </div>
 
         <div class="ui-g-12">
-          <p class="label">URL</p>
+          <p class="label">Title</p>
           <input
             class="fullwidth"
-            formControlName="url"
-            id="url"
-            placeholder="Fill URL"
+            formControlName="title"
+            id="title"
+            placeholder="Fill Title"
             type="text"
             pInputText
           />
@@ -100,8 +104,15 @@
               pButton
               icon="pi pi-trash"
               (click)="delete(selectedSessionId)"
-              label="Delete Session"
+              label="Delete"
               class="ui-button-secondary"
+            ></button>
+            <button
+              type="button"
+              pButton
+              (click)="update(selectedSessionId)"
+              label="Update"
+              class="ui-button-info"
             ></button>
           </div>
         </div>
@@ -132,12 +143,12 @@
     [formGroup]="sessionTemplate"
   >
     <div class="ui-g-12">
-      <p class="label">ID</p>
+      <p class="label">Title</p>
       <input
         class="fullwidth"
-        formControlName="id"
-        id="id"
-        placeholder="Fill ID"
+        formControlName="title"
+        id="title"
+        placeholder="Fill Title"
         type="text"
         pInputText
       />
@@ -187,8 +198,8 @@
       <p class="label">URL</p>
       <input
         class="fullwidth"
-        formControlName="url"
-        id="url"
+        formControlName="stream_url"
+        id="stream_url"
         placeholder="Fill URL"
         type="text"
         pInputText
