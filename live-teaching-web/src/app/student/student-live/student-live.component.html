@@ -20,16 +20,6 @@
       autoplay
     ></iframe>
   </div>
-  <!-- <div style="height: 20vh;width: 40em; display: flex">
-    <iframe
-      [src]="https://www.youtube.com/live_chat?v=-7_ZuR7gFgc&embed_domain=localhost
-      frameborder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      style="flex: 1 1 auto;"
-      autoplay
-    ></iframe>
-  </div> -->
 </div>
 
 <p-dialog
@@ -42,7 +32,12 @@
   <p-header>
     <div style="display: flex; justify-content: space-between;">
       <span>&nbsp;</span>
-      <span>time remaining: <span style="font-size: 1.8em" [ngClass]="{'blink': 'isLessThanTen()'}">00:00</span></span>
+      <span
+        >time remaining:
+        <span style="font-size: 1.8em" [ngClass]="{ blink: 'isLessThanTen()' }"
+          >00:00</span
+        ></span
+      >
     </div>
   </p-header>
   <ng-container [formGroup]="quizForm">

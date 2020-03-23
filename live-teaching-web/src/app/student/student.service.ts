@@ -1,17 +1,22 @@
-import { Injectable } from "@angular/core";
-import { AngularFirestore } from "@angular/fire/firestore";
-import { map } from "rxjs/operators";
-
+import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { AngularFireFunctions } from '@angular/fire/functions';
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class StudentService {
-  constructor(private db: AngularFirestore) {}
+  constructor(
+    private db: AngularFirestore,
+    private http: HttpClient,
+    private fns: AngularFireFunctions
+  ) {}
 
   listLiveSession() {
     return (
       this.db
-        .collection("live_session")
+        .collection('live_session')
         // .collection("live_session", ref => {
         //   return ref.where("endStamp", ">", new Date())
         // }))
@@ -35,14 +40,21 @@ export class StudentService {
 
   snapshotLiveSession(id) {
     return this.db
-      .collection("live_session")
+      .collection('live_session')
       .doc(id)
-      .valueChanges();
+      .snapshotChanges()
+      .pipe(
+        map((action: any) => {
+          const data: any = action.payload.data();
+          const id = action.payload.id;
+          return { id, ...data };
+        })
+      );
   }
 
   getRecordedSession(id) {
     return this.db
-      .collection("recorded_session")
+      .collection('recorded_session')
       .doc(id)
       .get()
       .pipe(
@@ -57,7 +69,20 @@ export class StudentService {
     return this.db.doc(sessionRef).valueChanges();
   }
 
-  joinLiveSession(liveSessionId) {}
+  joinLiveSession(liveSessionId, code) {
+    const callable = this.fns.httpsCallable('joinLiveSession');
+    return callable({
+      data: {
+        live_session_id: liveSessionId,
+        code
+      }
+    });
+  }
 
-  sendResult() {}
+  submitAnswer(data) {
+    const callable = this.fns.httpsCallable('submitQuestion');
+    return callable({
+      data
+    });
+  }
 }

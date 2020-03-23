@@ -1,57 +1,57 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { StudentService } from "../student.service";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { filter } from "rxjs/operators";
-import { ActivatedRoute } from "@angular/router";
-import * as _ from "lodash";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { StudentService } from '../student.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import * as _ from 'lodash';
 import { Location } from '@angular/common';
+import { AuthService } from 'src/app/auth/auth.service';
+import { Subject } from 'rxjs';
 
 @Component({
-  selector: "app-student-live",
-  templateUrl: "./student-live.component.html",
-  styleUrls: ["./student-live.component.scss"]
+  selector: 'app-student-live',
+  templateUrl: './student-live.component.html',
+  styleUrls: ['./student-live.component.scss']
 })
 export class StudentLiveComponent implements OnInit, OnDestroy {
+  private unsubscribe$ = new Subject();
   quizList = [];
 
   quizForm = new FormGroup({
-    anwser: new FormControl("", Validators.required)
+    anwser: new FormControl('', Validators.required)
   });
 
   activeQuizIndex = -1;
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private authService: AuthService
   ) {}
 
   liveSessionSubscribe;
   displayBasic = true;
   loading = true;
-  srcUrl = "";
+  srcUrl = '';
   subject;
-
+  studentData;
+  liveSessionData;
   ngOnInit() {
     const id = this.route.snapshot.params.id;
+    this.authService.getEndUser
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((auth: any) => {
+        this.studentData = auth;
+      });
     this.snapshotLiveSession(id);
-    // this.studentService
-    //   .getRecordedSession("CIAcia7eVR378f9z1VtM")
-    //   .subscribe((data: any) => {
-    //     console.log("data :", data);
-    //     this.snapshotLiveSession(data.live_session_ref);
-    //     this.getQuiz(data.session_ref);
-    //     // this.srcUrl = "https://www.youtube.com/live_chat?v=-7_ZuR7gFgc&embed_domain=localhost";
-    //     this.srcUrl = "https://www.youtube.com/embed/-7_ZuR7gFgc?autoplay=1";
-    //     this.loading = false;
-    //   });
   }
 
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
   }
 
-  back(){
-    this.location.back()
+  back() {
+    this.location.back();
   }
 
   get stramURL() {
@@ -71,7 +71,8 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
           .then((actionSubject: any) => {
             this.subject = actionSubject.data();
           });
-        this.srcUrl = "https://www.youtube.com/embed/-7_ZuR7gFgc?autoplay=1";
+        this.srcUrl = data.stream_url;
+        this.liveSessionData = data;
         this.loading = false;
       });
   }
@@ -93,15 +94,26 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
     if (this.quizForm.invalid) {
       return;
     }
-    this.displayBasic = false;
-    this.clearQuizForm();
+    this.studentService
+      .submitAnswer({
+        live_session_id: this.liveSessionData.id,
+        code: this.studentData.studentId,
+        quesionAnswer: this.quizForm.value.anwser,
+        questionIdx: this.activeQuizIndex
+      })
+      .subscribe((result: any) => {
+        if (result.status === 'ok') {
+        }
+        this.displayBasic = false;
+        this.clearQuizForm();
+      });
   }
 
   clearQuizForm() {
     this.quizForm.reset();
   }
 
-  isLessThanTen(){
-    return true
+  isLessThanTen() {
+    return true;
   }
 }

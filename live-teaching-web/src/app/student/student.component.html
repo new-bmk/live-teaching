@@ -23,19 +23,31 @@
     <ng-container *ngFor="let liveSession of sessionList">
       <div class="ui-lg-3 ui-md-6 ui-g-12">
         <div class="student-card">
-          <a
+          <div
             style="cursor: pointer;"
-            routerLink="/student/live-session/{{ liveSession.id }}"
+            (click)="joinLiveSession(liveSession.id)"
           >
             <div class="my-card">
               <p-card>
                 <p-header>
-                  <div class="card-header" [ngStyle]="{'background-color': getRandomColor()}">
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
-                      <span style="display: flex; margin-left: 1em;">{{ liveSession?.subject?.title }}</span>
+                  <div
+                    class="card-header"
+                    [ngStyle]="{ 'background-color': getRandomColor() }"
+                  >
+                    <div
+                      style="display: flex; justify-content: space-between; width: 100%;"
+                    >
+                      <span style="display: flex; margin-left: 1em;">{{
+                        liveSession?.subject?.title
+                      }}</span>
                       <span style="display: flex; align-items: center;">
-                        <span class="blink_me"><i class="pi pi-video"></i></span>
-                        <span style="display: flex; font-size: small; margin-right: 1em;">LIVE</span>
+                        <span class="blink_me"
+                          ><i class="pi pi-video"></i
+                        ></span>
+                        <span
+                          style="display: flex; font-size: small; margin-right: 1em;"
+                          >LIVE</span
+                        >
                       </span>
                     </div>
                   </div>
@@ -67,7 +79,7 @@
                 </p-footer> -->
               </p-card>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </ng-container>

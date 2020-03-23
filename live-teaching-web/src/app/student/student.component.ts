@@ -1,17 +1,20 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { StudentService } from "./student.service";
-import { FormGroup, FormControl } from "@angular/forms";
-import { debounce, map, mergeMap } from "rxjs/operators";
-import { interval, forkJoin } from "rxjs";
-import * as _ from "lodash";
-import { async } from "@angular/core/testing";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { StudentService } from './student.service';
+import { FormGroup, FormControl } from '@angular/forms';
+import { debounce, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { interval, forkJoin, Subject } from 'rxjs';
+import * as _ from 'lodash';
+import { MessageService } from 'primeng/api';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
-  selector: "app-student",
-  templateUrl: "./student.component.html",
-  styleUrls: ["./student.component.scss"]
+  selector: 'app-student',
+  templateUrl: './student.component.html',
+  styleUrls: ['./student.component.scss'],
+  providers: [MessageService]
 })
 export class StudentComponent implements OnInit, OnDestroy {
+  private unsubscribe$ = new Subject();
   sessionList;
   originalSessionList;
   loading = true;
@@ -20,21 +23,30 @@ export class StudentComponent implements OnInit, OnDestroy {
   sessionSubscribe;
   cols;
   searchForm = new FormGroup({
-    searchText: new FormControl("")
+    searchText: new FormControl('')
   });
   searchSubscribe;
-  constructor(private studentService: StudentService) {}
+  studentId;
+  constructor(
+    private studentService: StudentService,
+    private messageService: MessageService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.cols = [
       {
-        field: "id",
-        header: "Id"
+        field: 'id',
+        header: 'Id'
       }
     ];
     this.listLiveSessionWithSubject();
-    const formControl = this.searchForm.controls["searchText"];
-
+    const formControl = this.searchForm.controls['searchText'];
+    this.authService.getEndUser
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((auth: any) => {
+        this.studentId = auth.studentId;
+      });
     this.searchSubscribe = formControl.valueChanges
       .pipe(debounce(() => interval(1000)))
       .subscribe((value: string) => {
@@ -80,6 +92,19 @@ export class StudentComponent implements OnInit, OnDestroy {
 
   getRandomColor() {
     var color = Math.floor(0x1000000 * Math.random()).toString(16);
-    return "#" + ("000000" + color).slice(-6);
+    return '#' + ('000000' + color).slice(-6);
+  }
+
+  joinLiveSession(liveSessionId) {
+    this.studentService
+      .joinLiveSession(liveSessionId, this.studentId)
+      .subscribe((data: any) => {
+        if (data.status === 'ok') {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'เข้าใช้งานสำเร็จ'
+          });
+        }
+      });
   }
 }
