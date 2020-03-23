@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -17,12 +17,13 @@ import { StudentComponent } from "./student/student.component";
 import { RegisterComponent } from "./register/register.component";
 import { NavbarComponent } from "./navbar/navbar.component";
 
-import { MessageService } from 'primeng/components/common/messageservice';
+import { MessageService } from "primeng/components/common/messageservice";
 import { ButtonModule } from "primeng/button";
 import { MenubarModule } from "primeng/menubar";
 import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { ToastModule } from "primeng/toast";
+import { QuestionModule } from "./question/question.module";
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +46,8 @@ import { ToastModule } from "primeng/toast";
     MenubarModule,
     SubjectModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    QuestionModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]
