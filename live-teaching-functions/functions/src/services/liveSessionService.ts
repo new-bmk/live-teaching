@@ -15,9 +15,11 @@ export const createRecordedSessionRefById = (liveSessionId: string) => {
     .doc(liveSessionId)
 }
 
-export const createSessionRefById = (sessionId: string) => {
+export const createSessionRefById = (subjectId: string, sessionId: string) => {
   return admin
     .firestore()
+    .collection('subject')
+    .doc(subjectId)
     .collection('session')
     .doc(sessionId)
 }
@@ -25,7 +27,10 @@ export const createSessionRefById = (sessionId: string) => {
 export const createLiveSession = async (
   liveSessionInput: ILiveSessionInput
 ) => {
-  const sessionRef = createSessionRefById(liveSessionInput.session_id)
+  const sessionRef = createSessionRefById(
+    liveSessionInput.subject_id,
+    liveSessionInput.session_id
+  )
 
   const liveSessionCreateResult = await admin
     .firestore()

@@ -16,6 +16,7 @@ export const ping = functions.https.onRequest((request, response) => {
 /*
 body: {
   data: {
+    subject_id: string
     session_id: string
     stream_url: string
   }
