@@ -1,13 +1,11 @@
 import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
+import { SessionCrudComponent } from './session-crud/session-crud.component';
 import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
-import { SubjectManageComponent } from "./subject-manage/subject-manage.component";
-// import { AuthGuardService as AuthGuard } from '@app/auth/auth-guard.service';
 
 const routes: Routes = [
-  // { path: "review", component: SubjectCrudComponent, canActivate: [AuthGuard] }
   { path: "subject", component: SubjectCrudComponent },
-  { path: "subject/manage/:id", component: SubjectManageComponent }
+  { path: "subject/:subjectId/session", component: SessionCrudComponent }
 ];
 
 @NgModule({

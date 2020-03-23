@@ -165,3 +165,46 @@
     </div>
   </p-footer>
 </p-dialog>
+
+<p-dialog
+  header="Create Live Session"
+  [(visible)]="liveSessionDisplayDialog"
+  [responsive]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
+  showEffect="fade"
+  [modal]="true"
+  [width]="300"
+  (onHide)="onLiveSessionDialogHide($event)"
+  [contentStyle]="{ overflow: 'visible' }"
+>
+  <div
+    class="ui-g ui-fluid"
+    *ngIf="liveSessionTemplate"
+    [formGroup]="liveSessionTemplate"
+  >
+    <div class="ui-g-12">
+      <p class="label">URL</p>
+      <input
+        class="fullwidth"
+        formControlName="url"
+        id="url"
+        placeholder="Fill URL"
+        type="text"
+        pInputText
+      />
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button
+        type="button"
+        pButton
+        icon="fas fa-check"
+        (click)="saveLiveSession(liveSessionTemplate.value)"
+        label="Live"
+        class="ui-button-success"
+      ></button>
+    </div>
+  </p-footer>
+</p-dialog>

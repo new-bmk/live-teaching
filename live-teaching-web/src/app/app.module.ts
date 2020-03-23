@@ -24,6 +24,7 @@ import { SubjectModule } from "./subject/subject.module";
 import { CardModule } from "primeng/card";
 import { ToastModule } from "primeng/toast";
 import { QuestionModule } from "./question/question.module";
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +41,7 @@ import { QuestionModule } from "./question/question.module";
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
