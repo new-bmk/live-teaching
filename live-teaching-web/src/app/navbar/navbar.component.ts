@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
     this.afAuth.user.subscribe(user=>{
       if(user)
        this.user = user.providerData[0]
+       console.log(this.user)
     })
   }
 

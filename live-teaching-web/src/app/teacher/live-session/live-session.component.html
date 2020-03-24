@@ -1,0 +1,26 @@
+{{ loading ? 'loading...' : '' }}
+<p-table
+  [columns]="(liveSessionTableRaw$ | async | async)?.headers"
+  [value]="(liveSessionTableRaw$ | async | async)?.bodies"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns; index as i">
+        <span *ngIf="col.field == 'code'">{{ col.header }}</span>
+        <button *ngIf="col.field != 'code'" (click)="onSendQuestion(i - 1)">
+          <span *ngIf="(liveSession$ | async)?.active_question_idx == i - 1">
+            alive
+          </span>
+          {{ col.header }}
+        </button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr>
+      <td *ngFor="let col of columns">
+        {{ rowData[col.field] }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -1,1 +1,97 @@
-<p>student works!</p>
+<div class="header">
+  <div class="ui-g title">
+    <h1>Live Session</h1>
+  </div>
+  <div [formGroup]="searchForm" class="ui-g search">
+    <div class="ui-md-5">
+      <input
+        type="text"
+        pInputText
+        formControlName="searchText"
+        style="width:100%"
+        placeholder="Search by Subject"
+      />
+    </div>
+    <div class="ui-md-1">
+      <i class="pi pi-search" style="font-size: 3em;"></i>
+    </div>
+  </div>
+</div>
+<div class="body" id="style-1">
+  <div class="ui-g" *ngIf="!loading">
+    <br />
+    <ng-container *ngFor="let liveSession of sessionList">
+      <div class="ui-lg-3 ui-md-6 ui-g-12">
+        <div class="student-card">
+          <div
+            style="cursor: pointer;"
+            (click)="joinLiveSession(liveSession.id)"
+          >
+            <div class="my-card">
+              <p-card>
+                <p-header>
+                  <div
+                    class="card-header"
+                    [ngStyle]="{ 'background-color': getRandomColor() }"
+                  >
+                    <div
+                      style="display: flex; justify-content: space-between; width: 100%;"
+                    >
+                      <span style="display: flex; margin-left: 1em;">{{
+                        liveSession?.subject?.title
+                      }}</span>
+                      <span style="display: flex; align-items: center;">
+                        <span class="blink_me"
+                          ><i class="pi pi-video"></i
+                        ></span>
+                        <span
+                          style="display: flex; font-size: small; margin-right: 1em;"
+                          >LIVE</span
+                        >
+                      </span>
+                    </div>
+                  </div>
+                </p-header>
+                <div class="ui-g">
+                  <div class="ui-g ui-g-12">
+                    <div class="ui-g-4 centered paddingless">
+                      <!-- profile pic-->
+                      <div class="student-profile-pic">
+                        <i class="pi pi-user" style="font-size: 4em;"></i>
+                      </div>
+                    </div>
+                    <div class="ui-g-8">
+                      <div>
+                        <h3 class="marginless">
+                          Mr. Thor Asgard
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <p-footer>
+                  <div class="footer-container centered" [class.inactive]="true">
+                    <span class="label"> บิลค้างชำระ </span>
+                    <div class="badge" [class.inactive]="true">
+                      gg
+                    </div>
+                  </div>
+                </p-footer> -->
+              </p-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div *ngIf="loading" class="loading-container">
+    <div style="align-self: center;">
+      <p-progressSpinner></p-progressSpinner>
+      <p style="text-align:center;">
+        Loading...
+      </p>
+    </div>
+  </div>
+</div>
+<p-toast class="ui-toast-bottom-right"></p-toast>
+
