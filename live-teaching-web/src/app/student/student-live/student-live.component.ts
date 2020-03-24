@@ -66,6 +66,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
       .snapshotLiveSession(liveSessionId)
       .subscribe(async (data: any) => {
         this.activeQuizIndex = data.active_question_idx;
+        this.displayBasic = true;
         if (_.isEmpty(this.quizList)) {
           this.getQuiz(data.session_ref);
         }
@@ -94,7 +95,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   }
 
   submitQuestion() {
-    this.loadingQuestion = true
+    this.loadingQuestion = true;
     if (this.quizForm.invalid) {
       return;
     }
@@ -119,7 +120,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
             detail: `เนื่องจาก ${result.reason}`
           });
         }
-        this.loadingQuestion = false
+        this.loadingQuestion = false;
         this.displayBasic = false;
         this.clearQuizForm();
       });
