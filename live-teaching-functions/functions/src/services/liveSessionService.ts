@@ -126,14 +126,13 @@ export const joinLiveSession = async (liveSessionId: string, code: string) => {
   throw new Error('cannot find recorded_session')
 }
 
-export const submitResult = async (
+export const submitAnswer = async (
   liveSessionId: string,
   code: string,
   quesionAnswer: string,
   questionIdx: number
 ) => {
   const liveSessionRef = createLiveSessionRefById(liveSessionId)
-
   const recordedSessionRefs = await admin
     .firestore()
     .collection('recorded_session')
@@ -157,8 +156,10 @@ export const submitResult = async (
           if (participantIdx < 0) {
             throw new Error('Cannot find Participant')
           }
-          const question = await recordedSessionData.session_ref.get()?.data()
-            ?.questions[questionIdx]
+          const questionSnapshot = await recordedSessionData?.session_ref?.get()
+          console.log('get snapshot')
+          const question = questionSnapshot?.data()?.questions[questionIdx]
+          console.log('question.score :', question.score)
           const updateParticipant = {
             ...recordedParticipants[participantIdx],
             quiz_results: [
@@ -174,7 +175,6 @@ export const submitResult = async (
           const recordedSessionRef = createRecordedSessionRefById(
             recordedSessionDoc.id
           )
-
           return t.update(recordedSessionRef, {
             participants: recordedParticipants
           })

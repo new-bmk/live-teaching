@@ -8,6 +8,8 @@ import * as liveSessionService from './services/liveSessionService'
 // // https://firebase.google.com/docs/functions/typescript
 //
 admin.initializeApp(functions.config().firebase)
+const cors = require('cors')
+const corsHandler = cors({ origin: true })
 
 export const ping = functions.https.onRequest((request, response) => {
   response.send(pingExample())
@@ -23,38 +25,44 @@ body: {
 }
 */
 export const createLiveSession = functions.https.onRequest(async (req, res) => {
-  try {
-    const result = await liveSessionService.createLiveSession(req?.body?.data)
-    res.send({ status: 'ok', data: result })
-  } catch (error) {
-    res.send({ status: 'fail', reason: error.message })
-  }
+  corsHandler(req, res, async () => {
+    try {
+      const result = await liveSessionService.createLiveSession(req?.body?.data)
+      res.send({ status: 'ok', data: result })
+    } catch (error) {
+      res.send({ status: 'fail', reason: error.message })
+    }
+  })
 })
 
 export const joinLiveSession = functions.https.onRequest(async (req, res) => {
-  try {
-    const result = await liveSessionService.joinLiveSession(
-      req?.body?.data?.live_session_id,
-      req?.body?.data?.code
-    )
-    res.send({ status: 'ok', data: result })
-  } catch (error) {
-    res.send({ status: 'fail', reason: error.message })
-  }
+  corsHandler(req, res, async () => {
+    try {
+      const result = await liveSessionService.joinLiveSession(
+        req?.body?.data?.live_session_id,
+        req?.body?.data?.code
+      )
+      res.send({ status: 'ok', data: { ...result, valid: true } })
+    } catch (error) {
+      res.send({ status: 'fail', reason: error.message })
+    }
+  })
 })
 
-export const submitQuestion = functions.https.onRequest(async (req, res) => {
-  try {
-    const result = await liveSessionService.submitResult(
-      req?.body?.data?.live_session_id,
-      req?.body?.data?.code,
-      req?.body?.data?.quesionAnswer,
-      req?.body?.data?.questionIdx,
-    )
-    res.send({ status: 'ok', data: result })
-  } catch (error) {
-    res.send({ status: 'fail', reason: error.message })
-  }
+export const submitAnswer = functions.https.onRequest(async (req, res) => {
+  corsHandler(req, res, async () => {
+    try {
+      const result = await liveSessionService.submitAnswer(
+        req?.body?.data?.live_session_id,
+        req?.body?.data?.code,
+        req?.body?.data?.quesionAnswer,
+        req?.body?.data?.questionIdx
+      )
+      res.send({ status: 'ok', data: { ...result, valid: true } })
+    } catch (error) {
+      res.send({ status: 'fail', reason: error.message })
+    }
+  })
 })
 
 /*
@@ -65,12 +73,14 @@ body: {
 }
 */
 export const endLiveSession = functions.https.onRequest(async (req, res) => {
-  try {
-    const result = await liveSessionService.endLiveSession(
-      req?.body?.data?.live_session_id
-    )
-    res.send({ status: 'ok', data: result })
-  } catch (error) {
-    res.send({ status: 'fail', reason: error.message })
-  }
+  corsHandler(req, res, async () => {
+    try {
+      const result = await liveSessionService.endLiveSession(
+        req?.body?.data?.live_session_id
+      )
+      res.send({ status: 'ok', data: result })
+    } catch (error) {
+      res.send({ status: 'fail', reason: error.message })
+    }
+  })
 })
