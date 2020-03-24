@@ -1,46 +1,54 @@
-import { Injectable } from "@angular/core";
-import { of } from "rxjs";
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { map } from 'rxjs/operators';
+import _ from 'lodash';
 // import { PagedRestfulService } from '@app/core/paged-restful.service';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SubjectService {
-  constructor(
-  ) // private pagedRestfulService: PagedRestfulService
-  {}
+  constructor(private fireStore: AngularFirestore) {}
 
-  loadSubject(id: string) {
-    // return this.pagedRestfulService.loadPagedRestful( 'review', reviewId)
-    return of(null);
+  private subjectTranform(doc) {
+    return {
+      ...doc.data(),
+      id: doc.id
+    };
   }
 
-  listSubjectXXXXX(
-    offset: number,
-    max: number,
-    filter?: any,
-    sort?: string,
-    order?: any
-  ) {
-    // return this.pagedRestfulService.listPagedRestful( 'review', offset, max, filter, sort, order)
-    return of(null);
+  loadSubject(id: string) {
+    this.fireStore
+      .collection('subject')
+      .doc(id)
+      .get()
+      .pipe(
+        map(doc => {
+          if (doc.exists) {
+            return this.subjectTranform(doc);
+          } else {
+            return null;
+          }
+        })
+      );
   }
 
   createSubject(data) {
-    // return this.pagedRestfulService.createPagedRestful( 'review', data)
-    return of(null);
+    return this.fireStore.collection('subject').add(data);
   }
 
   updateSubject(id, data) {
-    // return this.pagedRestfulService.updatePagedRestful( 'review', id, data)
-    return of(null);
+    return this.fireStore
+      .collection('subject')
+      .doc(id)
+      .update(data);
   }
 
   deleteSubject(id) {
-    // return this.pagedRestfulService.deletePagedRestful( 'review', id)
-    return of(null);
+    return this.fireStore
+      .collection('subject')
+      .doc(id)
+      .delete();
   }
 
   listSubjects(
@@ -50,13 +58,25 @@ export class SubjectService {
     sort?: string,
     order?: any
   ) {
-    return of({
-      results: [
-        { id: "00001", name: 'Introduction to Programing', publicity: "public" },
-        { id: "00002", name: 'Discrete mathematics ',publicity: "public" },
-        { id: "00003", name: 'Software Lab', publicity: "public" }
-      ],
-      totalCount: 3
-    });
+    return this.fireStore
+      .collection('subject', ref => {
+        let query:
+          | firebase.firestore.CollectionReference
+          | firebase.firestore.Query = ref;
+        if (_.get(filter, 'email')) {
+          ref.where('moderators', 'array-contains', filter.email);
+        }
+        return query;
+      })
+      .get()
+      .pipe(
+        map(result => {
+          if (result.empty) {
+            return [];
+          } else {
+            return result.docs.map(this.subjectTranform);
+          }
+        })
+      );
   }
 }

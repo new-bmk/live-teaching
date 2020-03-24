@@ -1,19 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import * as _ from "lodash";
-import { SortEvent, LazyLoadEvent } from "primeng/api";
+import { Component, OnInit } from '@angular/core';
+import * as _ from 'lodash';
+import { SortEvent, LazyLoadEvent } from 'primeng/api';
 import {
   FormGroup,
   FormControl,
   Validators,
   FormArray
-} from "../../../../node_modules/@angular/forms";
-import { SubjectService } from "../subject.service";
-import { Router } from "@angular/router";
+} from '../../../../node_modules/@angular/forms';
+import { SubjectService } from '../subject.service';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: "app-subject-crud",
-  templateUrl: "./subject-crud.component.html",
-  styleUrls: ["./subject-crud.component.scss"]
+  selector: 'app-subject-crud',
+  templateUrl: './subject-crud.component.html',
+  styleUrls: ['./subject-crud.component.scss']
 })
 export class SubjectCrudComponent implements OnInit {
   displayDialog: boolean;
@@ -24,22 +26,42 @@ export class SubjectCrudComponent implements OnInit {
   subjectForm: FormGroup;
   submitted: boolean = false;
 
+  authData: any;
+  subscribeEndUser: any;
+  subscribeSubject: any;
+
   loading: boolean;
   totalRecords: number;
   currentOption: any = {};
 
   lang: any = {};
 
-  constructor(private subjectService: SubjectService, private router: Router) {}
+  publicityOptions = [
+    {
+      label: 'private',
+      value: 'private'
+    },
+    {
+      label: 'public',
+      value: 'public'
+    }
+  ];
+
+  constructor(
+    private subjectService: SubjectService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   private refreshData() {
     this.loading = true;
     this.subjectService
-      .listSubjects(0, 999, null, "title", 1)
-      .subscribe(({ results, totalCount }) => {
+      .listSubjects(0, 999, { email: this.authData.email }, 'title', 1)
+      .subscribe(results => {
+        console.log(results);
         this.subjectList = results;
         this.loading = false;
-        this.totalRecords = totalCount;
+        // this.totalRecords = totalCount;
       });
   }
 
@@ -50,14 +72,14 @@ export class SubjectCrudComponent implements OnInit {
     sort?: string,
     order?: number
   ) {
-    const orderString = order === 1 ? "asc" : "desc";
+    const orderString = order === 1 ? 'asc' : 'desc';
     this.loading = true;
-    this.subjectService
+    this.subscribeSubject = this.subjectService
       .listSubjects(offset, max, filter, sort, orderString)
-      .subscribe(({ results, totalCount }) => {
+      .subscribe(results => {
         this.subjectList = results;
-        this.totalRecords = totalCount;
         this.loading = false;
+        // this.totalRecords = totalCount;
       });
   }
   loadSubjectsLazy($event: LazyLoadEvent) {
@@ -71,26 +93,42 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   formInitialValue: any = {
-    id: "",
-    name: "",
-    color: "#000000",
-    publicity: "",
-    sessions: []
+    id: '',
+    title: '',
+    color: '#000000',
+    publicity: 'public',
+    sessions: [],
+    moderators: []
   };
 
   ngOnInit() {
     this.subjectForm = new FormGroup({
-      id: new FormControl(""),
-      name: new FormControl(""),
-      color: new FormControl("#000000"),
-      publicity: new FormControl(""),
-      sessions: new FormArray([])
+      id: new FormControl(''),
+      title: new FormControl(''),
+      color: new FormControl('#000000'),
+      publicity: new FormControl(''),
+      sessions: new FormArray([]),
+      moderators: new FormControl([])
     });
 
-    this.refreshData();
+    this.subscribeEndUser = this.authService.getEndUser.subscribe(
+      (auth: any) => {
+        console.log(auth);
+        this.authData = auth;
+        this.formInitialValue.moderators = [auth.email];
+        this.subjectForm.reset(this.formInitialValue);
+        this.refreshData();
+      }
+    );
 
     this.initFilters();
   }
+
+  ngOnDestroy() {
+    this.subscribeEndUser.unsubscribe();
+    this.subscribeSubject.unsubscribe();
+  }
+
   get f() {
     return this.subjectForm.controls;
   }
@@ -129,7 +167,7 @@ export class SubjectCrudComponent implements OnInit {
     if (this.newSubject) {
       this.subjectService
         .createSubject(this.subjectForm.value)
-        .subscribe(() => {
+        .then(() => {
           this.refreshData();
           // this.messageService.add({
           //   severity: "success",
@@ -137,13 +175,17 @@ export class SubjectCrudComponent implements OnInit {
           //   detail: `Subject has been create`
           // });
           // this.logger.debug(`Subject has been created.`);
+        })
+        .finally(() => {
+          this.subject = {};
+          this.displayDialog = false;
+          this.submitted = false;
         });
     } else {
-      let id = this.subject._id;
-      delete this.subject._id;
+      let id = this.subject.id;
       this.subjectService
         .updateSubject(id, this.subjectForm.value)
-        .subscribe(() => {
+        .then(() => {
           this.refreshData();
           // this.messageService.add({
           //   severity: "success",
@@ -151,35 +193,25 @@ export class SubjectCrudComponent implements OnInit {
           //   detail: `Id [${id}] has been update`
           // });
           // this.logger.debug(`Subject [${id}] has been updated.`);
+        })
+        .finally(() => {
+          this.subject = {};
+          this.displayDialog = false;
+          this.submitted = false;
         });
     }
-    this.subject = {};
-    this.displayDialog = false;
-    this.submitted = false;
   }
 
   delete() {
-    this.subjectService.deleteSubject(this.subject._id).subscribe(({ ok }) => {
-      if (ok) {
-        this.refreshData();
-        // this.messageService.add({
-        //   severity: "success",
-        //   summary: "Subject",
-        //   detail: `Id [${this.subject._id}] has been delete}`
-        // });
-        // this.logger.debug(`Subject [${this.subject._id}] has been deleted.`);
-      } else {
-        // this.messageService.add({
-        //   severity: "error",
-        //   summary: "Subject",
-        //   detail: `Id [${this.subject._id}] cannot delete`
-        // });
-        // this.logger.debug(`Subject [${this.subject._id}] hasn't been deleted.`);
-      }
-      this.subject = {};
-    });
-    this.displayDialog = false;
-    this.submitted = false;
+    this.subjectService
+      .deleteSubject(this.subject.id)
+      .then(() => {
+        this.subject = {};
+      })
+      .finally(() => {
+        this.displayDialog = false;
+        this.submitted = false;
+      });
   }
 
   onRowSelect(event) {}

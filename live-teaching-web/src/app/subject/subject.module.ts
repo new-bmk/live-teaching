@@ -14,6 +14,8 @@ import { TooltipModule } from "primeng/tooltip";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { InputMaskModule } from "primeng/inputmask";
 import { BreadcrumbModule } from "primeng/breadcrumb";
+import { ChipsModule } from 'primeng/chips';
+
 
 import { DialogModule } from "primeng/dialog";
 import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
@@ -43,7 +45,8 @@ import { QuestionModule } from "../question/question.module";
     DialogModule,
     PanelModule,
     SubjectRoutingModule,
-    QuestionModule
+    QuestionModule,
+    ChipsModule
   ],
   exports: [SubjectCrudComponent, SessionCrudComponent],
   declarations: [
