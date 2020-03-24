@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 })
 export class SubjectService {
   constructor(
-    private http: HttpClient,
   ) // private pagedRestfulService: PagedRestfulService
   {}
 
@@ -59,12 +58,5 @@ export class SubjectService {
       ],
       totalCount: 3
     });
-  }
-
-  // ------- pre live-session
-  createLiveSession(data) {
-    return this.http
-      .post(`${environment.serverUrl}/createLiveSession`, { data })
-      .toPromise();
   }
 }

@@ -20,7 +20,7 @@ export const createSessionRefById = (subjectId: string, sessionId: string) => {
     .firestore()
     .collection('subject')
     .doc(subjectId)
-    .collection('session')
+    .collection('sessions')
     .doc(sessionId)
 }
 

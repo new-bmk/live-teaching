@@ -1,14 +1,12 @@
 import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import * as _ from "lodash";
-import { SortEvent, LazyLoadEvent } from "primeng/api";
 import {
-  FormGroup,
+  FormArray,
   FormControl,
-  Validators,
-  FormArray
+  FormGroup
 } from "../../../../node_modules/@angular/forms";
-import { SubjectService } from "../subject.service";
-import { Router } from "@angular/router";
+import { SessionCrudService } from "./session-crud.service";
 
 @Component({
   selector: "app-session-crud",
@@ -16,44 +14,8 @@ import { Router } from "@angular/router";
   styleUrls: ["./session-crud.component.scss"]
 })
 export class SessionCrudComponent implements OnInit {
-  subject = {
-    id: "00001",
-    name: "Introduction to Programming",
-    publicity: "public",
-    sessions: [
-      {
-        id: "001",
-        url: "www.youtube.com/live001",
-        questions: [
-          {
-            type: "simple_choices",
-            question_text: "1+1 = ?",
-            question_image_url:
-              "https://mymoneyspoke.com/wp-content/uploads/2019/10/learning.jpg",
-            c1: "1",
-            c2: "2",
-            c3: "3",
-            c4: "4",
-            answer: "2",
-            score: 10
-          },
-          {
-            type: "simple_choices",
-            question_text: "4*2 = ?",
-            // question_image_url:
-            //   "https://mymoneyspoke.com/wp-content/uploads/2019/10/learning.jpg",
-            c1: "3",
-            c2: "5",
-            c3: "7",
-            c4: "8",
-            answer: "8",
-            score: 10
-          }
-        ]
-      },
-      { id: "002", url: "www.youtube.com/live002", questions: [] }
-    ]
-  };
+  subject = {};
+  subjectId: string;
 
   selectedSessionId = null;
   displayDialog = false;
@@ -66,12 +28,11 @@ export class SessionCrudComponent implements OnInit {
   liveSessionDisplayDialog = false;
   liveSessionTemplate: FormGroup;
 
-  constructor(private subjectService: SubjectService, private router: Router) {}
-
-  formInitialValue: any = {
-    id: "",
-    url: ""
-  };
+  constructor(
+    private sessionCrudService: SessionCrudService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.sessionsFormGroup = new FormGroup({});
@@ -80,9 +41,6 @@ export class SessionCrudComponent implements OnInit {
     _.each(
       // is required use :=> field:  new FormControl('', Validators.required),
       {
-        id: new FormControl(""),
-        name: new FormControl(""),
-        publicity: new FormControl(""),
         sessions: new FormArray([])
       },
       (v, k) => this.sessionsFormGroup.addControl(k, v)
@@ -91,23 +49,32 @@ export class SessionCrudComponent implements OnInit {
     _.each(
       // is required use :=> field:  new FormControl('', Validators.required),
       {
-        id: new FormControl("")
+        title: new FormControl(""),
+        questions: new FormArray([])
+        // scheduled: new FormGroup({})
       },
       (v, k) => this.sessionTemplate.addControl(k, v)
     );
-
-    //TODO set data with real fetch subject by subject id
-    this.setData(this.subject);
 
     // ------------ live session -----------------
     this.liveSessionTemplate = new FormGroup({});
     _.each(
       // is required use :=> field:  new FormControl('', Validators.required),
       {
-        url: new FormControl("")
+        stream_url: new FormControl("")
       },
       (v, k) => this.liveSessionTemplate.addControl(k, v)
     );
+
+    // ------ load session ------
+    this.subjectId = this.route.snapshot.paramMap.get("subjectId");
+    this.sessionCrudService.loadSession(this.subjectId).subscribe(sessions => {
+      this.clearSessionForm();
+      console.log(sessions);
+      this.setData({
+        sessions
+      });
+    });
   }
 
   setData(data: any) {
@@ -129,7 +96,7 @@ export class SessionCrudComponent implements OnInit {
     console.log("create session form");
     const sessionForm = new FormGroup({
       id: new FormControl(""),
-      url: new FormControl(""),
+      title: new FormControl(""),
       questions: new FormControl([])
     });
     if (value) {
@@ -148,18 +115,62 @@ export class SessionCrudComponent implements OnInit {
     items.removeAt(index);
   }
 
+  clearSessionForm() {
+    const items = this.sessionsFormGroup.get("sessions") as FormArray;
+    items.clear();
+  }
+
   save(data) {
     console.log("save", data);
     this.addSessionForm(data);
-    this.sessionTemplate.patchValue({ id: "" });
 
-    this.displayDialog = false;
+    this.sessionCrudService
+      .createSession(this.subjectId, data)
+      .then(() => {
+        window.alert(`Add success`);
+        this.sessionTemplate.patchValue({ id: "", title: "", questions: [] });
+      })
+      .catch(error => {
+        // TODO: handle catch error message
+        console.error(error);
+      })
+      .finally(() => {
+        this.displayDialog = false;
+      });
   }
 
   delete(sessionId) {
     console.log("delete", this.getSelectedRowIndex(sessionId));
-    this.removeSessionForm(this.getSelectedRowIndex(sessionId));
     this.selectedSessionId = null;
+
+    this.sessionCrudService
+      .deleteSession(this.subjectId, sessionId)
+      .then(() => {
+        window.alert(`Remove ${sessionId} success`);
+        this.removeSessionForm(this.getSelectedRowIndex(sessionId));
+      })
+      .catch(error => {
+        // TODO: handle catch error message
+        console.error(error);
+      });
+  }
+
+  update(sessionId) {
+    console.log("update", this.getSelectedRowIndex(sessionId));
+    const items = this.sessionsFormGroup.get("sessions") as FormArray;
+    const values = items.at(this.getSelectedRowIndex(sessionId)).value;
+    // this.clearSessionForm();
+
+    this.sessionCrudService
+      .updateSession(this.subjectId, sessionId, values)
+      .then(() => {
+        this.selectedSessionId = null;
+        window.alert(`Update ${sessionId} success`);
+      })
+      .catch(error => {
+        // TODO: handle catch error message
+        console.error(error);
+      });
   }
   // -------------------------------------------------------------------------------------
 
@@ -214,10 +225,11 @@ export class SessionCrudComponent implements OnInit {
   onLiveSessionDialogHide() {}
 
   saveLiveSession(data) {
-    if (!_.isEmpty(data.url) && !_.isEmpty(this.selectedSessionId)) {
-      this.subjectService
+    if (!_.isEmpty(data.stream_url) && !_.isEmpty(this.selectedSessionId)) {
+      this.sessionCrudService
         .createLiveSession({
-          stream_url: data.url,
+          stream_url: data.stream_url,
+          subject_id: this.subjectId,
           session_id: this.selectedSessionId
         })
         .then((result: any) => {
