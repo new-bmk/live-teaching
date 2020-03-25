@@ -68,6 +68,16 @@
       <div class="ui-g">
         <div class="ui-g-12 button-go-live">
           <button
+            *ngIf="currentLiveSessionId"
+            type="button"
+            pButton
+            icon="fas fa-check"
+            (click)="returnToLiveSession(currentLiveSessionId)"
+            label="Return To Live"
+            class="ui-button-success"
+          ></button>
+          <button
+            *ngIf="!currentLiveSessionId"
             type="button"
             pButton
             (click)="onClickLive(selectedSessionId)"

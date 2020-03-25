@@ -7,6 +7,7 @@ import {
   FormGroup
 } from "../../../../node_modules/@angular/forms";
 import { SessionCrudService } from "./session-crud.service";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: "app-session-crud",
@@ -27,6 +28,8 @@ export class SessionCrudComponent implements OnInit {
   // ---------- live session ---------
   liveSessionDisplayDialog = false;
   liveSessionTemplate: FormGroup;
+  currentLiveSessionId: any;
+  subscribeLiveSession: Subscription;
 
   constructor(
     private sessionCrudService: SessionCrudService,
@@ -75,6 +78,13 @@ export class SessionCrudComponent implements OnInit {
         sessions
       });
     });
+  }
+
+  ngOnDestroy() {
+
+    if(this.subscribeLiveSession){
+      this.subscribeLiveSession.unsubscribe();
+    }
   }
 
   setData(data: any) {
@@ -177,6 +187,16 @@ export class SessionCrudComponent implements OnInit {
   onRowSelect($event) {
     console.log("select row", $event);
     this.selectedSessionId = $event.data.id;
+
+    // ------ exist live sesion ---
+    if (this.subscribeLiveSession) {
+      this.currentLiveSessionId = null;
+      this.subscribeLiveSession.unsubscribe();
+    }
+    this.subscribeLiveSession = this.sessionCrudService.getLiveSessionId(this.subjectId, this.selectedSessionId)
+      .subscribe((liveSessionId) => {
+        this.currentLiveSessionId = liveSessionId;
+      });
   }
 
   onClickAddButton() {
@@ -184,15 +204,6 @@ export class SessionCrudComponent implements OnInit {
   }
 
   onClickLive(sessionId) {
-    console.log("Go live");
-    const sessions = this.sessionsFormGroup.get("sessions") as FormArray;
-    const session = _.find(sessions.value, it => {
-      return it.id === sessionId;
-    });
-    if (session) {
-      //TODO go live
-      console.log("live url: ", session.url);
-    }
     this.liveSessionDisplayDialog = true;
   }
 
@@ -224,7 +235,22 @@ export class SessionCrudComponent implements OnInit {
 
   onLiveSessionDialogHide() {}
 
+  returnToLiveSession(sessionId){
+    this.router.navigate(
+      [
+        `/teacher`,
+        `live-session`,
+        this.currentLiveSessionId
+      ],
+      { replaceUrl: true }
+    );
+  }
+
   saveLiveSession(data) {
+    if(this.currentLiveSessionId) {
+      return;
+    }
+
     if (!_.isEmpty(data.stream_url) && !_.isEmpty(this.selectedSessionId)) {
       this.sessionCrudService
         .createLiveSession({
