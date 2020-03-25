@@ -15,7 +15,6 @@
       [src]="stramURL | safeUrl"
       frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
       style="flex: 1 1 auto;"
       autoplay
     ></iframe>
@@ -55,6 +54,7 @@
       (click)="submitQuestion($event)"
       label="Submit Answer"
       class="submitBtn"
+      [disabled]="loadingQuestion"
     ></button>
   </p-footer>
 </p-dialog>
