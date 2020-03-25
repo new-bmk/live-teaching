@@ -4,6 +4,7 @@
   [loading]="loading"
   [lazy]="true"
   (onLazyLoad)="loadSubjectsLazy($event)"
+  [lazyLoadOnInit]="false"
   [totalRecords]="totalRecords"
   [value]="subjectList"
 >
@@ -59,7 +60,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr id="row-empty">
-      <td [attr.colspan]="3">
+      <td [attr.colspan]="5">
         Not Found
       </td>
     </tr>
