@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import _ from 'lodash';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -21,7 +21,8 @@ export class LiveSessionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private liveSessionService: LiveSessionService
+    private liveSessionService: LiveSessionService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -55,25 +56,29 @@ export class LiveSessionComponent implements OnInit {
     recordSession: IRecordedSession,
     session: ISession
   ) {
+    console.log('session', session);
     const headers = [{ field: 'code', header: 'Code' }];
     const bodies = [];
     const totalScore = {};
     for (const participant of recordSession.participants) {
       const student = { code: participant.code };
-      for (const [i, question] of session.questions.entries()) {
-        headers.push({ field: `q${i}`, header: `Q${i}` });
+      const questions = _.get(session, 'questions');
+      if (questions) {
+        for (const [i, question] of _.get(session, 'questions').entries()) {
+          headers.push({ field: `q${i}`, header: `Q${i}` });
 
-        const quiz = participant.quiz_results.find(q => q.question_idx === i);
-        if (!quiz) {
-          student[`q${i}`] = '-';
-        } else {
-          student[`q${i}`] = quiz.answer === question.answer ? '/' : 'x';
-        }
+          const quiz = participant.quiz_results.find(q => q.question_idx === i);
+          if (!quiz) {
+            student[`q${i}`] = '-';
+          } else {
+            student[`q${i}`] = quiz.answer === question.answer ? '/' : 'x';
+          }
 
-        if (!totalScore[`q${i}`]) {
-          totalScore[`q${i}`] = { resultScore: 0, maxScore: question.score };
+          if (!totalScore[`q${i}`]) {
+            totalScore[`q${i}`] = { resultScore: 0, maxScore: question.score };
+          }
+          totalScore[`q${i}`].resultScore += _.get(quiz, 'score') || 0;
         }
-        totalScore[`q${i}`].resultScore += quiz.score;
       }
       bodies.push(student);
     }
@@ -96,6 +101,22 @@ export class LiveSessionComponent implements OnInit {
       .sendQuestion(this.liveSessionId, idx)
       .then(() => this.markAliveQuestion())
       .catch(error => console.error(error));
+  }
+
+  endSession() {
+    if (
+      window.confirm(`Are you sure to end live session, you can't return back.`)
+    ) {
+      this.liveSessionService
+        .endSession(this.liveSessionId)
+        .then(() => {
+          window.alert('end live session success..');
+          this.router.navigate([`/subject`], { replaceUrl: true });
+        })
+        .catch(error => {
+          window.alert(`Can't end live session. ${error.message}`);
+        });
+    }
   }
 
   markAliveQuestion() {

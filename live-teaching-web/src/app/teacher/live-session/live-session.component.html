@@ -1,4 +1,8 @@
 {{ loading ? 'loading...' : '' }}
+<button (click)="endSession()">
+  End live
+</button>
+
 <p-table
   [columns]="(liveSessionTableRaw$ | async | async)?.headers"
   [value]="(liveSessionTableRaw$ | async | async)?.bodies"

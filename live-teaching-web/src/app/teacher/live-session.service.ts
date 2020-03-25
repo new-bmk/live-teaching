@@ -3,19 +3,21 @@ import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
 import _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LiveSessionService {
-  constructor(private fireStore: AngularFirestore) {}
+  constructor(private fireStore: AngularFirestore, private http: HttpClient) {}
 
   getSessionByRef(sessionRef: DocumentReference) {
     return sessionRef
       .get()
-      .then(snapshot => (snapshot.exists ? snapshot.data() : null)) as Promise<
-      ISession
-    >;
+      .then(snapshot =>
+        snapshot.exists ? { id: snapshot.id, ...snapshot.data() } : null
+      ) as Promise<ISession>;
   }
 
   sendQuestion(liveSessionId: string, idx: number) {
@@ -54,5 +56,13 @@ export class LiveSessionService {
       )
       .valueChanges()
       .pipe(map(result => _.head(result)));
+  }
+
+  endSession(liveSessonRef) {
+    return this.http
+      .post(`${environment.serverUrl}/endLiveSession`, {
+        data: { live_session_id: liveSessonRef }
+      })
+      .toPromise();
   }
 }
