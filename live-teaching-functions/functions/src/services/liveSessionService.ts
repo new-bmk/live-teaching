@@ -157,9 +157,7 @@ export const submitAnswer = async (
             throw new Error('Cannot find Participant')
           }
           const questionSnapshot = await recordedSessionData?.session_ref?.get()
-          console.log('get snapshot')
           const question = questionSnapshot?.data()?.questions[questionIdx]
-          console.log('question.score :', question.score)
           const updateParticipant = {
             ...recordedParticipants[participantIdx],
             quiz_results: [
