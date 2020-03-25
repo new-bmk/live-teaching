@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentReference } from '@angular/fire/firestore';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LiveSessionService {
-  constructor(private fireStore: AngularFirestore, private http: HttpClient) {}
+  constructor(
+    private fireStore: AngularFirestore,
+    private fns: AngularFireFunctions
+  ) {}
 
   getSessionByRef(sessionRef: DocumentReference) {
     return sessionRef
@@ -59,10 +61,7 @@ export class LiveSessionService {
   }
 
   endSession(liveSessonRef) {
-    return this.http
-      .post(`${environment.serverUrl}/endLiveSession`, {
-        data: { live_session_id: liveSessonRef }
-      })
-      .toPromise();
+    const callable = this.fns.httpsCallable('endLiveSession');
+    return callable({ live_session_id: liveSessonRef }).toPromise();
   }
 }

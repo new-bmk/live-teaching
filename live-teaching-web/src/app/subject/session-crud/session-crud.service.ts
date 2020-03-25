@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireFunctions } from '@angular/fire/functions';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionCrudService {
-  constructor(private fireStore: AngularFirestore, private http: HttpClient) {}
+  constructor(
+    private fireStore: AngularFirestore,
+    private fns: AngularFireFunctions
+  ) {}
 
   loadSession(subjectId: string) {
     return this.fireStore
@@ -76,8 +78,7 @@ export class SessionCrudService {
 
   // ------- pre live-session
   createLiveSession(data) {
-    return this.http
-      .post(`${environment.serverUrl}/createLiveSession`, { data })
-      .toPromise();
+    const callable = this.fns.httpsCallable('createLiveSession');
+    return callable(data).toPromise();
   }
 }

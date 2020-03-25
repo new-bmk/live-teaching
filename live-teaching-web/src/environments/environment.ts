@@ -4,8 +4,7 @@
 import { firebaseKey } from "./firebase-key";
 export const environment = {
   production: false,
-  firebase: firebaseKey,
-  serverUrl: "https://us-central1-liveteaching-faf69.cloudfunctions.net"
+  firebase: firebaseKey
 };
 
 /*
