@@ -65,10 +65,7 @@ export const createLiveSession = async (
 
 export const endLiveSession = async (liveSessionId: string) => {
   const liveSessionRef = createLiveSessionRefById(liveSessionId)
-  const liveSessionResult = await liveSessionRef.update({
-    end_stamp: admin.firestore.FieldValue.serverTimestamp()
-  })
-
+  const liveSessionResult = await liveSessionRef.delete()
   const snapshot = await admin
     .firestore()
     .collection('recorded_session')
