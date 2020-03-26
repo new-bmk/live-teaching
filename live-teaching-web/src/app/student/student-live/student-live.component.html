@@ -15,7 +15,6 @@
       [src]="stramURL | safeUrl"
       frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
       style="flex: 1 1 auto;"
       autoplay
     ></iframe>
@@ -25,9 +24,14 @@
 <p-dialog
   *ngIf="activeQuizIndex >= 0 && quizList[activeQuizIndex]"
   [(visible)]="displayBasic"
-  [style]="{ width: '50vw' }"
+  [style]="{ width: '65%' }"
   [baseZIndex]="10000"
   [closable]="false"
+  [contentStyle]="{
+    'overflow-y': 'scroll',
+    minHeight: '50vh',
+    'max-height': '60vh'
+  }"
 >
   <p-header>
     <div style="display: flex; justify-content: space-between;">
@@ -55,6 +59,7 @@
       (click)="submitQuestion($event)"
       label="Submit Answer"
       class="submitBtn"
+      [disabled]="loadingQuestion"
     ></button>
   </p-footer>
 </p-dialog>
