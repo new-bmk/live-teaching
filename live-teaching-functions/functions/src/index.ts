@@ -11,8 +11,10 @@ admin.initializeApp(functions.config().firebase)
 const cors = require('cors')
 const corsHandler = cors({ origin: true })
 
-export const ping = functions.https.onRequest((request, response) => {
-  response.send(pingExample())
+export const ping = functions.https.onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    res.send({data: pingExample()})
+  })
 })
 
 /*
@@ -28,9 +30,9 @@ export const createLiveSession = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
     try {
       const result = await liveSessionService.createLiveSession(req?.body?.data)
-      res.send({ status: 'ok', data: result })
+      res.send({data: { status: 'ok', data: result }})
     } catch (error) {
-      res.send({ status: 'fail', reason: error.message })
+      res.send({data: { status: 'fail', reason: error.message }})
     }
   })
 })
@@ -78,9 +80,9 @@ export const endLiveSession = functions.https.onRequest(async (req, res) => {
       const result = await liveSessionService.endLiveSession(
         req?.body?.data?.live_session_id
       )
-      res.send({ status: 'ok', data: result })
+      res.send({data: { status: 'ok', data: result }})
     } catch (error) {
-      res.send({ status: 'fail', reason: error.message })
+      res.send({data: { status: 'fail', reason: error.message }})
     }
   })
 })
