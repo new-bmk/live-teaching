@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/components/common/messageservice';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'live-teaching-web';
@@ -37,7 +37,7 @@ export class AppComponent {
             } else {
               this.user = endUser[0];
               if (this.user.role === 'teacher') {
-                this.router.navigate(['/teacher'], { replaceUrl: true });
+                // this.router.navigate(['/teacher'], { replaceUrl: true });
               } else {
                 this.router.navigate(['/student'], { replaceUrl: true });
               }

@@ -1,180 +1,186 @@
 <!-- <h2>{{ sessionsFormGroup.get("name").value }}</h2> -->
-<h3>Session List</h3>
-<div ui-g>
-  <div class="ui-g-2">
-    <p-table
-      #dt
-      [loading]="loading"
-      [totalRecords]="totalRecords"
-      [columns]="cols"
-      [value]="sessionsFormGroup.get('sessions').value"
-      selectionMode="single"
-      (onRowSelect)="onRowSelect($event)"
-      dataKey="id"
+<div class="my-container" id="style-1">
+  <div style="display: flex;">
+    <span class="backBtn" (click)="back()"
+      ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
     >
-      <ng-template pTemplate="caption">
-        <div class="caption-container">
-          <div>
-            <button
-              class="ui-button-success"
-              type="button"
-              pButton
-              icon="pi pi-plus"
-              (click)="onClickAddButton()"
-              label="add"
-            ></button>
+    <span class="title">Session List</span>
+  </div>
+  <div ui-g>
+    <div class="ui-g-2">
+      <p-table
+        #dt
+        [loading]="loading"
+        [totalRecords]="totalRecords"
+        [columns]="cols"
+        [value]="sessionsFormGroup.get('sessions').value"
+        selectionMode="single"
+        (onRowSelect)="onRowSelect($event)"
+        dataKey="id"
+      >
+        <ng-template pTemplate="caption">
+          <div class="caption-container">
+            <div>
+              <button
+                class="ui-button-success"
+                type="button"
+                pButton
+                icon="pi pi-plus"
+                (click)="onClickAddButton()"
+                label="add"
+              ></button>
+            </div>
           </div>
-        </div>
-      </ng-template>
+        </ng-template>
 
-      <ng-template pTemplate="header">
-        <tr>
-          <!-- <th>ID</th> -->
-          <th>Title</th>
-        </tr>
-      </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- <th>ID</th> -->
+            <th>Title</th>
+          </tr>
+        </ng-template>
 
-      <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-        <tr [pSelectableRow]="rowData">
-          <!-- <td>
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData">
+            <!-- <td>
             {{ rowData.id }}
           </td> -->
-          <td>
-            {{ rowData.title }}
-          </td>
-        </tr>
-      </ng-template>
+            <td>
+              {{ rowData.title }}
+            </td>
+          </tr>
+        </ng-template>
 
-      <ng-template pTemplate="emptymessage">
-        <tr id="row-empty">
-          <td [attr.colspan]="1">
-            Session Not Found
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
+        <ng-template pTemplate="emptymessage">
+          <tr id="row-empty">
+            <td [attr.colspan]="1">
+              Session Not Found
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
 
-  <div class="ui-g-10">
-    <p-panel
-      header="{{ 'Session ' + selectedSessionId }}"
-      *ngIf="hasSelectedSession"
-      [formGroup]="
-        sessionsFormGroup.get('sessions').controls[
-          getSelectedRowIndex(selectedSessionId)
-        ]
-      "
-    >
-      <div class="ui-g">
-        <div class="ui-g-12 button-go-live">
-          <button
-            *ngIf="currentLiveSessionId"
-            type="button"
-            pButton
-            icon="fas fa-check"
-            (click)="returnToLiveSession(currentLiveSessionId)"
-            label="Return To Live"
-            class="ui-button-success"
-          ></button>
-          <button
-            *ngIf="!currentLiveSessionId"
-            type="button"
-            pButton
-            (click)="onClickLive(selectedSessionId)"
-            label="Go Live"
-            class="ui-button-danger "
-          ></button>
-        </div>
-
-        <div class="ui-g-12">
-          <p class="label">Title</p>
-          <input
-            class="fullwidth"
-            formControlName="title"
-            id="title"
-            placeholder="Fill Title"
-            type="text"
-            pInputText
-          />
-        </div>
-
-        <div class="ui-g-12">
-          <p class="label">Questions</p>
-          <app-question-entry-input
-            formControlName="questions"
-          ></app-question-entry-input>
-        </div>
-      </div>
-
-      <p-footer>
+    <div class="ui-g-10">
+      <p-panel
+        header="{{ 'Session ' + selectedSessionId }}"
+        *ngIf="hasSelectedSession"
+        [formGroup]="
+          sessionsFormGroup.get('sessions').controls[
+            getSelectedRowIndex(selectedSessionId)
+          ]
+        "
+      >
         <div class="ui-g">
-          <div class="ui-g-12" *ngIf="hasSelectedSession">
+          <div class="ui-g-12 button-go-live">
             <button
+              *ngIf="currentLiveSessionId"
               type="button"
               pButton
-              icon="pi pi-trash"
-              (click)="delete(selectedSessionId)"
-              label="Delete"
-              class="ui-button-secondary"
+              icon="pi pi-check"
+              (click)="returnToLiveSession(currentLiveSessionId)"
+              label="Return To Live"
+              class="ui-button-success"
             ></button>
             <button
+              *ngIf="!currentLiveSessionId"
               type="button"
               pButton
-              (click)="update(selectedSessionId)"
-              label="Update"
-              class="ui-button-info"
+              (click)="onClickLive(selectedSessionId)"
+              label="Go Live"
+              class="ui-button-danger "
             ></button>
           </div>
+
+          <div class="ui-g-12">
+            <p class="label">Title</p>
+            <input
+              class="fullwidth"
+              formControlName="title"
+              id="title"
+              placeholder="Fill Title"
+              type="text"
+              pInputText
+            />
+          </div>
+
+          <div class="ui-g-12">
+            <p class="label">Questions</p>
+            <app-question-entry-input
+              formControlName="questions"
+            ></app-question-entry-input>
+          </div>
         </div>
-      </p-footer>
-    </p-panel>
 
-    <p-panel *ngIf="!hasSelectedSession" header="Session Manage">
-      Please select sesstion on the left side</p-panel
-    >
-  </div>
-</div>
+        <p-footer>
+          <div class="ui-g">
+            <div class="ui-g-12" *ngIf="hasSelectedSession">
+              <button
+                type="button"
+                pButton
+                icon="pi pi-trash"
+                (click)="delete(selectedSessionId)"
+                label="Delete"
+                class="ui-button-secondary"
+              ></button>
+              <button
+                type="button"
+                pButton
+                (click)="update(selectedSessionId)"
+                label="Update"
+                class="ui-button-info"
+              ></button>
+            </div>
+          </div>
+        </p-footer>
+      </p-panel>
 
-<p-dialog
-  header="New Session"
-  [(visible)]="displayDialog"
-  [responsive]="true"
-  [draggable]="false"
-  [dismissableMask]="true"
-  showEffect="fade"
-  [modal]="true"
-  [width]="300"
-  (onHide)="onDialogHide($event)"
-  [contentStyle]="{ overflow: 'visible' }"
->
-  <div
-    class="ui-g ui-fluid"
-    *ngIf="sessionTemplate"
-    [formGroup]="sessionTemplate"
-  >
-    <div class="ui-g-12">
-      <p class="label">Title</p>
-      <input
-        class="fullwidth"
-        formControlName="title"
-        id="title"
-        placeholder="Fill Title"
-        type="text"
-        pInputText
-      />
+      <p-panel *ngIf="!hasSelectedSession" header="Session Manage">
+        Please select sesstion on the left side</p-panel
+      >
     </div>
   </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button
-        type="button"
-        pButton
-        icon="fas fa-check"
-        (click)="save(sessionTemplate.value)"
-        label="Save"
-        class="ui-button-success"
-      ></button>
-      <!-- <button
+
+  <p-dialog
+    header="New Session"
+    [(visible)]="displayDialog"
+    [responsive]="true"
+    [draggable]="false"
+    [dismissableMask]="true"
+    showEffect="fade"
+    [modal]="true"
+    [width]="300"
+    (onHide)="onDialogHide($event)"
+    [contentStyle]="{ overflow: 'visible' }"
+  >
+    <div
+      class="ui-g ui-fluid"
+      *ngIf="sessionTemplate"
+      [formGroup]="sessionTemplate"
+    >
+      <div class="ui-g-12">
+        <p class="label">Title</p>
+        <input
+          class="fullwidth"
+          formControlName="title"
+          id="title"
+          placeholder="Fill Title"
+          type="text"
+          pInputText
+        />
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          (click)="save(sessionTemplate.value)"
+          label="Save"
+          class="ui-button-success"
+        ></button>
+        <!-- <button
         *ngIf="subject.id"
         type="button"
         pButton
@@ -183,49 +189,50 @@
         label="Delete"
         class="ui-button-danger"
       ></button> -->
-    </div>
-  </p-footer>
-</p-dialog>
+      </div>
+    </p-footer>
+  </p-dialog>
 
-<p-dialog
-  header="Create Live Session"
-  [(visible)]="liveSessionDisplayDialog"
-  [responsive]="true"
-  [draggable]="false"
-  [dismissableMask]="true"
-  showEffect="fade"
-  [modal]="true"
-  [width]="300"
-  (onHide)="onLiveSessionDialogHide($event)"
-  [contentStyle]="{ overflow: 'visible' }"
->
-  <div
-    class="ui-g ui-fluid"
-    *ngIf="liveSessionTemplate"
-    [formGroup]="liveSessionTemplate"
+  <p-dialog
+    header="Create Live Session"
+    [(visible)]="liveSessionDisplayDialog"
+    [responsive]="true"
+    [draggable]="false"
+    [dismissableMask]="true"
+    showEffect="fade"
+    [modal]="true"
+    [width]="300"
+    (onHide)="onLiveSessionDialogHide($event)"
+    [contentStyle]="{ overflow: 'visible' }"
   >
-    <div class="ui-g-12">
-      <p class="label">URL</p>
-      <input
-        class="fullwidth"
-        formControlName="stream_url"
-        id="stream_url"
-        placeholder="Fill URL"
-        type="text"
-        pInputText
-      />
+    <div
+      class="ui-g ui-fluid"
+      *ngIf="liveSessionTemplate"
+      [formGroup]="liveSessionTemplate"
+    >
+      <div class="ui-g-12">
+        <p class="label">URL</p>
+        <input
+          class="fullwidth"
+          formControlName="stream_url"
+          id="stream_url"
+          placeholder="Fill URL"
+          type="text"
+          pInputText
+        />
+      </div>
     </div>
-  </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button
-        type="button"
-        pButton
-        icon="fas fa-check"
-        (click)="saveLiveSession(liveSessionTemplate.value)"
-        label="Live"
-        class="ui-button-success"
-      ></button>
-    </div>
-  </p-footer>
-</p-dialog>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          (click)="saveLiveSession(liveSessionTemplate.value)"
+          label="Live"
+          class="ui-button-success"
+        ></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+</div>

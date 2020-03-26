@@ -68,15 +68,15 @@
   justify-content: center;
 }
 
-:host .my-container{
-  padding: 1em;
+.my-container{
+  padding: 0 1em;
   background-color: #263238;
+  height: 90vh;
 }
 
 .header {
   color: #ffab00;
   height: 32vh;
-  background-color: #263238;
 
   .title {
     display: flex;

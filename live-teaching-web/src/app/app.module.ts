@@ -30,6 +30,7 @@ import { TableModule } from 'primeng/table';
 import { AngularFireFunctionsModule, ORIGIN } from '@angular/fire/functions';
 import { QuestionModule } from './question/question.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { HttpClientModule } from '@angular/common/http';
     OverlayPanelModule,
     SharedModule,
     TableModule,
-    QuestionModule
+    QuestionModule,
+    ProgressSpinnerModule,
   ],
   providers: [
     MessageService

@@ -9,8 +9,7 @@ import * as _ from "lodash";
 @Component({
   selector: "app-register",
   templateUrl: "./register.component.html",
-  styleUrls: ["./register.component.scss"],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ["./register.component.scss"]
 })
 export class RegisterComponent implements OnInit {
   userAuth;

@@ -1,86 +1,86 @@
-<h2>Subject List</h2>
-<p-table
-  #dt
-  [loading]="loading"
-  [lazy]="true"
-  (onLazyLoad)="loadSubjectsLazy($event)"
-  [lazyLoadOnInit]="false"
-  [totalRecords]="totalRecords"
-  [value]="subjectList"
->
-  <ng-template pTemplate="caption">
-    <div class="caption-container">
-      <div>
-        <button
-          class="ui-button-success"
-          type="button"
-          pButton
-          icon="pi pi-plus"
-          (click)="showDialogToAdd()"
-          label="add"
-        ></button>
+<div class="my-container">
+  <span class="title">Subject List</span>
+  <p-table
+    #dt
+    [loading]="loading"
+    [lazy]="true"
+    (onLazyLoad)="loadSubjectsLazy($event)"
+    [totalRecords]="totalRecords"
+    [value]="subjectList"
+  >
+    <ng-template pTemplate="caption">
+      <div class="caption-container">
+        <div>
+          <button
+            class="ui-button-success"
+            type="button"
+            pButton
+            icon="pi pi-plus"
+            (click)="showDialogToAdd()"
+            label="add"
+          ></button>
+        </div>
       </div>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="header">
-    <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Publicity</th>
-      <th>Session Mange</th>
-      <th class="action-column">Edit</th>
-    </tr>
-  </ng-template>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Publicity</th>
+        <th>Session Mange</th>
+        <th class="action-column">Edit</th>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="body" let-rowData>
-    <tr>
-      <td>{{ rowData.id }}</td>
-      <td>{{ rowData.title }}</td>
-      <td>{{ rowData.publicity }}</td>
-      <td class="align-center">
-        <button
-          type="button"
-          pButton
-          (click)="onClickSessionManageButton(rowData.id)"
-          label="Session Manage"
-          class="ui-button-success"
-        ></button>
-      </td>
-      <td class="align-center">
-        <button
-          type="button"
-          pButton
-          (click)="onClickEditButton(rowData)"
-          icon="pi pi-pencil"
-          class="ui-button-secondary"
-        ></button>
-      </td>
-    </tr>
-  </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td style="text-align: center;">{{ rowData.id }}</td>
+        <td>{{ rowData.title }}</td>
+        <td style="text-align: center;">{{ rowData.publicity }}</td>
+        <td class="align-center">
+          <button
+            type="button"
+            pButton
+            (click)="onClickSessionManageButton(rowData.id)"
+            label="Session Manage"
+            class="ui-button-success"
+          ></button>
+        </td>
+        <td class="align-center">
+          <button
+            type="button"
+            pButton
+            (click)="onClickEditButton(rowData)"
+            icon="pi pi-pencil"
+            class="ui-button-secondary"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
 
-  <ng-template pTemplate="emptymessage">
-    <tr id="row-empty">
-      <td [attr.colspan]="5">
-        Not Found
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+    <ng-template pTemplate="emptymessage">
+      <tr id="row-empty">
+        <td [attr.colspan]="5">
+          Not Found
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-<p-dialog
-  header="Subject"
-  [(visible)]="displayDialog"
-  [responsive]="true"
-  [draggable]="false"
-  [dismissableMask]="true"
-  showEffect="fade"
-  [modal]="true"
-  [width]="300"
-  (onHide)="onDialogHide($event)"
-  [contentStyle]="{ overflow: 'visible' }"
->
-  <div class="ui-g ui-fluid" *ngIf="subject" [formGroup]="subjectForm">
-    <!-- <div class="ui-g-12">
+  <p-dialog
+    header="Subject"
+    [(visible)]="displayDialog"
+    [responsive]="true"
+    [draggable]="false"
+    [dismissableMask]="true"
+    showEffect="fade"
+    [modal]="true"
+    [width]="300"
+    (onHide)="onDialogHide($event)"
+    [contentStyle]="{ overflow: 'visible' }"
+  >
+    <div class="ui-g ui-fluid" *ngIf="subject" [formGroup]="subjectForm">
+      <!-- <div class="ui-g-12">
       <p class="label">ID</p>
       <input
         class="fullwidth"
@@ -92,67 +92,74 @@
       />
     </div> -->
 
-    <div class="ui-g-12">
-      <p class="label">Title</p>
-      <input
-        class="fullwidth"
-        formControlName="title"
-        id="title"
-        placeholder="Fill Title"
-        type="text"
-        pInputText
-      />
-    </div>
+      <div class="ui-g-12">
+        <p class="label">Title</p>
+        <input
+          class="fullwidth"
+          formControlName="title"
+          id="title"
+          placeholder="Fill Title"
+          type="text"
+          pInputText
+        />
+      </div>
 
-    <div class="ui-g-12">
-      <p class="label">Moderators</p>
-      <p-chips
-        formControlName="moderators"
-        id="moderators"
-        addOnTab="true"
-      ></p-chips>
-    </div>
+      <div class="ui-g-12">
+        <p class="label">Moderators</p>
+        <p-chips
+          formControlName="moderators"
+          id="moderators"
+          addOnTab="true"
+        ></p-chips>
+      </div>
 
-    <div class="ui-g-12">
-      <p class="label">Publicity</p>
-      <p-dropdown
-        id="publicity"
-        [options]="publicityOptions"
-        formControlName="publicity"
-      ></p-dropdown>
-    </div>
+      <div class="ui-g-12">
+        <p class="label">Publicity</p>
+        <p-dropdown
+          id="publicity"
+          [options]="publicityOptions"
+          formControlName="publicity"
+        ></p-dropdown>
+      </div>
 
-    <div class="ui-g-12">
-      <p class="label">Color</p>
-      <input
-        class="fullwidth"
-        formControlName="color"
-        id="color"
-        placeholder="Fill Color"
-        type="text"
-        pInputText
-      />
+      <div class="ui-g-12">
+        <p class="label">Color</p>
+        <input
+          class="fullwidth"
+          formControlName="color"
+          id="color"
+          placeholder="Fill Color"
+          type="text"
+          pInputText
+        />
+        <div
+          class="fullwidth"
+          [ngStyle]="{ 'background-color': this.subjectForm.value.color }"
+        >
+          &nbsp;
+        </div>
+      </div>
     </div>
-  </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button
-        type="button"
-        pButton
-        icon="fas fa-check"
-        (click)="save()"
-        label="Save"
-        class="ui-button-success"
-      ></button>
-      <button
-        *ngIf="subject.id"
-        type="button"
-        pButton
-        icon="fas fa-times"
-        (click)="delete()"
-        label="Delete"
-        class="ui-button-danger"
-      ></button>
-    </div>
-  </p-footer>
-</p-dialog>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          (click)="save()"
+          label="Save"
+          class="ui-button-success"
+        ></button>
+        <button
+          *ngIf="subject.id"
+          type="button"
+          pButton
+          icon="pi pi-times"
+          (click)="delete()"
+          label="Delete"
+          class="ui-button-danger"
+        ></button>
+      </div>
+    </p-footer>
+  </p-dialog>
+</div>
