@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+.invalid-field,
+.invalid-autocomplete-field > span > input,
+.invalid-spinner-field > span > input,
+.invalid-calendar-field > span > input,
+.invalid-dropdown-field > div {
+  border: 1px solid #dc3545 !important;
+}
+
+.star-required {
+  color: crimson;
+}
