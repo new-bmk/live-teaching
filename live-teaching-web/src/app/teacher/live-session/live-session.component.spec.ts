@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubjectManageComponent } from './subject-manage.component';
+import { LiveSessionComponent } from './live-session.component';
 
-describe('SubjectManageComponent', () => {
-  let component: SubjectManageComponent;
-  let fixture: ComponentFixture<SubjectManageComponent>;
+describe('LiveSessionComponent', () => {
+  let component: LiveSessionComponent;
+  let fixture: ComponentFixture<LiveSessionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SubjectManageComponent ]
+      declarations: [ LiveSessionComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SubjectManageComponent);
+    fixture = TestBed.createComponent(LiveSessionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

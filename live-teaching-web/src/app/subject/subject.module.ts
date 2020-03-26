@@ -14,10 +14,11 @@ import { TooltipModule } from "primeng/tooltip";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { InputMaskModule } from "primeng/inputmask";
 import { BreadcrumbModule } from "primeng/breadcrumb";
+import { ChipsModule } from 'primeng/chips';
+
 
 import { DialogModule } from "primeng/dialog";
 import { SubjectCrudComponent } from "./subject-crud/subject-crud.component";
-import { SubjectManageComponent } from "./subject-manage/subject-manage.component";
 import { SessionCrudComponent } from "./session-crud/session-crud.component";
 import { PanelModule } from "primeng/panel";
 import { SubjectRoutingModule } from "./subject-routing.module";
@@ -44,12 +45,12 @@ import { QuestionModule } from "../question/question.module";
     DialogModule,
     PanelModule,
     SubjectRoutingModule,
-    QuestionModule
+    QuestionModule,
+    ChipsModule
   ],
-  exports: [SubjectCrudComponent, SubjectManageComponent, SessionCrudComponent],
+  exports: [SubjectCrudComponent, SessionCrudComponent],
   declarations: [
     SubjectCrudComponent,
-    SubjectManageComponent,
     SessionCrudComponent
   ]
 })

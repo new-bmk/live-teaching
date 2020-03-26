@@ -1,4 +1,4 @@
-<h2>{{ sessionsFormGroup.get("name").value }}</h2>
+<!-- <h2>{{ sessionsFormGroup.get("name").value }}</h2> -->
 <h3>Session List</h3>
 <div ui-g>
   <div class="ui-g-2">
@@ -29,14 +29,18 @@
 
       <ng-template pTemplate="header">
         <tr>
-          <th>ID</th>
+          <!-- <th>ID</th> -->
+          <th>Title</th>
         </tr>
       </ng-template>
 
       <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
         <tr [pSelectableRow]="rowData">
-          <td>
+          <!-- <td>
             {{ rowData.id }}
+          </td> -->
+          <td>
+            {{ rowData.title }}
           </td>
         </tr>
       </ng-template>
@@ -64,6 +68,16 @@
       <div class="ui-g">
         <div class="ui-g-12 button-go-live">
           <button
+            *ngIf="currentLiveSessionId"
+            type="button"
+            pButton
+            icon="fas fa-check"
+            (click)="returnToLiveSession(currentLiveSessionId)"
+            label="Return To Live"
+            class="ui-button-success"
+          ></button>
+          <button
+            *ngIf="!currentLiveSessionId"
             type="button"
             pButton
             (click)="onClickLive(selectedSessionId)"
@@ -73,12 +87,12 @@
         </div>
 
         <div class="ui-g-12">
-          <p class="label">URL</p>
+          <p class="label">Title</p>
           <input
             class="fullwidth"
-            formControlName="url"
-            id="url"
-            placeholder="Fill URL"
+            formControlName="title"
+            id="title"
+            placeholder="Fill Title"
             type="text"
             pInputText
           />
@@ -100,8 +114,15 @@
               pButton
               icon="pi pi-trash"
               (click)="delete(selectedSessionId)"
-              label="Delete Session"
+              label="Delete"
               class="ui-button-secondary"
+            ></button>
+            <button
+              type="button"
+              pButton
+              (click)="update(selectedSessionId)"
+              label="Update"
+              class="ui-button-info"
             ></button>
           </div>
         </div>
@@ -132,12 +153,12 @@
     [formGroup]="sessionTemplate"
   >
     <div class="ui-g-12">
-      <p class="label">ID</p>
+      <p class="label">Title</p>
       <input
         class="fullwidth"
-        formControlName="id"
-        id="id"
-        placeholder="Fill ID"
+        formControlName="title"
+        id="title"
+        placeholder="Fill Title"
         type="text"
         pInputText
       />
@@ -162,6 +183,49 @@
         label="Delete"
         class="ui-button-danger"
       ></button> -->
+    </div>
+  </p-footer>
+</p-dialog>
+
+<p-dialog
+  header="Create Live Session"
+  [(visible)]="liveSessionDisplayDialog"
+  [responsive]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
+  showEffect="fade"
+  [modal]="true"
+  [width]="300"
+  (onHide)="onLiveSessionDialogHide($event)"
+  [contentStyle]="{ overflow: 'visible' }"
+>
+  <div
+    class="ui-g ui-fluid"
+    *ngIf="liveSessionTemplate"
+    [formGroup]="liveSessionTemplate"
+  >
+    <div class="ui-g-12">
+      <p class="label">URL</p>
+      <input
+        class="fullwidth"
+        formControlName="stream_url"
+        id="stream_url"
+        placeholder="Fill URL"
+        type="text"
+        pInputText
+      />
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button
+        type="button"
+        pButton
+        icon="fas fa-check"
+        (click)="saveLiveSession(liveSessionTemplate.value)"
+        label="Live"
+        class="ui-button-success"
+      ></button>
     </div>
   </p-footer>
 </p-dialog>

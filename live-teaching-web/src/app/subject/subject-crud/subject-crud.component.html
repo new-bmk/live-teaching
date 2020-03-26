@@ -24,7 +24,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th>ID</th>
-      <th>Name</th>
+      <th>Title</th>
       <th>Publicity</th>
       <th>Session Mange</th>
       <th class="action-column">Edit</th>
@@ -34,7 +34,7 @@
   <ng-template pTemplate="body" let-rowData>
     <tr>
       <td>{{ rowData.id }}</td>
-      <td>{{ rowData.name }}</td>
+      <td>{{ rowData.title }}</td>
       <td>{{ rowData.publicity }}</td>
       <td class="align-center">
         <button
@@ -79,7 +79,7 @@
   [contentStyle]="{ overflow: 'visible' }"
 >
   <div class="ui-g ui-fluid" *ngIf="subject" [formGroup]="subjectForm">
-    <div class="ui-g-12">
+    <!-- <div class="ui-g-12">
       <p class="label">ID</p>
       <input
         class="fullwidth"
@@ -89,27 +89,45 @@
         type="text"
         pInputText
       />
-    </div>
+    </div> -->
 
     <div class="ui-g-12">
-      <p class="label">Name</p>
+      <p class="label">Title</p>
       <input
         class="fullwidth"
-        formControlName="name"
-        id="name"
-        placeholder="Fill Name"
+        formControlName="title"
+        id="title"
+        placeholder="Fill Title"
         type="text"
         pInputText
       />
     </div>
 
     <div class="ui-g-12">
+      <p class="label">Moderators</p>
+      <p-chips
+        formControlName="moderators"
+        id="moderators"
+        addOnTab="true"
+      ></p-chips>
+    </div>
+
+    <div class="ui-g-12">
       <p class="label">Publicity</p>
+      <p-dropdown
+        id="publicity"
+        [options]="publicityOptions"
+        formControlName="publicity"
+      ></p-dropdown>
+    </div>
+
+    <div class="ui-g-12">
+      <p class="label">Color</p>
       <input
         class="fullwidth"
-        formControlName="publicity"
-        id="publicity"
-        placeholder="Fill Publicity"
+        formControlName="color"
+        id="color"
+        placeholder="Fill Color"
         type="text"
         pInputText
       />
