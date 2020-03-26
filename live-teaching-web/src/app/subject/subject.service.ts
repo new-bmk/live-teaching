@@ -64,7 +64,7 @@ export class SubjectService {
           | firebase.firestore.CollectionReference
           | firebase.firestore.Query = ref;
         if (_.get(filter, 'email')) {
-          ref.where('moderators', 'array-contains', filter.email);
+          query = ref.where('moderators', 'array-contains', filter.email);
         }
         return query;
       })
