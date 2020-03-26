@@ -33,3 +33,123 @@ span.label {
 .ui-button-text {
   font-size: normal;
 }
+
+.my-container {
+  padding: 0 1em;
+  background-color: #263238;
+  height: 90vh;
+  overflow-y: scroll;
+}
+
+:host ::ng-deep .ui-table-caption{
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  background-color: #ffab00 !important;
+  border: none !important;
+}
+
+:host ::ng-deep .ui-table-thead{
+  tr{
+    th{
+      border: 1px transparent solid !important;
+    }
+  }
+}
+
+:host ::ng-deep .ui-table-tbody{
+  tr{
+    td{
+      border: 1px transparent solid !important;
+    }
+  }
+}
+
+:host ::ng-deep .ui-state-highlight{
+  background-color: #ff8800 !important;
+}
+
+:host ::ng-deep .ui-panel {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: none !important;
+  opacity: 0.9 !important;
+  background-color: transparent;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+:host ::ng-deep .ui-panel-titlebar{
+  background-color: #ff8800 !important;
+  border: none !important;
+  padding: 1em !important;
+}
+
+:host ::ng-deep .ui-panel-content{
+  border: none !important;
+}
+
+:host ::ng-deep .ui-panel-footer{
+  border: none !important;
+  padding: 1em !important;
+}
+
+#style-1::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: transparent;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.13);
+	background-color: transparent;
+}
+
+:host ::ng-deep .ui-dialog {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: none !important;
+  opacity: 0.9 !important;
+  background-color: transparent;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+:host ::ng-deep .ui-dialog-titlebar{
+  background-color: #263238 !important;
+  border: none !important;
+  padding: 1em !important;
+}
+
+:host ::ng-deep .ui-dialog-content{
+  border: none !important;
+}
+
+:host ::ng-deep .ui-dialog-footer{
+  border: none !important;
+  padding: 1em !important;
+}
+
+.backBtn{
+  margin-right: 2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: rgb(168, 168, 168);
+}
+
+.backBtn:hover{
+  color: whitesmoke;
+}
+
+.title{
+  display: flex;
+  color: #ffab00;
+  font-size: 2.5em;
+}

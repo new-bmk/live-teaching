@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as _ from 'lodash';
 import { SortEvent, LazyLoadEvent } from 'primeng/api';
 import {
   FormGroup,
@@ -11,6 +10,8 @@ import { SubjectService } from '../subject.service';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-subject-crud',
@@ -18,6 +19,8 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./subject-crud.component.scss']
 })
 export class SubjectCrudComponent implements OnInit {
+  private unsubscribe$ = new Subject();
+
   displayDialog: boolean;
 
   subject: any = {};
@@ -58,10 +61,11 @@ export class SubjectCrudComponent implements OnInit {
     this.subjectService
       .listSubjects(0, 999, { email: this.authData.email }, 'title', 1)
       .subscribe(results => {
-        console.log(results);
-        this.subjectList = results;
-        this.loading = false;
-        // this.totalRecords = totalCount;
+        if (results) {
+          this.subjectList = results;
+          this.loading = false;
+          this.totalRecords = results.length || 0;
+        }
       });
   }
 
@@ -75,7 +79,13 @@ export class SubjectCrudComponent implements OnInit {
     const orderString = order === 1 ? 'asc' : 'desc';
     this.loading = true;
     this.subscribeSubject = this.subjectService
-      .listSubjects(offset, max, filter, sort, orderString)
+      .listSubjects(
+        offset,
+        max,
+        { ...filter, email: this.authData.email },
+        sort,
+        orderString
+      )
       .subscribe(results => {
         this.subjectList = results;
         this.loading = false;
@@ -102,6 +112,11 @@ export class SubjectCrudComponent implements OnInit {
   };
 
   ngOnInit() {
+    // this.authService.getEndUser
+    //   .pipe(takeUntil(this.unsubscribe$))
+    //   .subscribe((auth: any) => {
+    //     console.log('auth :', auth);
+    //   });
     this.subjectForm = new FormGroup({
       id: new FormControl(''),
       title: new FormControl(''),
@@ -111,15 +126,16 @@ export class SubjectCrudComponent implements OnInit {
       moderators: new FormControl([])
     });
 
-    this.subscribeEndUser = this.authService.getEndUser.subscribe(
-      (auth: any) => {
-        console.log(auth);
-        this.authData = auth;
-        this.formInitialValue.moderators = [auth.email];
-        this.subjectForm.reset(this.formInitialValue);
-        this.refreshData();
-      }
-    );
+    this.subscribeEndUser = this.authService.getEndUser
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((auth: any) => {
+        if (!_.isEmpty(auth)) {
+          this.authData = auth;
+          this.formInitialValue.moderators = [auth.email];
+          this.subjectForm.reset(this.formInitialValue);
+          this.refreshData();
+        }
+      });
 
     this.initFilters();
   }
@@ -143,6 +159,7 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   showDialogToAdd() {
+    this.subjectForm.patchValue({color: this.getRandomColor()})
     this.newSubject = true;
     this.subject = {};
     this.displayDialog = true;
@@ -233,5 +250,10 @@ export class SubjectCrudComponent implements OnInit {
     this.subjectForm.patchValue(this.subject);
     this.displayDialog = true;
     this.submitted = true;
+  }
+
+  getRandomColor() {
+    const color = Math.floor(0x1000000 * Math.random()).toString(16);
+    return '#' + ('000000' + color).slice(-6);
   }
 }

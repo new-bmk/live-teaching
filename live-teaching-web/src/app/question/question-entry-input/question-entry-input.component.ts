@@ -1,18 +1,18 @@
-import { Component, forwardRef, OnInit } from "@angular/core";
+import { Component, forwardRef, OnInit } from '@angular/core';
 import {
   ControlValueAccessor,
   FormArray,
   FormBuilder,
   NG_VALUE_ACCESSOR,
   Validators
-} from "@angular/forms";
-import * as _ from "lodash";
-import { Question } from "../models/question";
+} from '@angular/forms';
+import * as _ from 'lodash';
+import { Question } from '../models/question';
 
 @Component({
-  selector: "app-question-entry-input",
-  templateUrl: "./question-entry-input.component.html",
-  styleUrls: ["./question-entry-input.component.scss"],
+  selector: 'app-question-entry-input',
+  templateUrl: './question-entry-input.component.html',
+  styleUrls: ['./question-entry-input.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -26,7 +26,7 @@ export class QuestionEntryInputComponent
   questions: FormArray;
   _onChange: any = () => {};
   initialQuestionValue: Question = {
-    type: "simple_choices",
+    type: 'simple_choices',
     question_text: null,
     question_image_url: null,
     c1: null,
@@ -37,8 +37,12 @@ export class QuestionEntryInputComponent
     score: 0
   };
 
-  // answerOptions: { (index: number) : { label: string; value: string }[] } = {};
-  answerOptions: any = {};
+  answerOptions: { label: string; value: string }[] = [
+    { label: 'c1', value: 'c1' },
+    { label: 'c2', value: 'c2' },
+    { label: 'c3', value: 'c3' },
+    { label: 'c4', value: 'c4' }
+  ];
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {}
@@ -47,14 +51,6 @@ export class QuestionEntryInputComponent
     this.questions = new FormArray([]);
     _.each(obj, (question: Question, index: number) => {
       this.addQuestion(question);
-      this.answerOptions[index] = this.createAnswerOptions(question);
-    });
-
-    this.questions.valueChanges.pipe().subscribe(val => {
-      this._onChange(val);
-      _.each(val, (question: Question, index: number) => {
-        this.answerOptions[index] = this.createAnswerOptions(question);
-      });
     });
   }
 
@@ -85,14 +81,4 @@ export class QuestionEntryInputComponent
   }
   registerOnTouched(fn: any): void {}
   setDisabledState?(isDisabled: boolean): void {}
-
-  createAnswerOptions(question: Question) {
-    const { c1, c2, c3, c4 } = question;
-    return [
-      { label: c1, value: c1 },
-      { label: c2, value: c2 },
-      { label: c3, value: c3 },
-      { label: c4, value: c4 }
-    ];
-  }
 }

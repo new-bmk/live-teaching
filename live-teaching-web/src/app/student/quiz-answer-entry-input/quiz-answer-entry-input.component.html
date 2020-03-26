@@ -1,6 +1,8 @@
 <div *ngIf="loadingQuestion" class="loading-container">
-  <div style="align-self: center;">
-    <p-progressSpinner></p-progressSpinner>
+  <div style="align-self: center; padding-top: 1em;">
+    <div style="display: flex; justify-content: center;">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
     <p style="text-align:center;">
       Loading...
     </p>
@@ -10,6 +12,13 @@
   <div class="ui-g" *ngIf="question && formControlName">
     <div class="ui-g-12">
       <h2>คำถาม: {{ question.question_text }}</h2>
+    </div>
+    <div class="ui-g-12" *ngIf="question.question_image_url">
+      <img
+        [src]="question.question_image_url | safeUrl"
+        width="100%"
+        height="100%"
+      />
     </div>
     <div class="ui-g-12">
       <p-radioButton

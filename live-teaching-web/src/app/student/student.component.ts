@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { StudentService } from './student.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { debounce, map, mergeMap, takeUntil } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-student',
   templateUrl: './student.component.html',
-  styleUrls: ['./student.component.scss']
+  styleUrls: ['./student.component.scss'],
   // providers: [MessageService]
 })
 export class StudentComponent implements OnInit, OnDestroy {
@@ -90,11 +90,6 @@ export class StudentComponent implements OnInit, OnDestroy {
         this.totalRecords = sessionLiveList.length;
         this.loading = false;
       });
-  }
-
-  getRandomColor() {
-    const color = Math.floor(0x1000000 * Math.random()).toString(16);
-    return '#' + ('000000' + color).slice(-6);
   }
 
   joinLiveSession(liveSessionId) {

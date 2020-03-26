@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
 import { LiveSessionService } from '../live-session.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-live-session',
@@ -22,7 +23,8 @@ export class LiveSessionComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private liveSessionService: LiveSessionService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -50,6 +52,10 @@ export class LiveSessionComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  back(){
+    this.location.back()
   }
 
   createLiveSessionTableRaw(
