@@ -33,7 +33,7 @@
                   <p-header>
                     <div
                       class="card-header"
-                      [ngStyle]="{ 'background-color': 'black' }"
+                      [ngStyle]="{ 'background-color': liveSession?.subject?.color? liveSession?.subject?.color: 'black' }"
                     >
                       <div
                         style="display: flex; justify-content: space-between; width: 100%;"
