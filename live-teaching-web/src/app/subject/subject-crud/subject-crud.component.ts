@@ -143,6 +143,7 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   showDialogToAdd() {
+    this.subjectForm.patchValue({color: this.getRandomColor()})
     this.newSubject = true;
     this.subject = {};
     this.displayDialog = true;
@@ -233,5 +234,10 @@ export class SubjectCrudComponent implements OnInit {
     this.subjectForm.patchValue(this.subject);
     this.displayDialog = true;
     this.submitted = true;
+  }
+
+  getRandomColor() {
+    const color = Math.floor(0x1000000 * Math.random()).toString(16);
+    return '#' + ('000000' + color).slice(-6);
   }
 }

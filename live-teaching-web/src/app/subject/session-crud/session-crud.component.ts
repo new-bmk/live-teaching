@@ -8,6 +8,7 @@ import {
 } from "../../../../node_modules/@angular/forms";
 import { SessionCrudService } from "./session-crud.service";
 import { Subscription } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: "app-session-crud",
@@ -34,7 +35,8 @@ export class SessionCrudComponent implements OnInit {
   constructor(
     private sessionCrudService: SessionCrudService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -85,6 +87,10 @@ export class SessionCrudComponent implements OnInit {
     if(this.subscribeLiveSession){
       this.subscribeLiveSession.unsubscribe();
     }
+  }
+
+  back() {
+    this.location.back();
   }
 
   setData(data: any) {
@@ -241,8 +247,7 @@ export class SessionCrudComponent implements OnInit {
         `/teacher`,
         `live-session`,
         this.currentLiveSessionId
-      ],
-      { replaceUrl: true }
+      ]
     );
   }
 
