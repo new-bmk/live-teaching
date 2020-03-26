@@ -1,61 +1,65 @@
 <!-- <p>Live Section</p> -->
-
-<div style="display: flex;">
-  <span class="backBtn" (click)="back()"
-    ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
-  >
-  <span class="title">{{ subject?.title }}</span>
-</div>
-
-<div *ngIf="loading"></div>
-
-<div *ngIf="!loading">
-  <div style="height: 78vh; display: flex">
-    <iframe
-      [src]="stramURL | safeUrl"
-      frameborder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-      style="flex: 1 1 auto;"
-      autoplay
-    ></iframe>
+<div class="my-container">
+  <div style="display: flex;">
+    <span class="backBtn" (click)="back()"
+      ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
+    >
+    <span class="title">{{ subject?.title }}</span>
   </div>
-</div>
 
-<p-dialog
-  *ngIf="activeQuizIndex >= 0 && quizList[activeQuizIndex]"
-  [(visible)]="displayBasic"
-  [style]="{ width: '50vw' }"
-  [baseZIndex]="10000"
-  [closable]="false"
->
-  <p-header>
-    <div style="display: flex; justify-content: space-between;">
-      <span>&nbsp;</span>
-      <span
-        >time remaining:
-        <span style="font-size: 1.8em" [ngClass]="{ blink: 'isLessThanTen()' }"
-          >00:00</span
-        ></span
-      >
+  <div *ngIf="loading"></div>
+
+  <div *ngIf="!loading">
+    <div style="height: 78vh; display: flex">
+      <iframe
+        [src]="stramURL | safeUrl"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="flex: 1 1 auto;"
+        autoplay
+      ></iframe>
     </div>
-  </p-header>
-  <ng-container [formGroup]="quizForm">
-    <app-quiz-answer-entry-input
-      [quetionObject]="quizList[activeQuizIndex]"
-      inputFormGroupName="anwser"
-      [loadingQuestion]="loadingQuestion"
-    ></app-quiz-answer-entry-input>
-  </ng-container>
-  <p-footer>
-    <button
-      type="button"
-      pButton
-      icon="pi pi-check"
-      (click)="submitQuestion($event)"
-      label="Submit Answer"
-      class="submitBtn"
-    ></button>
-  </p-footer>
-</p-dialog>
-<p-toast class="ui-toast-bottom-right"></p-toast>
+  </div>
+
+  <p-dialog
+    *ngIf="activeQuizIndex >= 0 && quizList[activeQuizIndex]"
+    [(visible)]="displayBasic"
+    [style]="{ width: '50vw' }"
+    [baseZIndex]="10000"
+    [closable]="false"
+  >
+    <p-header>
+      <div style="display: flex; justify-content: space-between;">
+        <span>&nbsp;</span>
+        <!-- <span
+          >time remaining:
+          <span
+            style="font-size: 1.8em"
+            [ngClass]="{ blink: 'isLessThanTen()' }"
+            >00:00</span
+          ></span
+        > -->
+      </div>
+    </p-header>
+    <ng-container [formGroup]="quizForm">
+      <app-quiz-answer-entry-input
+        [quetionObject]="quizList[activeQuizIndex]"
+        inputFormGroupName="anwser"
+        [loadingQuestion]="loadingQuestion"
+      ></app-quiz-answer-entry-input>
+    </ng-container>
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        (click)="submitQuestion($event)"
+        label="Submit Answer"
+        class="submitBtn"
+        [disabled]="loadingQuestion"
+      ></button>
+    </p-footer>
+  </p-dialog>
+  <p-toast class="ui-toast-bottom-right"></p-toast>
+</div>
