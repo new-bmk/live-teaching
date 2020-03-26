@@ -37,7 +37,7 @@ export class AppComponent {
             } else {
               this.user = endUser[0];
               if (this.user.role === 'teacher') {
-                // this.router.navigate(['/teacher'], { replaceUrl: true });
+                this.router.navigate(['/teacher'], { replaceUrl: true });
               } else {
                 this.router.navigate(['/student'], { replaceUrl: true });
               }
