@@ -7,6 +7,7 @@
     (onLazyLoad)="loadSubjectsLazy($event)"
     [totalRecords]="totalRecords"
     [value]="subjectList"
+    [lazyLoadOnInit]="false"
   >
     <ng-template pTemplate="caption">
       <div class="caption-container">
