@@ -1,3 +1,5 @@
+import { firebaseKey } from "./firebase-key";
 export const environment = {
-  production: true
+  production: true,
+  firebase: firebaseKey
 };
