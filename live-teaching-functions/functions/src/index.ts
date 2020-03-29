@@ -7,7 +7,7 @@ import * as liveSessionService from './services/liveSessionService'
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //
-admin.initializeApp(functions.config().firebase)
+admin.initializeApp()
 const cors = require('cors')
 const corsHandler = cors({ origin: true })
 
