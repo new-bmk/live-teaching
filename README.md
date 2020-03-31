@@ -32,7 +32,7 @@ This project want firebase project.
     - use firebase-cli for connect firebase-functions
     - 1. `firebase login` (login firebase)
     - 2. `firebase use --add` (select project and naming alias e.g. prod)
-    - 3. `firebase use [alias-name/project name]`
+    - 3. `firebase use [alias-name|project-name]`
 4. config firebase config in locally. (for dev) (optional) 
    - https://firebase.google.com/docs/functions/local-emulator
 # Run Development
