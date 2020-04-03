@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { SortEvent, LazyLoadEvent } from 'primeng/api';
+import { SortEvent, LazyLoadEvent, MessageService } from 'primeng/api';
 import {
   FormGroup,
   FormControl,
   Validators,
-  FormArray
+  FormArray,
 } from '../../../../node_modules/@angular/forms';
 import { SubjectService } from '../subject.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'app-subject-crud',
   templateUrl: './subject-crud.component.html',
-  styleUrls: ['./subject-crud.component.scss']
+  styleUrls: ['./subject-crud.component.scss'],
 })
 export class SubjectCrudComponent implements OnInit {
   private unsubscribe$ = new Subject();
@@ -27,13 +27,12 @@ export class SubjectCrudComponent implements OnInit {
   newSubject: boolean;
   subjectList: any[];
   subjectForm: FormGroup;
-  submitted: boolean = false;
+  loading: boolean = false;
 
   authData: any;
   subscribeEndUser: any;
   subscribeSubject: any;
 
-  loading: boolean;
   totalRecords: number;
   currentOption: any = {};
 
@@ -42,25 +41,26 @@ export class SubjectCrudComponent implements OnInit {
   publicityOptions = [
     {
       label: 'private',
-      value: 'private'
+      value: 'private',
     },
     {
       label: 'public',
-      value: 'public'
-    }
+      value: 'public',
+    },
   ];
 
   constructor(
     private subjectService: SubjectService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   private refreshData() {
     this.loading = true;
     this.subjectService
-      .listSubjects(0, 999, {  }, 'title', 1)
-      .subscribe(results => {
+      .listSubjects(0, 999, {}, 'title', 1)
+      .subscribe((results) => {
         if (results) {
           this.subjectList = results;
           this.loading = false;
@@ -79,14 +79,8 @@ export class SubjectCrudComponent implements OnInit {
     const orderString = order === 1 ? 'asc' : 'desc';
     this.loading = true;
     this.subscribeSubject = this.subjectService
-      .listSubjects(
-        offset,
-        max,
-        { ...filter  },
-        sort,
-        orderString
-      )
-      .subscribe(results => {
+      .listSubjects(offset, max, { ...filter }, sort, orderString)
+      .subscribe((results) => {
         this.subjectList = results;
         this.loading = false;
         // this.totalRecords = totalCount;
@@ -108,7 +102,7 @@ export class SubjectCrudComponent implements OnInit {
     color: '#000000',
     publicity: 'public',
     sessions: [],
-    moderators: []
+    moderators: [],
   };
 
   ngOnInit() {
@@ -117,13 +111,14 @@ export class SubjectCrudComponent implements OnInit {
     //   .subscribe((auth: any) => {
     //     console.log('auth :', auth);
     //   });
+    this.loading = true;
     this.subjectForm = new FormGroup({
       id: new FormControl(''),
       title: new FormControl(''),
       color: new FormControl('#000000'),
       publicity: new FormControl(''),
       sessions: new FormArray([]),
-      moderators: new FormControl([])
+      moderators: new FormControl([]),
     });
 
     this.subscribeEndUser = this.authService.getEndUser
@@ -134,6 +129,7 @@ export class SubjectCrudComponent implements OnInit {
           this.formInitialValue.moderators = [auth.email];
           this.subjectForm.reset(this.formInitialValue);
           this.refreshData();
+          this.loading = false;
         }
       });
 
@@ -163,25 +159,26 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   showDialogToAdd() {
-    this.subjectForm.patchValue({color: this.getRandomColor()})
+    this.subjectForm.patchValue({ color: this.getRandomColor() });
     this.newSubject = true;
     this.subject = {};
     this.displayDialog = true;
   }
 
   onDialogHide() {
-    this.submitted = false;
+    this.loading = false;
     this.subjectForm.reset(this.formInitialValue);
   }
 
   save() {
-    this.submitted = true;
+    this.loading = true;
+    this.subjectForm.disable();
     if (this.subjectForm.invalid) {
-      // this.messageService.add({
-      //   severity: "error",
-      //   summary: "Subject",
-      //   detail: `Subject cannot create`
-      // });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Subject',
+        detail: `Subject cannot create`,
+      });
       // this.logger.error(`Subject form invalid fail to created.`)
       return;
     }
@@ -190,17 +187,18 @@ export class SubjectCrudComponent implements OnInit {
         .createSubject(this.subjectForm.value)
         .then(() => {
           this.refreshData();
-          // this.messageService.add({
-          //   severity: "success",
-          //   summary: "Subject",
-          //   detail: `Subject has been create`
-          // });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Subject',
+            detail: `Subject has been create`,
+          });
           // this.logger.debug(`Subject has been created.`);
         })
         .finally(() => {
           this.subject = {};
           this.displayDialog = false;
-          this.submitted = false;
+          this.loading = false;
+          this.subjectForm.enable();
         });
     } else {
       let id = this.subject.id;
@@ -208,30 +206,38 @@ export class SubjectCrudComponent implements OnInit {
         .updateSubject(id, this.subjectForm.value)
         .then(() => {
           this.refreshData();
-          // this.messageService.add({
-          //   severity: "success",
-          //   summary: "Subject",
-          //   detail: `Id [${id}] has been update`
-          // });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Subject',
+            detail: `Id [${id}] has been update`,
+          });
           // this.logger.debug(`Subject [${id}] has been updated.`);
         })
         .finally(() => {
           this.subject = {};
           this.displayDialog = false;
-          this.submitted = false;
+          this.loading = false;
+          this.subjectForm.enable();
         });
     }
   }
 
   delete() {
+    this.loading = true;
     this.subjectService
       .deleteSubject(this.subject.id)
       .then(() => {
+        this.refreshData();
         this.subject = {};
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Subject',
+          detail: `Subject has been delete`,
+        });
       })
       .finally(() => {
         this.displayDialog = false;
-        this.submitted = false;
+        this.loading = false;
       });
   }
 
@@ -253,7 +259,7 @@ export class SubjectCrudComponent implements OnInit {
     this.subject = _.clone(data);
     this.subjectForm.patchValue(this.subject);
     this.displayDialog = true;
-    this.submitted = true;
+    this.loading = false;
   }
 
   getRandomColor() {

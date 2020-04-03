@@ -28,7 +28,7 @@
         <th>ID</th>
         <th>Title</th>
         <th>Publicity</th>
-        <th>Session Mange</th>
+        <th>Manage Session</th>
         <th class="action-column">Edit</th>
       </tr>
     </ng-template>
@@ -43,7 +43,7 @@
             type="button"
             pButton
             (click)="onClickSessionManageButton(rowData.id)"
-            label="Session Manage"
+            label="Manage Session"
             class="ui-button-success"
           ></button>
         </td>
@@ -79,8 +79,9 @@
     [width]="300"
     (onHide)="onDialogHide($event)"
     [contentStyle]="{ overflow: 'visible' }"
+    *ngIf="subject" [formGroup]="subjectForm"
   >
-    <div class="ui-g ui-fluid" *ngIf="subject" [formGroup]="subjectForm">
+    <div class="ui-g ui-fluid" >
       <!-- <div class="ui-g-12">
       <p class="label">ID</p>
       <input
@@ -147,6 +148,7 @@
           type="button"
           pButton
           icon="pi pi-check"
+          [disabled]="loading"
           (click)="save()"
           label="Save"
           class="ui-button-success"
@@ -156,6 +158,7 @@
           type="button"
           pButton
           icon="pi pi-times"
+          [disabled]="loading"
           (click)="delete()"
           label="Delete"
           class="ui-button-danger"

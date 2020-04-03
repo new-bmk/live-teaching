@@ -6,14 +6,17 @@ import { catchError, map } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
 import { LiveSessionService } from '../live-session.service';
 import { Location } from '@angular/common';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-live-session',
   templateUrl: './live-session.component.html',
-  styleUrls: ['./live-session.component.scss']
+  styleUrls: ['./live-session.component.scss'],
+  providers: [ConfirmationService],
 })
 export class LiveSessionComponent implements OnInit {
-  aliveQuestionTime = 5000; // ms
+  aliveQuestionTime = environment.aliveQuestionTime; // ms
   liveSession$?: Observable<ILiveSession>;
   liveSessionId?: string;
   liveSessionTableRaw$: Observable<any>;
@@ -24,10 +27,13 @@ export class LiveSessionComponent implements OnInit {
     private route: ActivatedRoute,
     private liveSessionService: LiveSessionService,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
+    this.loading = true;
     this.liveSessionId = this.route.snapshot.paramMap.get('ref');
     try {
       this.liveSession$ = this.liveSessionService.subscribeLiveSessionById(
@@ -50,12 +56,18 @@ export class LiveSessionComponent implements OnInit {
           })
         );
     } catch (error) {
-      console.error(error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Live Session',
+        detail: error.message,
+      });
+    } finally {
+      this.loading = false;
     }
   }
 
-  back(){
-    this.location.back()
+  back() {
+    this.location.back();
   }
 
   createLiveSessionTableRaw(
@@ -73,7 +85,9 @@ export class LiveSessionComponent implements OnInit {
         for (const [i, question] of _.get(session, 'questions').entries()) {
           headers.push({ field: `q${i}`, header: `Q${i}` });
 
-          const quiz = participant.quiz_results.find(q => q.question_idx === i);
+          const quiz = participant.quiz_results.find(
+            (q) => q.question_idx === i
+          );
           if (!quiz) {
             student[`q${i}`] = '-';
           } else {
@@ -92,37 +106,64 @@ export class LiveSessionComponent implements OnInit {
     const studentCount = _.size(bodies);
     const percentage = _.mapValues(
       totalScore,
-      obj => (obj.resultScore / ((studentCount || 1) * obj.maxScore)) * 100
+      (obj) => (obj.resultScore / ((studentCount || 1) * obj.maxScore)) * 100
     );
     percentage.code = '%';
 
     return {
       headers,
-      bodies: [percentage, ...bodies]
+      bodies: [percentage, ...bodies],
     };
   }
 
   async onSendQuestion(idx: number) {
     this.liveSessionService
       .sendQuestion(this.liveSessionId, idx)
-      .then(() => this.markAliveQuestion())
-      .catch(error => console.error(error));
+      .then(() => {
+        this.markAliveQuestion();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Send Question',
+          detail: `Question [${idx}] has been send`,
+        });
+      })
+      .catch((error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: `Can't send question.`,
+          detail: `${error.message}`,
+        });
+      });
   }
 
   endSession() {
-    if (
-      window.confirm(`Are you sure to end live session, you can't return back.`)
-    ) {
-      this.liveSessionService
-        .endSession(this.liveSessionId)
-        .then(() => {
-          window.alert('end live session success..');
-          this.router.navigate([`/subject`], { replaceUrl: true });
-        })
-        .catch(error => {
-          window.alert(`Can't end live session. ${error.message}`);
-        });
-    }
+    this.confirmationService.confirm({
+      header: 'Confirmation',
+      message: `Are you sure to end live session, you can't return back.`,
+      accept: () => {
+        this.loading = true;
+        this.liveSessionService
+          .endSession(this.liveSessionId)
+          .then(() => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Live Session',
+              detail: `Live Session has been end`,
+            });
+            this.router.navigate([`/subject`], { replaceUrl: true });
+          })
+          .catch((error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: `Can't end live session.`,
+              detail: ` ${error.message}`,
+            });
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      },
+    });
   }
 
   markAliveQuestion() {

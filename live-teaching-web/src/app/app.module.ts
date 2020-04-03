@@ -31,6 +31,8 @@ import { AngularFireFunctionsModule, ORIGIN } from '@angular/fire/functions';
 import { QuestionModule } from './question/question.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     TeacherComponent,
     RegisterComponent,
     NavbarComponent,
-    LiveSessionComponent
+    LiveSessionComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,11 +66,13 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     TableModule,
     QuestionModule,
     ProgressSpinnerModule,
+    ConfirmDialogModule,
   ],
   providers: [
-    MessageService
+    MessageService,
+    ConfirmationService,
     // { provide: ORIGIN, useValue: 'http://localhost:4200' }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
