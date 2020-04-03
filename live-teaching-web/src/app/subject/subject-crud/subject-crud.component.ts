@@ -141,8 +141,12 @@ export class SubjectCrudComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscribeEndUser.unsubscribe();
-    this.subscribeSubject.unsubscribe();
+    if (this.subscribeEndUser) {
+      this.subscribeEndUser.unsubscribe();
+    }
+    if (this.subscribeSubject) {
+      this.subscribeSubject.unsubscribe();
+    }
   }
 
   get f() {
