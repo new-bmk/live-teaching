@@ -63,12 +63,20 @@ interface Participant {
     joined_stamp: Date
 }
 
+interface VoiceClip {
+   participantCode: string
+   fileUrl: string
+   listened: boolean
+   sent_stamp: Date
+}
+
 interface RecordedSession {
     session_ref: string
     live_session_ref: string
     start_stamp: Date
     end_stamp?: Date
     participants: Participant[]
+    voiceClips: VoiceClip[]
 }
 ```
 
