@@ -52,6 +52,10 @@ export class QuestionEntryInputComponent
     _.each(obj, (question: Question, index: number) => {
       this.addQuestion(question);
     });
+
+    this.questions.valueChanges.pipe().subscribe(val => {
+      this._onChange(val);
+    });
   }
 
   createQuestion(question: Question) {
