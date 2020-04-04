@@ -33,13 +33,13 @@ export class AppComponent {
               this.authService.register(userAuth, user => {
                 this.user = user;
               });
-              // this.router.navigate(['/register'], { replaceUrl: true });
+              this.router.navigate(['/register'], { replaceUrl: true });
             } else {
               this.user = endUser[0];
               if (this.user.role === 'teacher') {
-                // this.router.navigate(['/teacher'], { replaceUrl: true });
+                this.router.navigate(['/teacher'], { replaceUrl: true });
               } else {
-                // this.router.navigate(['/student'], { replaceUrl: true });
+                this.router.navigate(['/student'], { replaceUrl: true });
               }
             }
           } else {
