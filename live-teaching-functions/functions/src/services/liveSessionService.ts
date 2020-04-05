@@ -2,17 +2,11 @@ import * as admin from 'firebase-admin'
 import { ILiveSessionInput, IParticipant } from '../types'
 
 export const createLiveSessionRefById = (liveSessionId: string) => {
-  return admin
-    .firestore()
-    .collection('live_session')
-    .doc(liveSessionId)
+  return admin.firestore().collection('live_session').doc(liveSessionId)
 }
 
 export const createRecordedSessionRefById = (liveSessionId: string) => {
-  return admin
-    .firestore()
-    .collection('recorded_session')
-    .doc(liveSessionId)
+  return admin.firestore().collection('recorded_session').doc(liveSessionId)
 }
 
 export const createSessionRefById = (subjectId: string, sessionId: string) => {
@@ -41,7 +35,7 @@ export const createLiveSession = async (
       end_stamp: null,
       stream_url: liveSessionInput.stream_url,
       participant_count: 0,
-      active_question_idx: -1
+      active_question_idx: -1,
     })
   const recordedSessionCreateResult = await admin
     .firestore()
@@ -51,15 +45,15 @@ export const createLiveSession = async (
       live_session_ref: createLiveSessionRefById(liveSessionCreateResult.id),
       start_stamp: admin.firestore.FieldValue.serverTimestamp(),
       end_stamp: null,
-      participants: []
+      participants: [],
     })
   return {
     liveSessionCreateResult: {
-      id: liveSessionCreateResult.id
+      id: liveSessionCreateResult.id,
     },
     recordedSessionCreateResult: {
-      id: recordedSessionCreateResult.id
-    }
+      id: recordedSessionCreateResult.id,
+    },
   }
 }
 
@@ -75,7 +69,7 @@ export const endLiveSession = async (liveSessionId: string) => {
   if (!snapshot.empty) {
     for (const doc of snapshot.docs) {
       const recordedSessionResult = await doc.ref.update({
-        end_stamp: admin.firestore.FieldValue.serverTimestamp()
+        end_stamp: admin.firestore.FieldValue.serverTimestamp(),
       })
       recordedSessionResults.push(recordedSessionResult)
     }
@@ -102,13 +96,19 @@ export const joinLiveSession = async (liveSessionId: string, code: string) => {
       if (!participant) {
         const time = new Date()
         const updateRecordesSession = {
-          participant_count: recordedParticipants.length + 1,
           participants: admin.firestore.FieldValue.arrayUnion({
             code,
             joined_stamp: time,
-            quiz_results: []
-          })
+            quiz_results: [],
+          }),
         }
+        await admin
+          .firestore()
+          .collection('live_session')
+          .doc(liveSessionId)
+          .update({
+            participant_count: recordedParticipants.length + 1,
+          })
 
         await admin
           .firestore()
@@ -137,7 +137,7 @@ export const submitAnswer = async (
 
   await admin
     .firestore()
-    .runTransaction(t => {
+    .runTransaction((t) => {
       return t
         .get(recordedSessionRefs)
         .then(async (doc: FirebaseFirestore.QuerySnapshot) => {
@@ -154,9 +154,7 @@ export const submitAnswer = async (
             throw new Error('Cannot find Participant')
           }
           const questionSnapshot = await recordedSessionData?.session_ref?.get()
-          console.log('get snapshot')
           const question = questionSnapshot?.data()?.questions[questionIdx]
-          console.log('question.score :', question.score)
           const updateParticipant = {
             ...recordedParticipants[participantIdx],
             quiz_results: [
@@ -164,25 +162,60 @@ export const submitAnswer = async (
               {
                 answer: quesionAnswer,
                 question_idx: questionIdx,
-                score: question.score
-              }
-            ]
+                score: question.score,
+              },
+            ],
           }
           recordedParticipants[participantIdx] = updateParticipant
           const recordedSessionRef = createRecordedSessionRefById(
             recordedSessionDoc.id
           )
           return t.update(recordedSessionRef, {
-            participants: recordedParticipants
+            participants: recordedParticipants,
           })
         })
     })
-    .then(result => {
+    .then((result) => {
       return { log: 'success' }
     })
-    .catch(err => {
+    .catch((err) => {
       throw err
     })
 
   return { log: 'Transaction success' }
+}
+
+export const createVoiceClip = async (
+  liveSessionId: string,
+  code: string,
+  fileUrl: string
+) => {
+  const liveSessionRef = createLiveSessionRefById(liveSessionId)
+  const recordedSessionDocumentData = await admin
+    .firestore()
+    .collection('recorded_session')
+    .where('live_session_ref', '==', liveSessionRef)
+    .get()
+  if (!recordedSessionDocumentData.empty) {
+    const time = new Date()
+    const updateRecordesSession = {
+      voiceClips: admin.firestore.FieldValue.arrayUnion({
+        participantCode: code,
+        fileUrl,
+        sent_stamp: time,
+        listened: false,
+      }),
+    }
+    // should have one record
+    for (const recordedSessionDoc of recordedSessionDocumentData.docs) {
+      await admin
+        .firestore()
+        .collection('recorded_session')
+        .doc(recordedSessionDoc.id)
+        .update(updateRecordesSession)
+    }
+
+    return { log: 'success' }
+  }
+  throw new Error('cannot find recorded_session')
 }
