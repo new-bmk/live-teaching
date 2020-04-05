@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StudentService } from '../student.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { Location } from '@angular/common';
-import { AuthService } from 'src/app/auth/auth.service';
-import { Subject } from 'rxjs';
 import { MessageService } from 'primeng/api';
-
+import { Subject } from 'rxjs';
+import { filter, finalize, takeUntil } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/auth.service';
+import { AudioRecordService } from 'src/app/shared-services/audio-record.service';
+import { StudentService } from '../student.service';
 @Component({
   selector: 'app-student-live',
   templateUrl: './student-live.component.html',
@@ -24,12 +25,14 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
 
   activeQuizIndex = -1;
   loadingQuestion = false;
+  isPushToTalk = false;
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
     private location: Location,
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private audioRecordService: AudioRecordService,
   ) {}
 
   liveSessionSubscribe;
@@ -133,4 +136,19 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   isLessThanTen() {
     return true;
   }
+
+  startPushToTalk() {
+    this.isPushToTalk = true
+    this.audioRecordService.startRecording();
+  }
+
+  stopPushToTalk() {
+    this.isPushToTalk = false
+    this.audioRecordService.stopRecording();
+    this.audioRecordService.getRecordedBlob().subscribe(blob => {
+      this.studentService.uploadFile(blob.blob, this.subject.title, this.studentData.name);
+    });
+  }
+
+  
 }

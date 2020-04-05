@@ -5,6 +5,8 @@
       ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
     >
     <span class="title">{{ subject?.title }}</span>
+    <button *ngIf="!isPushToTalk" (click)="startPushToTalk()">start</button>
+    <button *ngIf="isPushToTalk" (click)="stopPushToTalk()">stop</button>
   </div>
 
   <div *ngIf="loading"></div>

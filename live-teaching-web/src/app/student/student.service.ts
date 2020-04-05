@@ -1,8 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { finalize, map } from 'rxjs/operators';
+import * as moment from "moment"
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +12,8 @@ export class StudentService {
   constructor(
     private db: AngularFirestore,
     private http: HttpClient,
-    private fns: AngularFireFunctions
+    private fns: AngularFireFunctions,
+    private storage: AngularFireStorage
   ) {}
 
   listLiveSession() {
@@ -80,5 +83,19 @@ export class StudentService {
   submitAnswer(data) {
     const callable = this.fns.httpsCallable('submitAnswer');
     return callable(data);
+  }
+
+  uploadFile(file, title, studentName) {
+    const filePath = `student-push-to-talk/${title}_${studentName}_${moment().format("DD-MM-YYYY_HH:mm:ss")}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+    task
+      .snapshotChanges()
+      .pipe(finalize(() => {
+        fileRef.getDownloadURL().subscribe(data=>{
+          console.log(data)
+        })
+      }))
+      .subscribe();
   }
 }
