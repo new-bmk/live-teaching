@@ -45,10 +45,18 @@ export interface IParticipant {
   joined_stamp: Date;
 }
 
+export interface VoiceClip {
+  participantCode: string;
+  fileUrl: string;
+  listened: boolean;
+  sent_stamp: Date;
+}
+
 export interface IRecordedSession {
   session_ref: DocumentReference;
   live_session_ref: DocumentReference;
   start_stamp?: Date;
   end_stamp?: Date;
   participants: IParticipant[];
+  voiceClips: VoiceClip[];
 }
