@@ -53,6 +53,8 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
   subject;
   studentData;
   liveSessionData;
+  audioRecordedSub;
+  
   ngOnInit() {
     const id = this.route.snapshot.params.id;
     this.authService.getEndUser
@@ -61,6 +63,25 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
         this.studentData = auth;
       });
     this.snapshotLiveSession(id);
+
+    this.initialAudioRecorded();
+  }
+
+  initialAudioRecorded() {
+    this.audioRecordedSub = this.audioRecordService
+      .getRecordedBlob()
+      .subscribe((blob) => {
+        this.studentService
+          .uploadFile(blob.blob, this.subject.title, this.studentData.name)
+          .subscribe(async (data: any) => {
+            const url = await data;
+            this.createClipVoice({
+              live_session_id: this.liveSessionData.id,
+              code: this.studentData.studentId,
+              file_URL: url,
+            });
+          });
+      });
   }
   ngAfterViewInit() {
     console.log('ngAfterViewInit');
@@ -82,6 +103,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
+    this.audioRecordedSub.unsubscribe();
   }
 
   back() {
@@ -196,19 +218,8 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
 
   stopPushToTalk() {
     this.isPushToTalk = false;
+    clearInterval(this.countInterval);
     this.audioRecordService.stopRecording();
-    this.audioRecordService.getRecordedBlob().subscribe((blob) => {
-      this.studentService
-        .uploadFile(blob.blob, this.subject.title, this.studentData.name)
-        .subscribe(async (data: any) => {
-          const url = await data;
-          this.createClipVoice({
-            live_session_id: this.liveSessionData.id,
-            code: this.studentData.studentId,
-            file_URL: url,
-          });
-        });
-    });
   }
 
   onRightClick() {
