@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireStorageModule, BUCKET } from '@angular/fire/storage';
 
 import { LoginComponent } from './login/login.component';
 import { TeacherComponent } from './teacher/teacher.component';
@@ -51,6 +52,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     AngularFireFunctionsModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -71,6 +73,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
   providers: [
     MessageService,
     ConfirmationService,
+    // { provide: BUCKET, useValue: 'live-teaching' },
     // { provide: ORIGIN, useValue: 'http://localhost:4200' }
   ],
   bootstrap: [AppComponent],

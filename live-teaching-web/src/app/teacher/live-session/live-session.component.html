@@ -56,4 +56,19 @@
     </ng-template>
   </p-table>
   <p-confirmDialog></p-confirmDialog>
+
+  structure voice clip
+  <ul>
+    <li
+      *ngFor="let voiceClip of voiceClips; index as i"
+      (click)="onListenVoiceClip(i)"
+    >
+      <audio controls>
+        <source src="{{ voiceClip.fileUrl }}" type="audio/mpeg" />
+        Your browser does not support the audio tag.
+      </audio>
+      listened: {{ voiceClip.listened }}, {{ voiceClip.participantCode }},
+      {{ voiceClip.sent_stamp }}
+    </li>
+  </ul>
 </div>

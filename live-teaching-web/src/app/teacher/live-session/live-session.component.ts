@@ -20,8 +20,10 @@ export class LiveSessionComponent implements OnInit {
   liveSession$?: Observable<ILiveSession>;
   liveSessionId?: string;
   liveSessionTableRaw$: Observable<any>;
+  recordedSessionId?: string;
   loading = true;
   session?: ISession;
+  voiceClips: any[];
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +50,8 @@ export class LiveSessionComponent implements OnInit {
               : await this.liveSessionService.getSessionByRef(
                   recordSession.session_ref
                 );
+            this.recordedSessionId = _.get(recordSession, 'id');
+            this.voiceClips = recordSession.voiceClips;
             this.loading = false;
             return this.createLiveSessionTableRaw(recordSession, this.session);
           }),
@@ -114,6 +118,10 @@ export class LiveSessionComponent implements OnInit {
       headers,
       bodies: [percentage, ...bodies],
     };
+  }
+
+  onListenVoiceClip(idx: number) {
+    this.liveSessionService.listening(this.recordedSessionId, idx);
   }
 
   async onSendQuestion(idx: number) {

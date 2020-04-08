@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LiveSessionService {
   constructor(
@@ -17,7 +17,7 @@ export class LiveSessionService {
   getSessionByRef(sessionRef: DocumentReference) {
     return sessionRef
       .get()
-      .then(snapshot =>
+      .then((snapshot) =>
         snapshot.exists ? { id: snapshot.id, ...snapshot.data() } : null
       ) as Promise<ISession>;
   }
@@ -27,6 +27,27 @@ export class LiveSessionService {
       .collection('live_session')
       .doc(liveSessionId)
       .update({ active_question_idx: idx });
+  }
+
+  listening(recordedSessionId: string, voiceClipIdx: number) {
+    const selectRecordedSession = this.fireStore
+      .collection<IRecordedSession>('recorded_session')
+      .doc(recordedSessionId).ref;
+
+    return this.fireStore.firestore.runTransaction((transaction) => {
+      return transaction.get(selectRecordedSession).then((results) => {
+        if (!results.exists) {
+          throw new Error('Document does not exist!');
+        }
+        const result = results.data();
+        const voiceClips = result.voiceClips;
+        voiceClips[voiceClipIdx] = {
+          ...voiceClips[voiceClipIdx],
+          listened: true,
+        };
+        transaction.update(selectRecordedSession, { voiceClips });
+      });
+    });
   }
 
   subscribeLiveSessionById(id: string) {
@@ -41,7 +62,7 @@ export class LiveSessionService {
           } else {
             return {
               id,
-              ...result
+              ...result,
             };
           }
         })
@@ -56,8 +77,20 @@ export class LiveSessionService {
       .collection<IRecordedSession>('recorded_session', (ref: any) =>
         ref.where('live_session_ref', '==', liveSession)
       )
-      .valueChanges()
-      .pipe(map(result => _.head(result)));
+      .snapshotChanges()
+      .pipe(
+        map((results) => {
+          if (results.length > 0) {
+            const result = results[0];
+            return {
+              id: result.payload.doc.id,
+              ...result.payload.doc.data(),
+            };
+          } else {
+            return {};
+          }
+        })
+      );
   }
 
   endSession(liveSessonRef) {

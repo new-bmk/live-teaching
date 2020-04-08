@@ -1,16 +1,25 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { finalize, map, switchMap, last } from 'rxjs/operators';
+import * as moment from 'moment';
+
+export interface IVoiceClip {
+  live_session_id: string;
+  code: string;
+  file_URL: string;
+}
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StudentService {
   constructor(
     private db: AngularFirestore,
     private http: HttpClient,
-    private fns: AngularFireFunctions
+    private fns: AngularFireFunctions,
+    private storage: AngularFireStorage
   ) {}
 
   listLiveSession() {
@@ -23,8 +32,8 @@ export class StudentService {
         // .collection("live_session", ref => ref.where("endStamp", ">", new Date()))
         .snapshotChanges()
         .pipe(
-          map(actions => {
-            return actions.map(a => {
+          map((actions) => {
+            return actions.map((a) => {
               const data: any = a.payload.doc.data();
               const id = a.payload.doc.id;
               return { id, ...data };
@@ -58,7 +67,7 @@ export class StudentService {
       .doc(id)
       .get()
       .pipe(
-        map(documentRef => {
+        map((documentRef) => {
           const data = documentRef.data();
           return { id: documentRef.id, ...data };
         })
@@ -73,12 +82,38 @@ export class StudentService {
     const callable = this.fns.httpsCallable('joinLiveSession');
     return callable({
       live_session_id: liveSessionId,
-      code
+      code,
     });
   }
 
   submitAnswer(data) {
     const callable = this.fns.httpsCallable('submitAnswer');
     return callable(data);
+  }
+
+  createVoiceClip(data: IVoiceClip) {
+    const callable = this.fns.httpsCallable('createVoiceClip');
+    return callable(data);
+  }
+
+  uploadFile(file, title, studentName) {
+    const filePath = `student-push-to-talk/${title}_${studentName}_${moment().format(
+      'DD-MM-YYYY_HH:mm:ss'
+    )}`;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+    return task.snapshotChanges().pipe(
+      last(),
+      map(() => {
+        const url = fileRef.getDownloadURL();
+        return url.toPromise();
+      })
+    );
+    // .pipe(finalize(() => {
+    //   fileRef.getDownloadURL().subscribe(data=>{
+    //     console.log(data)
+    //   })
+    // }))
+    // .subscribe();
   }
 }

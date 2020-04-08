@@ -1,35 +1,39 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StudentService } from '../student.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import * as _ from 'lodash';
-import { Location } from '@angular/common';
-import { AuthService } from 'src/app/auth/auth.service';
-import { Subject } from 'rxjs';
 import { MessageService } from 'primeng/api';
-
+import { Subject } from 'rxjs';
+import { filter, finalize, takeUntil } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/auth.service';
+import { AudioRecordService } from 'src/app/shared-services/audio-record.service';
+import { StudentService, IVoiceClip } from '../student.service';
+import { async } from '@angular/core/testing';
 @Component({
   selector: 'app-student-live',
   templateUrl: './student-live.component.html',
-  styleUrls: ['./student-live.component.scss']
+  styleUrls: ['./student-live.component.scss'],
 })
 export class StudentLiveComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject();
   quizList = [];
 
   quizForm = new FormGroup({
-    anwser: new FormControl('', Validators.required)
+    anwser: new FormControl('', Validators.required),
   });
 
   activeQuizIndex = -1;
   loadingQuestion = false;
+  isPushToTalk = false;
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
     private location: Location,
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private audioRecordService: AudioRecordService
   ) {}
 
   liveSessionSubscribe;
@@ -104,20 +108,20 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
         live_session_id: this.liveSessionData.id,
         code: this.studentData.studentId,
         quesionAnswer: this.quizForm.value.anwser,
-        questionIdx: this.activeQuizIndex
+        questionIdx: this.activeQuizIndex,
       })
       .subscribe((result: any) => {
         if (result.valid) {
           this.messageService.add({
             severity: 'success',
-            summary: 'ส่งคำตอบสำเร็จ'
+            summary: 'ส่งคำตอบสำเร็จ',
           });
           this.loading = false;
         } else {
           this.messageService.add({
             severity: 'error',
             summary: 'ส่งคำตอบไม่สำเร็จ',
-            detail: `เนื่องจาก ${result.reason}`
+            detail: `เนื่องจาก ${result.reason}`,
           });
         }
         this.loadingQuestion = false;
@@ -132,5 +136,47 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
 
   isLessThanTen() {
     return true;
+  }
+
+  startPushToTalk() {
+    this.isPushToTalk = true;
+    this.audioRecordService.startRecording();
+  }
+
+  stopPushToTalk() {
+    this.isPushToTalk = false;
+    this.audioRecordService.stopRecording();
+    this.audioRecordService.getRecordedBlob().subscribe((blob) => {
+      this.studentService
+        .uploadFile(blob.blob, this.subject.title, this.studentData.name)
+        .subscribe(async (data: any) => {
+          const url = await data;
+          this.createClipVoice({
+            live_session_id: this.liveSessionData.id,
+            code: this.studentData.studentId,
+            file_URL: url,
+          });
+        });
+    });
+  }
+
+  private createClipVoice(voiceClipObject: IVoiceClip) {
+    this.studentService
+      .createVoiceClip(voiceClipObject)
+      .subscribe((data: any) => {
+        if (data.valid) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'บันทึสำเร็จ',
+          });
+          this.loading = false;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'บันทึไม่สำเร็จ',
+            detail: `เนื่องจาก ${data.reason}`,
+          });
+        }
+      });
   }
 }
