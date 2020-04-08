@@ -1,8 +1,6 @@
 <div class="my-container" id="style-1">
   <div style="display: flex;">
-    <span class="backBtn" (click)="back()"
-      ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
-    >
+    <span class="backBtn" (click)="back()"><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span>
     <span class="title">{{ session?.title }}</span>
   </div>
   <!-- <div *ngIf="loading" class="loading-container">
@@ -16,21 +14,12 @@
     </div>
   </div> -->
 
-  <p-table
-    [loading]="loading"
-    [columns]="(liveSessionTableRaw$ | async | async)?.headers"
-    [value]="(liveSessionTableRaw$ | async | async)?.bodies"
-  >
+  <p-table [loading]="loading" [columns]="(liveSessionTableRaw$ | async | async)?.headers"
+    [value]="(liveSessionTableRaw$ | async | async)?.bodies">
     <ng-template pTemplate="caption">
       <div class="caption-container">
         <div>
-          <button
-            class="ui-button-danger"
-            type="button"
-            pButton
-            (click)="endSession()"
-            label="End Live"
-          ></button>
+          <button class="ui-button-danger" type="button" pButton (click)="endSession()" label="End Live"></button>
         </div>
       </div>
     </ng-template>
@@ -38,11 +27,9 @@
       <tr>
         <th *ngFor="let col of columns; index as i">
           <span *ngIf="col.field == 'code'">{{ col.header }}</span>
-          <button *ngIf="col.field != 'code'" (click)="onSendQuestion(i - 1)">
-            <span *ngIf="(liveSession$ | async)?.active_question_idx == i - 1">
-              alive
-            </span>
-            {{ col.header }}
+          <button
+            [ngClass]="{'ui-button-success' : (liveSession$ | async)?.active_question_idx == i - 1 , 'ui-button-info' : (liveSession$ | async)?.active_question_idx != i - 1}"
+            type="button" pButton *ngIf="col.field != 'code'" (click)="onSendQuestion(i - 1)" label="{{ col.header }}">
           </button>
         </th>
       </tr>
@@ -57,12 +44,48 @@
   </p-table>
   <p-confirmDialog></p-confirmDialog>
 
-  structure voice clip
+
+
+  <br />
+  <p-table [loading]="loading" [columns]="voiceTableHeaders" [value]="voiceClips">
+    <ng-template pTemplate="caption">
+      <div class="caption-container">
+        <div>
+          Voice
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of columns; index as i">
+          <span>{{ col.header }}</span>
+          <!-- <button *ngIf="col.field != 'code'" (click)="onSendQuestion(i - 1)">
+            <span *ngIf="(liveSession$ | async)?.active_question_idx == i - 1">
+              alive
+            </span>
+            {{ col.header }}
+          </button> -->
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+      <tr [ngStyle]="{'background-color': rowData['listened'] ? 'lightgrey' : 'white'}">
+        <td *ngFor="let col of columns">
+          <span *ngIf="col.field == 'fileUrl'">
+            <audio controls (ended)="onListenVoiceClip(rowIndex)">
+              <source src="{{ rowData[col.field] }}" type="audio/mpeg" />
+              Your browser does not support the audio tag.
+            </audio></span>
+          <span *ngIf="col.field == 'sent_stamp'">{{ rowData[col.field]?.toDate() | date:'short':'UTC'  }}</span>
+          <span *ngIf="col.field == 'participantCode'"> {{ rowData[col.field] }} </span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- structure voice clip
   <ul>
-    <li
-      *ngFor="let voiceClip of voiceClips; index as i"
-      (click)="onListenVoiceClip(i)"
-    >
+    <li *ngFor="let voiceClip of voiceClips; index as i" (click)="onListenVoiceClip(i)">
       <audio controls>
         <source src="{{ voiceClip.fileUrl }}" type="audio/mpeg" />
         Your browser does not support the audio tag.
@@ -70,5 +93,5 @@
       listened: {{ voiceClip.listened }}, {{ voiceClip.participantCode }},
       {{ voiceClip.sent_stamp }}
     </li>
-  </ul>
+  </ul>-->
 </div>
