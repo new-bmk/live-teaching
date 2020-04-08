@@ -5,14 +5,12 @@
       ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
     >
     <span class="title">{{ subject?.title }}</span>
-    <button *ngIf="!isPushToTalk" (click)="startPushToTalk()">start</button>
-    <button *ngIf="isPushToTalk" (click)="stopPushToTalk()">stop</button>
   </div>
 
   <div *ngIf="loading"></div>
 
   <div *ngIf="!loading">
-    <div style="height: 78vh; display: flex">
+    <div style="height: 78vh; display: flex;">
       <iframe
         [src]="stramURL | safeUrl"
         frameborder="0"
@@ -22,6 +20,16 @@
         autoplay
       ></iframe>
     </div>
+  </div>
+  <div class="pushToTalk">
+    <button class="start" *ngIf="!isPushToTalk" (click)="startPushToTalk()">
+      <i class="pi pi-comments" style="font-size: 3em;"></i>
+    </button>
+    <h2 *ngIf="!isPushToTalk" style="color: white; position: absolute; right: 20vw;">< - - กดที่นี่เพื่อเริ่มสนทนากับผู้สอน</h2>
+    <button class="stop" *ngIf="isPushToTalk" (click)="stopPushToTalk()">
+      <i class="pi pi-comments" style="font-size: 3em;"></i>
+    </button>
+    <h2 *ngIf="isPushToTalk" style="color: white; position: absolute; right: 20vw;">< - - กดอีกครั้งเพื่อส่งเสียงสนทนาของคุณ</h2>
   </div>
 
   <p-dialog
