@@ -1,5 +1,11 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +22,8 @@ import { async } from '@angular/core/testing';
   templateUrl: './student-live.component.html',
   styleUrls: ['./student-live.component.scss'],
 })
-export class StudentLiveComponent implements OnInit, OnDestroy {
+export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('myIframe', { static: true }) public myIframe;
   private unsubscribe$ = new Subject();
   quizList = [];
 
@@ -55,7 +62,24 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
       });
     this.snapshotLiveSession(id);
   }
-
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit');
+    // this.myIframe.nativeElement.oncontextmenu = this.onRightClick;
+    this.myIframe.nativeElement.addEventListener(
+      'contextmenu',
+      this.onRightClick
+    );
+    this.myIframe.nativeElement.addEventListener(
+      'mousemove',
+      this.onRightClick
+    );
+    console.log('this.myIframe :', this.myIframe);
+    console.log(
+      'this.myIframe.nativeElement.oncontextmenu :',
+      this.myIframe.nativeElement.oncontextmenu
+    );
+    // iframDoc.classList.remove('ytp-panel');
+  }
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
   }
@@ -83,9 +107,13 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
             this.subject = actionSubject.data();
           });
         if (data.stream_url.includes('?')) {
-          this.srcUrl = data.stream_url + `&modestbranding=1&autoplay=1`;
+          this.srcUrl =
+            data.stream_url +
+            `&modestbranding=1&autoplay=1&rel=0&enablejsapi=1`;
         } else {
-          this.srcUrl = data.stream_url + `?modestbranding=1&autoplay=1`;
+          this.srcUrl =
+            data.stream_url +
+            `?modestbranding=1&autoplay=1&rel=0&enablejsapi=1`;
         }
         this.liveSessionData = data;
         this.loading = false;
@@ -181,6 +209,11 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
           });
         });
     });
+  }
+
+  onRightClick() {
+    console.log('onRightClick');
+    return false;
   }
 
   private createClipVoice(voiceClipObject: IVoiceClip) {

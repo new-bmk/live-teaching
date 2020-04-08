@@ -4,25 +4,28 @@
   border: none !important;
   opacity: 0.9 !important;
   background-color: transparent;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-:host ::ng-deep .ui-dialog-titlebar{
+.iframe-prevent {
+  pointer-events: none;
+}
+:host ::ng-deep .ui-dialog-titlebar {
   background-color: #263238 !important;
   border: none !important;
   padding: 1em !important;
 }
 
-:host ::ng-deep .ui-dialog-content{
+:host ::ng-deep .ui-dialog-content {
   border: none !important;
 }
 
-:host ::ng-deep .ui-dialog-footer{
+:host ::ng-deep .ui-dialog-footer {
   border: none !important;
   padding: 1em !important;
 }
 
-.backBtn{
+.backBtn {
   margin-right: 2em;
   cursor: pointer;
   display: flex;
@@ -30,11 +33,11 @@
   color: rgb(168, 168, 168);
 }
 
-.backBtn:hover{
+.backBtn:hover {
   color: whitesmoke;
 }
 
-.title{
+.title {
   display: flex;
   color: #ffab00;
   font-size: 2.5em;
@@ -42,7 +45,7 @@
 
 .blink {
   animation: blinker 1s linear infinite;
-  color: rgb(250, 66, 66);  
+  color: rgb(250, 66, 66);
 }
 
 @keyframes blinker {
@@ -51,35 +54,34 @@
   }
 }
 
-.submitBtn{
-  background-color:  #ffab00;
+.submitBtn {
+  background-color: #ffab00;
   border: none;
 }
 
-.submitBtn:hover{
+.submitBtn:hover {
   background-color: #ff8800 !important;
 }
 
-.my-container{
+.my-container {
   padding: 0 1em;
   background-color: #263238;
   min-height: 90vh;
 }
 
-.pushToTalk{
+.pushToTalk {
   display: flex;
   justify-content: center;
   padding: 1em;
-  button{
+  button {
     border-radius: 100px;
     border: none;
     width: 80px;
     height: 80px;
   }
-  .start{
-
+  .start {
   }
-  .stop{
+  .stop {
     background-color: red;
     color: white;
   }

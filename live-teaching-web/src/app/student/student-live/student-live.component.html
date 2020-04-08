@@ -9,9 +9,11 @@
 
   <div *ngIf="loading"></div>
 
-  <div *ngIf="!loading">
+  <div [ngStyle]="{ display: loading ? 'none' : 'inline' }">
     <div style="height: 78vh; display: flex;">
       <iframe
+        class="iframe-prevent"
+        #myIframe
         [src]="stramURL | safeUrl"
         frameborder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -24,12 +26,27 @@
     <button class="start" *ngIf="!isPushToTalk" (click)="startPushToTalk()">
       <i class="pi pi-comments" style="font-size: 3em;"></i>
     </button>
-    <h2 *ngIf="!isPushToTalk" style="color: white; position: absolute; right: 20vw;">< - - กดที่นี่เพื่อเริ่มสนทนากับผู้สอน</h2>
+    <h2
+      *ngIf="!isPushToTalk"
+      style="color: white; position: absolute; right: 20vw;"
+    >
+      < - - กดที่นี่เพื่อเริ่มสนทนากับผู้สอน
+    </h2>
     <button class="stop" *ngIf="isPushToTalk" (click)="stopPushToTalk()">
       <i class="pi pi-comments" style="font-size: 3em;"></i>
     </button>
-    <h2 *ngIf="isPushToTalk" style="color: white; position: absolute; left: 22vw;">คุณสามารถสนทนาได้อีก {{count}} วินาที</h2>
-    <h2 *ngIf="isPushToTalk" style="color: white; position: absolute; right: 20vw;">< - - กดอีกครั้งเพื่อส่งเสียงสนทนาของคุณ</h2>
+    <h2
+      *ngIf="isPushToTalk"
+      style="color: white; position: absolute; left: 22vw;"
+    >
+      คุณสามารถสนทนาได้อีก {{ count }} วินาที
+    </h2>
+    <h2
+      *ngIf="isPushToTalk"
+      style="color: white; position: absolute; right: 20vw;"
+    >
+      < - - กดอีกครั้งเพื่อส่งเสียงสนทนาของคุณ
+    </h2>
   </div>
 
   <p-dialog
