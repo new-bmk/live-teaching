@@ -27,6 +27,9 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   activeQuizIndex = -1;
   loadingQuestion = false;
   isPushToTalk = false;
+
+  count = 30;
+  countInterval;
   constructor(
     private studentService: StudentService,
     private route: ActivatedRoute,
@@ -141,6 +144,22 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   startPushToTalk() {
     this.isPushToTalk = true;
     this.audioRecordService.startRecording();
+    this.countDownPushToTalk()
+  }
+
+  countDownPushToTalk(){
+    setTimeout(()=>{
+      if(this.isPushToTalk){
+        this.stopPushToTalk()
+      }
+    }, 30000)
+    this.count = 30
+    this.countInterval = setInterval(()=>{
+      this.count--
+      if(this.count == 0){
+        clearInterval(this.countInterval)
+      }
+    },1000)
   }
 
   stopPushToTalk() {
@@ -167,13 +186,13 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
         if (data.valid) {
           this.messageService.add({
             severity: 'success',
-            summary: 'บันทึสำเร็จ',
+            summary: 'ส่งคำถามสำเร็จ',
           });
           this.loading = false;
         } else {
           this.messageService.add({
             severity: 'error',
-            summary: 'บันทึไม่สำเร็จ',
+            summary: 'บันทึกไม่สำเร็จ',
             detail: `เนื่องจาก ${data.reason}`,
           });
         }

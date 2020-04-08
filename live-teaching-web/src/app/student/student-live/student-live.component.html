@@ -29,6 +29,7 @@
     <button class="stop" *ngIf="isPushToTalk" (click)="stopPushToTalk()">
       <i class="pi pi-comments" style="font-size: 3em;"></i>
     </button>
+    <h2 *ngIf="isPushToTalk" style="color: white; position: absolute; left: 22vw;">คุณสามารถสนทนาได้อีก {{count}} วินาที</h2>
     <h2 *ngIf="isPushToTalk" style="color: white; position: absolute; right: 20vw;">< - - กดอีกครั้งเพื่อส่งเสียงสนทนาของคุณ</h2>
   </div>
 
