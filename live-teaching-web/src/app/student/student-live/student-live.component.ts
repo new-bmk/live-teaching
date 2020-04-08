@@ -46,6 +46,8 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   subject;
   studentData;
   liveSessionData;
+  audioRecordedSub;
+  private unsubscribe: Subject<void> = new Subject();
   ngOnInit() {
     const id = this.route.snapshot.params.id;
     this.authService.getEndUser
@@ -54,10 +56,30 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
         this.studentData = auth;
       });
     this.snapshotLiveSession(id);
+
+    this.initialAudioRecorded();
+  }
+
+  initialAudioRecorded() {
+    this.audioRecordedSub = this.audioRecordService
+      .getRecordedBlob()
+      .subscribe((blob) => {
+        this.studentService
+          .uploadFile(blob.blob, this.subject.title, this.studentData.name)
+          .subscribe(async (data: any) => {
+            const url = await data;
+            this.createClipVoice({
+              live_session_id: this.liveSessionData.id,
+              code: this.studentData.studentId,
+              file_URL: url,
+            });
+          });
+      });
   }
 
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
+    this.audioRecordedSub.unsubscribe();
   }
 
   back() {
@@ -144,37 +166,25 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   startPushToTalk() {
     this.isPushToTalk = true;
     this.audioRecordService.startRecording();
-    this.countDownPushToTalk()
+    this.countDownPushToTalk();
   }
 
-  countDownPushToTalk(){
-    setTimeout(()=>{
-      if(this.isPushToTalk){
-        this.stopPushToTalk()
+  countDownPushToTalk() {
+    setTimeout(() => {
+      if (this.isPushToTalk) {
+        this.stopPushToTalk();
       }
-    }, 30000)
-    this.count = 30
-    this.countInterval = setInterval(()=>{
-      this.count--
-    },1000)
+    }, 30000);
+    this.count = 30;
+    this.countInterval = setInterval(() => {
+      this.count--;
+    }, 1000);
   }
 
   stopPushToTalk() {
     this.isPushToTalk = false;
-    clearInterval(this.countInterval)
+    clearInterval(this.countInterval);
     this.audioRecordService.stopRecording();
-    this.audioRecordService.getRecordedBlob().subscribe((blob) => {
-      this.studentService
-        .uploadFile(blob.blob, this.subject.title, this.studentData.name)
-        .subscribe(async (data: any) => {
-          const url = await data;
-          this.createClipVoice({
-            live_session_id: this.liveSessionData.id,
-            code: this.studentData.studentId,
-            file_URL: url,
-          });
-        });
-    });
   }
 
   private createClipVoice(voiceClipObject: IVoiceClip) {
