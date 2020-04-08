@@ -20,6 +20,7 @@ export class LiveSessionComponent implements OnInit {
   liveSession$?: Observable<ILiveSession>;
   liveSessionId?: string;
   liveSessionTableRaw$: Observable<any>;
+  voiceTableHeaders: any[]
   recordedSessionId?: string;
   loading = true;
   session?: ISession;
@@ -37,6 +38,7 @@ export class LiveSessionComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.liveSessionId = this.route.snapshot.paramMap.get('ref');
+    this.voiceTableHeaders = [{ field: 'participantCode', header: 'Participant' }, { field: 'fileUrl', header: 'FileUrl' }, { field: 'sent_stamp', header: 'Time' }]
     try {
       this.liveSession$ = this.liveSessionService.subscribeLiveSessionById(
         this.liveSessionId
@@ -78,7 +80,6 @@ export class LiveSessionComponent implements OnInit {
     recordSession: IRecordedSession,
     session: ISession
   ) {
-    console.log('session', session);
     const headers = [{ field: 'code', header: 'Code' }];
     const bodies = [];
     const totalScore = {};
