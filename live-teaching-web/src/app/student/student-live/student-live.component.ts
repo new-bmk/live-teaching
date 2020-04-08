@@ -47,7 +47,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
   studentData;
   liveSessionData;
   audioRecordedSub;
-  private unsubscribe: Subject<void> = new Subject();
+  
   ngOnInit() {
     const id = this.route.snapshot.params.id;
     this.authService.getEndUser
