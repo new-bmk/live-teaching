@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import _ from 'lodash';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, debounce } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
 import { LiveSessionService } from '../live-session.service';
 import { Location } from '@angular/common';
@@ -82,13 +82,17 @@ export class LiveSessionComponent implements OnInit {
     const headers = [{ field: 'code', header: 'Code' }];
     const bodies = [];
     const totalScore = {};
+    const questions = _.get(session, 'questions');
+    if (questions) {
+      for (const [i, question] of questions.entries()) {
+        headers.push({ field: `q${i}`, header: `Q${i}` });
+      }
+    }
+
     for (const participant of recordSession.participants) {
       const student = { code: participant.code };
-      const questions = _.get(session, 'questions');
       if (questions) {
-        for (const [i, question] of _.get(session, 'questions').entries()) {
-          headers.push({ field: `q${i}`, header: `Q${i}` });
-
+        for (const [i, question] of questions.entries()) {
           const quiz = participant.quiz_results.find(
             (q) => q.question_idx === i
           );
