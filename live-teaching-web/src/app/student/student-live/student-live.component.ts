@@ -156,14 +156,12 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
     this.count = 30
     this.countInterval = setInterval(()=>{
       this.count--
-      if(this.count == 0){
-        clearInterval(this.countInterval)
-      }
     },1000)
   }
 
   stopPushToTalk() {
     this.isPushToTalk = false;
+    clearInterval(this.countInterval)
     this.audioRecordService.stopRecording();
     this.audioRecordService.getRecordedBlob().subscribe((blob) => {
       this.studentService
