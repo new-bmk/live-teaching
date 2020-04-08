@@ -104,7 +104,11 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
           .then((actionSubject: any) => {
             this.subject = actionSubject.data();
           });
-        this.srcUrl = data.stream_url;
+        if (data.stream_url.includes('?')) {
+          this.srcUrl = data.stream_url + `&modestbranding=1&autoplay=1`;
+        } else {
+          this.srcUrl = data.stream_url + `?modestbranding=1&autoplay=1`;
+        }
         this.liveSessionData = data;
         this.loading = false;
       });
@@ -178,6 +182,9 @@ export class StudentLiveComponent implements OnInit, OnDestroy {
     this.count = 30;
     this.countInterval = setInterval(() => {
       this.count--;
+      if (this.count == 0) {
+        clearInterval(this.countInterval);
+      }
     }, 1000);
   }
 

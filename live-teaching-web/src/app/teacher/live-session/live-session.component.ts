@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import _ from 'lodash';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, debounce } from 'rxjs/operators';
 import { ILiveSession, IRecordedSession, ISession } from 'src/core/types';
 import { LiveSessionService } from '../live-session.service';
 import { Location } from '@angular/common';
@@ -20,6 +20,7 @@ export class LiveSessionComponent implements OnInit {
   liveSession$?: Observable<ILiveSession>;
   liveSessionId?: string;
   liveSessionTableRaw$: Observable<any>;
+  voiceTableHeaders: any[]
   recordedSessionId?: string;
   loading = true;
   session?: ISession;
@@ -37,6 +38,7 @@ export class LiveSessionComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     this.liveSessionId = this.route.snapshot.paramMap.get('ref');
+    this.voiceTableHeaders = [{ field: 'participantCode', header: 'Participant' }, { field: 'fileUrl', header: 'FileUrl' }, { field: 'sent_stamp', header: 'Time' }]
     try {
       this.liveSession$ = this.liveSessionService.subscribeLiveSessionById(
         this.liveSessionId
@@ -78,17 +80,20 @@ export class LiveSessionComponent implements OnInit {
     recordSession: IRecordedSession,
     session: ISession
   ) {
-    console.log('session', session);
     const headers = [{ field: 'code', header: 'Code' }];
     const bodies = [];
     const totalScore = {};
+    const questions = _.get(session, 'questions');
+    if (questions) {
+      for (const [i, question] of questions.entries()) {
+        headers.push({ field: `q${i}`, header: `Q${i}` });
+      }
+    }
+
     for (const participant of recordSession.participants) {
       const student = { code: participant.code };
-      const questions = _.get(session, 'questions');
       if (questions) {
-        for (const [i, question] of _.get(session, 'questions').entries()) {
-          headers.push({ field: `q${i}`, header: `Q${i}` });
-
+        for (const [i, question] of questions.entries()) {
           const quiz = participant.quiz_results.find(
             (q) => q.question_idx === i
           );
