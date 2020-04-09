@@ -208,7 +208,7 @@ export class SessionCrudComponent implements OnInit {
     this.sessionCrudService
       .updateSession(this.subjectId, sessionId, values)
       .then(() => {
-        this.selectedSessionId = null;
+        // this.selectedSessionId = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Session',

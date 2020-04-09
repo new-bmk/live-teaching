@@ -22,7 +22,7 @@ import { async } from '@angular/core/testing';
   templateUrl: './student-live.component.html',
   styleUrls: ['./student-live.component.scss'],
 })
-export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
+export class StudentLiveComponent implements OnInit, OnDestroy {
   @ViewChild('myIframe', { static: true }) public myIframe;
   private unsubscribe$ = new Subject();
   quizList = [];
@@ -54,7 +54,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
   studentData;
   liveSessionData;
   audioRecordedSub;
-  
+
   ngOnInit() {
     const id = this.route.snapshot.params.id;
     this.authService.getEndUser
@@ -83,24 +83,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
           });
       });
   }
-  ngAfterViewInit() {
-    console.log('ngAfterViewInit');
-    // this.myIframe.nativeElement.oncontextmenu = this.onRightClick;
-    this.myIframe.nativeElement.addEventListener(
-      'contextmenu',
-      this.onRightClick
-    );
-    this.myIframe.nativeElement.addEventListener(
-      'mousemove',
-      this.onRightClick
-    );
-    console.log('this.myIframe :', this.myIframe);
-    console.log(
-      'this.myIframe.nativeElement.oncontextmenu :',
-      this.myIframe.nativeElement.oncontextmenu
-    );
-    // iframDoc.classList.remove('ytp-panel');
-  }
+
   ngOnDestroy() {
     this.liveSessionSubscribe.unsubscribe();
     this.audioRecordedSub.unsubscribe();
@@ -219,6 +202,7 @@ export class StudentLiveComponent implements OnInit, OnDestroy, AfterViewInit {
   stopPushToTalk() {
     this.isPushToTalk = false;
     clearInterval(this.countInterval);
+    console.log('stopPushToTalk :');
     this.audioRecordService.stopRecording();
   }
 

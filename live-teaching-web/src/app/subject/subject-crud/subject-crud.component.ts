@@ -59,7 +59,7 @@ export class SubjectCrudComponent implements OnInit {
   private refreshData() {
     this.loading = true;
     this.subjectService
-      .listSubjects(0, 999, {}, 'title', 1)
+      .listSubjects(0, 999, { email: this.authData.email }, 'title', 1)
       .subscribe((results) => {
         if (results) {
           this.subjectList = results;
@@ -78,8 +78,12 @@ export class SubjectCrudComponent implements OnInit {
   ) {
     const orderString = order === 1 ? 'asc' : 'desc';
     this.loading = true;
+    const filterWithEmail = {
+      ...filter,
+      email: this.authData.email,
+    };
     this.subscribeSubject = this.subjectService
-      .listSubjects(offset, max, { ...filter }, sort, orderString)
+      .listSubjects(offset, max, { ...filterWithEmail }, sort, orderString)
       .subscribe((results) => {
         this.subjectList = results;
         this.loading = false;
