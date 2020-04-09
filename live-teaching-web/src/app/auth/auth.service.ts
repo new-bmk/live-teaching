@@ -83,7 +83,7 @@ export class AuthService {
             ? ""
             : id,
         email: userAuth.email,
-        role: isNaN(+id) ? "teacher" : "student"
+        role: isNaN(+id) ? (userAuth.providerData[0].email.includes('@psu.ac.th')? "teacher": "student") : "student"
       })
       .then(() => {
         this.setUser(userAuth, endUser => {
