@@ -1,6 +1,8 @@
 <div class="my-container" id="style-1">
   <div style="display: flex;">
-    <span class="backBtn" (click)="back()"><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span>
+    <span class="backBtn" (click)="back()"
+      ><i class="pi pi-arrow-left"></i>&nbsp;ย้อนกลับ</span
+    >
     <span class="title">{{ session?.title }}</span>
   </div>
   <!-- <div *ngIf="loading" class="loading-container">
@@ -14,12 +16,21 @@
     </div>
   </div> -->
 
-  <p-table [loading]="loading" [columns]="(liveSessionTableRaw$ | async | async)?.headers"
-    [value]="(liveSessionTableRaw$ | async | async)?.bodies">
+  <p-table
+    [loading]="loading"
+    [columns]="(liveSessionTableRaw$ | async | async)?.headers"
+    [value]="(liveSessionTableRaw$ | async | async)?.bodies"
+  >
     <ng-template pTemplate="caption">
       <div class="caption-container">
         <div>
-          <button class="ui-button-danger" type="button" pButton (click)="endSession()" label="End Live"></button>
+          <button
+            class="ui-button-danger"
+            type="button"
+            pButton
+            (click)="endSession()"
+            label="End Live"
+          ></button>
         </div>
       </div>
     </ng-template>
@@ -28,26 +39,42 @@
         <th *ngFor="let col of columns; index as i">
           <span *ngIf="col.field == 'code'">{{ col.header }}</span>
           <button
-            [ngClass]="{'ui-button-success' : (liveSession$ | async)?.active_question_idx == i - 1 , 'ui-button-info' : (liveSession$ | async)?.active_question_idx != i - 1}"
-            type="button" pButton *ngIf="col.field != 'code'" (click)="onSendQuestion(i - 1)" label="{{ col.header }}">
-          </button>
+            [ngClass]="{
+              'ui-button-success':
+                (liveSession$ | async)?.active_question_idx == i - 1,
+              'ui-button-info':
+                (liveSession$ | async)?.active_question_idx != i - 1
+            }"
+            type="button"
+            pButton
+            *ngIf="col.field != 'code'"
+            (click)="onSendQuestion(i - 1)"
+            label="{{ col.header }}"
+          ></button>
         </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-columns="columns">
       <tr>
-        <td *ngFor="let col of columns">
-          {{ rowData[col.field] }}
+        <td *ngFor="let col of columns" style="text-align: center;">
+          <ng-container [ngSwitch]="rowData[col.field]">
+            <i class="pi pi-check" *ngSwitchCase="'/'"></i>
+            <i class="pi pi-minus" *ngSwitchCase="'-'"></i>
+            <i class="pi pi-times" *ngSwitchCase="'x'"></i>
+            <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+          </ng-container>
         </td>
       </tr>
     </ng-template>
   </p-table>
   <p-confirmDialog></p-confirmDialog>
 
-
-
   <br />
-  <p-table [loading]="loading" [columns]="voiceTableHeaders" [value]="voiceClips">
+  <p-table
+    [loading]="loading"
+    [columns]="voiceTableHeaders"
+    [value]="voiceClips"
+  >
     <ng-template pTemplate="caption">
       <div class="caption-container">
         <div>
@@ -68,16 +95,30 @@
         </th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-      <tr [ngStyle]="{'background-color': rowData['listened'] ? 'lightgrey' : 'white'}">
+    <ng-template
+      pTemplate="body"
+      let-rowData
+      let-columns="columns"
+      let-rowIndex="rowIndex"
+    >
+      <tr
+        [ngStyle]="{
+          'background-color': rowData['listened'] ? 'lightgrey' : 'white'
+        }"
+      >
         <td *ngFor="let col of columns">
           <span *ngIf="col.field == 'fileUrl'">
             <audio controls (ended)="onListenVoiceClip(rowIndex)">
               <source src="{{ rowData[col.field] }}" type="audio/mpeg" />
               Your browser does not support the audio tag.
-            </audio></span>
-          <span *ngIf="col.field == 'sent_stamp'">{{ rowData[col.field]?.toDate() | date:'short':'UTC'  }}</span>
-          <span *ngIf="col.field == 'participantCode'"> {{ rowData[col.field] }} </span>
+            </audio></span
+          >
+          <span *ngIf="col.field == 'sent_stamp'">{{
+            rowData[col.field]?.toDate() | date: 'short':'UTC'
+          }}</span>
+          <span *ngIf="col.field == 'participantCode'">
+            {{ rowData[col.field] }}
+          </span>
         </td>
       </tr>
     </ng-template>
