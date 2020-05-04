@@ -8,12 +8,12 @@ import { AngularFireAuth } from '@angular/fire/auth';
 
 import { Router } from '@angular/router';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   endUserDataSubject: BehaviorSubject<any>;
 
-  token
+  token;
   constructor(
     private fireStore: AngularFirestore,
     public afAuth: AngularFireAuth,
@@ -24,17 +24,22 @@ export class AuthService {
 
   setUser(auth, onSetUserSuccess?) {
     if (auth) {
-
-      auth.getIdToken().then(token => {
-        this.token = token
+      auth.getIdToken().then((token) => {
+        this.token = token;
         // console.log(token)
-      })
-      this.getEndUserFromFireStore(auth.providerData[0].email).subscribe(endUsers => {
-        if (onSetUserSuccess) {
-          onSetUserSuccess(endUsers);
-        }
-        this.endUserDataSubject.next(_.head(endUsers));
       });
+      this.getEndUserFromFireStore(auth.providerData[0].email).subscribe(
+        (endUsers) => {
+          if (onSetUserSuccess) {
+            onSetUserSuccess(endUsers);
+          }
+          const authData = _.head(endUsers);
+          this.endUserDataSubject.next({
+            ...authData,
+            studentId: authData.studentId || _.split(authData.email, '@')[0],
+          });
+        }
+      );
     }
   }
 
@@ -44,57 +49,58 @@ export class AuthService {
 
   getEndUserFromFireStore(email) {
     return this.fireStore
-      .collection('user', ref => ref.where('email', '==', email))
+      .collection('user', (ref) => ref.where('email', '==', email))
       .get()
       .pipe(
-        map(endUsers =>
+        map((endUsers) =>
           endUsers.docs.map((endUser: any) => {
             const id = endUser.id;
             const data = endUser.data();
             return { id, ...data };
           })
         ),
-        tap(_ => console.log('fetched endUser')),
+        tap((_) => console.log('fetched endUser')),
         catchError(this.handleError('getEndUser', []))
       );
   }
 
   loginWithFacebook() {
-    return this.afAuth.auth
-      .signInWithPopup(new auth.FacebookAuthProvider())
+    return this.afAuth.auth.signInWithPopup(new auth.FacebookAuthProvider());
   }
 
   loginWithGoogle() {
     var provider = new auth.GoogleAuthProvider();
     provider.addScope('email');
     provider.addScope('profile');
-    provider.addScope('https://www.googleapis.com/auth/plus.me')
-    this.afAuth.auth.signInWithPopup(provider).then(() => {})
+    provider.addScope('https://www.googleapis.com/auth/plus.me');
+    this.afAuth.auth.signInWithPopup(provider).then(() => {});
   }
 
-  register(userAuth, setUser?){
-    let id = userAuth.providerData[0].email.split("@psu.ac.th")[0]
+  register(userAuth, setUser?) {
+    let id = userAuth.providerData[0].email.split('@psu.ac.th')[0];
     this.fireStore
-      .collection("user")
+      .collection('user')
       .doc(userAuth.uid)
       .set({
-        name: userAuth.providerData[0].email.split("@")[0],
-          studentId: isNaN(+id)
-            ? ""
-            : id,
+        name: userAuth.providerData[0].email.split('@')[0],
+        studentId: isNaN(+id) ? '' : id,
         email: userAuth.email,
-        role: isNaN(+id) ? (userAuth.providerData[0].email.includes('@psu.ac.th')? "teacher": "student") : "student"
+        role: isNaN(+id)
+          ? userAuth.providerData[0].email.includes('@psu.ac.th')
+            ? 'teacher'
+            : 'student'
+          : 'student',
       })
       .then(() => {
-        this.setUser(userAuth, endUser => {
+        this.setUser(userAuth, (endUser) => {
           if (_.isEmpty(endUser)) {
             this.signOut();
           } else {
             setUser(endUser[0]);
-            if (endUser[0].role === "teacher") {
-              this.router.navigate(["/teacher"], { replaceUrl: true });
+            if (endUser[0].role === 'teacher') {
+              this.router.navigate(['/teacher'], { replaceUrl: true });
             } else {
-              this.router.navigate(["/student"], { replaceUrl: true });
+              this.router.navigate(['/student'], { replaceUrl: true });
             }
           }
         });
