@@ -10,9 +10,7 @@
     <div class="ui-g-2">
       <p-table
         #dt
-        [loading]="loading"
-        [totalRecords]="totalRecords"
-        [columns]="cols"
+        [loading]="loading"        
         [value]="sessionsFormGroup.get('sessions').value"
         selectionMode="single"
         (onRowSelect)="onRowSelect($event)"
@@ -67,7 +65,7 @@
         header="{{ 'Session ' + selectedSessionId }}"
         *ngIf="hasSelectedSession"
         [formGroup]="
-          sessionsFormGroup.get('sessions').controls[
+          sessionsFormGroup.get('sessions')['controls'][
             getSelectedRowIndex(selectedSessionId)
           ]
         "
@@ -155,7 +153,7 @@
     showEffect="fade"
     [modal]="true"
     [width]="300"
-    (onHide)="onDialogHide($event)"
+    (onHide)="onDialogHide()"
     [contentStyle]="{ overflow: 'visible' }"
   >
     <div
@@ -208,7 +206,7 @@
     showEffect="fade"
     [modal]="true"
     [width]="300"
-    (onHide)="onLiveSessionDialogHide($event)"
+    (onHide)="onLiveSessionDialogHide()"
     [contentStyle]="{ overflow: 'visible' }"
   >
     <div
