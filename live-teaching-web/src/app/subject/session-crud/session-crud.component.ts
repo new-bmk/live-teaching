@@ -295,6 +295,9 @@ export class SessionCrudComponent implements OnInit {
     }
 
     if (!_.isEmpty(data.stream_url) && !_.isEmpty(this.selectedSessionId)) {
+      if(data.stream_url.indexOf('https') != 0){
+        data.stream_url = "https://www.youtube.com/embed/" + data.stream_url
+      }
       this.sessionCrudService
         .createLiveSession({
           stream_url: data.stream_url,
